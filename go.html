@@ -1,0 +1,8 @@
+<input id="input" onkeydown="go()"></input>
+<script type="text/javascript">
+	var I = document.getElementById("input");
+	function go(){if(event.code == "Enter"){window.location.href = "https://"+I.value;}}
+</script>
+<style>
+	#input{width:100%}
+</style>

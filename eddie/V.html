@@ -1,0 +1,606 @@
+<!--http://eddie.cheng.se/V/3KI2OIA0L_FixlessThan1.html, --><!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></script><script type="text/javascript">
+/*
+	Copyright 2017 Eddie Cheng
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+var V,I,U,Im,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[]
+var ATF=window.location.href.split("?"), A=ATF[0], TF =ATF.length>1?ATF[1].split("&"):0,F,T
+var X=((Math.round(100*(24+(new Date().getTimezoneOffset()/60)%24)/24)/100)+"").replace("0.",".")
+readTextUrl(TF[0]+".txt")
+F=TF.length>1?TF[1]:"Group=zero*0x*0y+0.1*one.zero*x*y"
+T=TF.length>1?TF[0].substring(0,1)=="D"?TF[0]:"D_"+TF[0]:"D"
+window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
+var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS"]
+var C="slipxyzrgbuvwdt";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0]
+var B=[],D=[],E=[],G=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=1.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
+var Mx,My,Mx0,My0,摸 =0,做 =0,动 =0,走 =1,改 =0,画 =0,秒 =0,keyi=0
+var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
+var Gfrag, Gvert, vibms, lastTime=new Date().getTime()
+updateL();F2DEG();DE2B()
+
+function updateCF(s){
+	var arr = s.split(";")
+	if(arr.length>2){T=arr[0]; for(var i=2;i<arr.length-1;i++)setVar(arr[i])}
+	else{
+		arr= s.split(",");T=arr[0];C=arr[2]
+		CD = arr.slice(3,C.length+3);	C1 = arr.slice(C.length+3,2*C.length+3);	CE = arr.slice(2*C.length+3,3*C.length+3)
+		for(var i=1;i<C.length;i++){
+		if(CD[i]=="")CD[i]=0;else CD[i]=parseFloat(CD[i]);C1[i]=parseFloat(C1[i]);if(CE[i]=="")CE[i]=0;CE[i]=parseFloat(CE[i])}
+		F=arr.slice(3*C.length+3,arr.length-1).join(",")
+	}
+	维 =4;点 =0;走 =1;D=[];E=[]; F2DEG();DE2B();M1=1;//nav(0,0)
+}
+function readTextFile(){
+	var file=fileInput.files[0], reader = new FileReader()
+	reader.onload=function(e){updateCF(reader.result)}
+	reader.readAsText(file);
+}
+function updateI(idx){
+	if(I){
+		I2d.scale(IS,IS)
+		I2d.clearRect(0,0,I.width,I.height);
+			if(idx>=0)img = images[idx]
+			if(img){
+			var cutw=img.width>img.height?img.width-img.height:0; var cuth=img.height>img.width?img.height-img.width:0 
+			I2d.drawImage(img,-cuth/2,-cutw/2,img.width+cuth,img.height +cutw,0,0,SS,SS)
+		}
+		
+	}
+}
+function updateU(idx){
+	if(U){
+		U2d.fillStyle="#FFFFFF"; U2d.textBaseline = "top"; U2d.textAlign = "left"; U2d.font=Font
+		U2d.fillText(T,10,10)
+
+		U2d.textAlign = "right"
+		U2d.fillText(Font,SS-10,10)
+
+		U2d.textAlign = "left";	U2d.textBaseline = "bottom"
+		U2d.fillText(""+点 +"/"+N+"",10,SS-10)
+
+		for(i=0;i<C.length;i++){
+			if(i==维 )U2d.fillStyle="#FFFFFF"
+			else U2d.fillStyle="#707070"
+			U2d.fillText(C[i],SS/6+(2*SS/3)/C.length*i,SS-10)
+		}
+		U2d.fillStyle="#FFFFFF"
+		U2d.textAlign = "right"
+		U2d.fillText(算 ,SS-10,SS-10)
+	}
+}
+function updateUP(idx,font,alpha){
+	if(U){
+		if(!idx)idx=点 
+		U2d.textAlign = "left"
+		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+alpha*D[idx][L["p"]]+')'
+		U2d.font= font
+		U2d.textBaseline = "top"
+		var edit=改 >0 && idx ==点 ?"."+C[维 ]+"↕"+步 +"="+(改 ==1?"[ "+dVal+" ]":dVal)+"±"+(改 ==2?"[ "+eVal+" ]":eVal):""
+		var names=D[idx][0].split(".")
+		var dots=names.length>1?"...":"";
+		U2d.fillText(names[0]+dots+edit,(SS/2)+dvx[idx]*(SS/2),(SS/2)-dvy[idx]*(SS/2))
+	}
+}
+function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
+function readImgFile(idx){images[idx]=new Image; images[idx].onload = function(){updateI(idx)};	images[idx].src = URL.createObjectURL(imgInput.files[0])}
+function readTextUrl(file){
+console.log("load file:"+file)
+	var raw = new XMLHttpRequest(); raw.open("GET", file, true); raw.onreadystatechange = function (){
+		if(raw.readyState === 4 && (raw.status === 200 || raw.status == 0)){
+			if(raw.responseText)
+			{
+				console.log(raw.responseText)
+				updateCF(raw.responseText);
+				window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
+			}
+			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
+			else window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
+		}
+	}
+	raw.send(null);
+}
+function download(filename, text) {
+	if(!filename){var arr = outLog.innerHTML.split(";");	filename= arr[0]+"_"+arr[1]+".txt"}
+	if(!text)text=outLog.innerHTML
+	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)); pom.setAttribute('download', filename);
+	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
+	else pom.click();
+}
+function setVar(s){
+	if(s){
+		var sPair=s.split(":")
+		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
+		var sArr=sPair[0].split(".")
+		if(sArr.length>1){
+			var sName=sArr[0]
+			var sType=sArr[sArr.length-1]
+			if(sType == C[0])updateP(L[sName],sVal.split(" ").join("_"))
+			else {
+				改 =0
+				var sDE=sVal.split("±")
+				Bm.push(L[sName],L[sType],parseFloat(sDE[0]),parseFloat(sDE[1]))
+			}
+		}
+		else if(sArr[0]=="echo")alert(this[sVal])
+		else if(sArr[0]=="IS"){
+			IS=sVal
+			updateI()
+		}
+		else if(sArr[0]=="SS"){
+			SS=sVal
+			V.width=SS;V.height=SS
+			I.width=SS;I.height=SS
+			U.width=SS;U.height=SS
+			updateI()
+			gl.viewport(0,0,SS,SS)
+		}
+		else if(sArr.length == 1){
+			if(sArr[0]=="T" && sVal.substring(0,2)!="D_")sVal="D_"+sVal.split(" ").join("_")
+			var lock=true
+			for(var i=0;i<让 .length;i++)if(让 [i]==sArr[0])lock=false
+			if(!lock)this[sArr[0]]=sVal
+		}
+	}
+}
+function updateP(idx, val){
+	console.log(val)
+	if(val == ""){
+		var par = idx-D[idx][2]
+		if(D.length > 2 && D[idx][2]!=0){
+			var count=D[par][1]==2?2:1
+			D.splice(idx+1-count,count); E.splice(idx+1-count,count);	dv.splice(idx+1-count,count); dc.splice(idx+1-count,count)
+			N-=count
+		}
+	}
+	else if(val.includes("+")){
+		var count=D[idx][2]==0?D[idx][1]:1
+		var cpD = D.slice(idx,idx+count),	cpE = E.slice(idx,idx+count);	cpdv=dv.slice(idx,idx+count);	cpdc=dc.slice(idx,idx+count)
+		D.splice(idx,0,...cpD);				E.splice(idx,0,...cpE);	dv.splice(idx,0,...cpdv);	 dc.splice(idx,0,...cpdc);
+		N+=cpD.length
+	}
+	else {D[idx][0]=val}//;nav(0,0);
+	DE2F();F2DEG();走 =1
+}
+function updateL(){
+	L=[]
+	for(var i=0; i<C.length; i++){L[C[i]]=i}
+	for(var j=D.length-1;j>=0;j--){
+		var par=j-D[j][2]
+		var nm=D[j][0].split(".")[0];
+		var nNm = nm
+		var ext=""
+		if(nm.includes("(")){
+			ext=nm.substring(nm.indexOf("("),nm.indexOf(")")+1)
+			nNm=nNm.replace(ext,"")
+			if(D[par][0].includes("(")&&D[j][2]!=0){ext="";G[j][0]=""}
+		}
+		var dp=0
+		while((L[nNm+ext] || L[nNm+"_"+dp+ext]) && dp<D.length-1){
+			var nmLen=nm.lastIndexOf("_")
+			var nmArr=nmLen<0?nm:nm.substring(0,nmLen)
+			var nmEndStr= parseInt(nm.substring(nmLen,nm.length)+1)
+			nNm=nmEndStr?nmArr+"_"+nmEndStr:nmArr+"_"+dp
+			dp++
+		}
+		L[nNm+ext] = j
+		D[j][0]=D[j][0].replace(nm,nNm+ext)
+	}
+}
+function saveM(idx,val){
+	if(!M)M=[]
+	var Midx=M[idx]?M[idx].split(" "):[]
+	if(img){images[idx]=img;updateI(idx)}
+	if(val=="")M[idx]=""
+	else{
+		Midx[0]="Vv="+Vv
+		var valArr=val.split("=")
+		var jdx=Midx.findIndex(x=>x.startsWith(valArr[0]))
+		if(jdx<0){
+			Midx.push(val)
+		}
+		else Midx[jdx]=val
+
+		M[idx]=Midx.join(" ")
+	}
+}
+function loadM(idx){
+	var Midx=M[idx].split(" ")
+	if(images[idx])img = images[idx]
+	for(var i=0;i<M[idx].length;i++)if(Midx[i])setVar(Midx[i].replace("=",":"));
+	updateI(idx)
+	M1=true
+}
+function DE2F(){
+	F=""
+	var C0
+	for(var i=0; i<N+1; i++){
+		if(D[i][2]==0)C0=CP
+		else C0 = CD
+		if(D[i][2]==0 && i>0)F+=","
+		if(D[i][1]>0 && D[i][1]!=CD[1])F+=(D[i][1]+"").replace("0.",".")+"*"
+		F+=D[i][0]
+		for(var j=3; j<C.length;j++){
+			var CEj = D[i][2]==0?1:CE[j]
+			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
+				if(j>0)F+="*"
+				if(D[i][j]!=1)	F+=(D[i][j]+"").replace("0.",".")
+				if(j>2){		F+=C[j];	if(E[i][j]!=CEj)F+="±"+(E[i][j]+"").replace("0.",".")}
+			}
+		}
+		if(D[i][2]==0)F+="="
+		else if(i<N && D[i+1][2]!=0) F+="+"
+	}
+}
+function F2DEG(){
+	F=decodeURI(F)
+	var commas=F.split(",")
+	N=-1
+	for(var I=0; I<commas.length; I++){
+		var adds=commas[I].replace("=","+").split("+")
+		for(var i=0; i<adds.length; i++){
+			N++
+			D[N]=[], E[N]=[],G[N]=[],	D[N][0]="", D[N][1]=i==0?adds.length:CP[1]; 	D[N][2]=i
+			var multis=adds[i].split("*")
+			for(var j=0; j<multis.length; j++){
+				var props=multis[j].split("±")
+				var prop=props[0]
+				var number=Number(prop)
+				if(!isNaN(number)&&i>0){D[N][1]*=number}
+				else{
+					var propValue=parseFloat(prop)
+					var valueStrLen
+
+					if(prop[0]==".")		valueStrLen=propValue.toString().length-1
+					else if(propValue==0)	valueStrLen=1
+					else if(!propValue){	valueStrLen=0;		propValue=1			}
+	 				else{					valueStrLen=propValue.toString().length	}
+					var propName=prop.substr(valueStrLen,prop.length-valueStrLen)
+					var propIndex
+					if(C.includes(propName)){propIndex=L[propName]}
+					else {
+						propIndex=1
+ 		 			}
+					if(propIndex==1&&propName!=C[3]){
+						if(D[N][0])D[N][0]+="."
+						D[N][0] += propName
+					}
+					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
+					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):CE[propIndex]
+				}
+				if(multis[j].includes("("))G[N][j]=multis[j].substring(multis[j].indexOf("(")+1,multis[j].indexOf(")"))
+				else G[N][j]=""
+			}
+			if(D[N][0]=="")		D[N][0]=CD[0]+big(Math.round(Math.random()*60))+big(Math.round(Math.random()*60))
+			for(var ii=1; ii<C.length; ii++){
+				if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?1:CE[ii]
+			}
+		}
+	}
+	updateL()
+}
+function DE2B(){
+	Bdv=[];Bdc=[];n=0
+	if(U)U2d.clearRect(0,0,U.width,U.height);
+	for(var i=N; i>0; i--){
+		if(D[i][2]==0)i--
+		var par=i-D[i][2]
+		if(!dv[par] || i==N){dv[par]=[];dc[par]=[]}
+		var len=DE(i,"l")
+		var jlen=len<1&&len>0?Math.ceil(1/len):Math.ceil(len)
+		var pdep=DE(i,"p")*PDE(i,"p")
+		var nn=0
+		if(点 == i || 点 ==par || M1){
+			var PArray=D[i][0].split(".")
+			dv[i]=[];dc[i]=[];dvx[i]=0;dvy[i]=0
+			for(var j=0; j<jlen; j++){
+				var s=len<1?j/jlen:-1
+				var d=DE(i,"d",s)
+				if(PArray.length>1){
+					var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
+					var i0 = L[PArray[ii]]
+					var i1 = L[PArray[ii+1]]
+					if(i0 && i1){
+						var d2 = (PArray.length-1)*d-ii
+						var x=(1-d2)*DE(i0,"x",s)+d2*DE(i1,"x",s),	y=(1-d2)*DE(i0,"y",s)+d2*DE(i1,"y",s),	z=(1-d2)*DE(i0,"z",s)+d2*DE(i1,"z",s)
+						var r=(1-d2)*DE(i0,"r",s)+d2*DE(i1,"r",s),	g=(1-d2)*DE(i0,"g",s)+d2*DE(i1,"g",s),	b=(1-d2)*DE(i0,"b",s)+d2*DE(i1,"b",s)
+						var u=(1-d2)*DE(i0,"u",s)+d2*DE(i1,"u",s),	v=(1-d2)*DE(i0,"v",s)+d2*DE(i1,"v",s),	w=(1-d2)*DE(i0,"w",s)+d2*DE(i1,"w",s)				
+					}
+				}
+				else{
+					var x=DE(i,"x",s),		y=DE(i,"y",s),		z=DE(i,"z",s)
+					var r=DE(i,"r",s),		g=DE(i,"g",s),		b=DE(i,"b",s)
+					var u=DE(i,"u",s),		v=DE(i,"v",s),		w=DE(i,"w",s)				
+				}
+				var Pu = PDE(i,"u",s),		Pv = PDE(i,"v",s),	Pw = PDE(i,"w",s),	pii = 2*Math.PI
+				var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+(x*2-1), 	y1=u*Math.cos(v*pii)+(y*2-1),			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+(z*2-1)
+				var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+(PDE(i,"y",s)*2-1)
+				var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+(PDE(i,"x",s)*2-1), 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+PDE(i,"z",s)
+				var	x4=x3*Math.cos(Vvm*pii)+y2*Math.sin(Vvm*pii);	y3 =y2*Math.cos(Vvm*pii)-x3*Math.sin(Vvm*pii)
+				var zScale=1/(2-z2),	m=j*4
+				var x5=x4*zScale, y4 = y3*zScale
+				var r1=r*zScale*PDE(i,"r",s), g1=g*zScale*PDE(i,"g",s), b1=b*zScale*PDE(i,"b",s)
+				
+				var idx=G[i][0]?L[G[i][0]]:L[G[par][0]]
+				
+				if(dv[idx] && idx!=i){
+					for(var ii=0;ii<dv[idx].length;ii+=4){
+						dv[i].push(dv[idx][ii]+x5-dvx[idx],dv[idx][ii+1]+y4-dvy[idx],1,1)
+						dc[i].push(r1*D[idx][L["r"]],g1*D[idx][L["g"]],b1*D[idx][L["b"]],1)
+						nn++
+					}
+					nn--
+				}
+				else{dv[i].push(x5,y4,1,1); dc[i].push(r1,g1,b1,1)}
+					dvx[i]+=x5; dvy[i]+=y4
+				
+			}
+			dvx[i]/=jlen;dvy[i]/=jlen
+			updateUP(i,Font,D[点 ][2]==0?0.5:1)
+		}
+		dv[par]=dv[par].concat(dv[i]); dc[par]=dc[par].concat(dc[i])
+		if(dv[i]){
+			var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[i].length):dv[i].length
+			Bdv = Bdv.concat(dv[i].slice(0,skip));Bdc = Bdc.concat(dc[i].slice(0,skip))
+		}
+		n+=jlen+nn
+	}
+	if(D[点 ][2]==0){
+		dvx[点 ]=D[点 ][L["x"]]-.5; dvy[点 ]=D[点 ][L["y"]]-.5
+		updateUP(i-D[i][2],"bold "+Font,1)
+	}
+	算 =n
+	updateU()
+}
+function nav(deltaX,deltaY){
+	做 =1; if(摸)动 =1;
+	if(点 >=D.length)点 =D.length-1
+	if(!改 ){
+		点 +=deltaY;	if(点 <0)点 =D.length-1;	else if(点 >D.length-1)点 =0
+		维 +=deltaX;	if(维 ==2)维 +=deltaX
+		if (维 <1)维 =C.length-1;	else if(维 >=C.length)维 =1
+		dVal=D[点 ][维 ];	eVal=E[点 ][维 ]
+		vibms=25
+	}
+	if(改 && 维 >0){
+		var deltaYD=改 ==1 ? deltaY:0;	var deltaYE=改 ==2 ? deltaY:0
+		var useD=走 &&deltaYD?dVal:D[点 ][维 ];		var useE=走 &&deltaYE?eVal:E[点 ][维 ]
+		dVal=(useD - deltaYD*步 ).decimal3()
+		eVal=(useE - deltaYE*步 ).decimal3()
+		if(dVal<0)dVal=0;	else if(dVal>C1[维 ])dVal=C1[维 ]
+		if(eVal<0)eVal=0;	else if(eVal>C1[维 ])eVal=C1[维 ]
+		Bm.push(点 ,维 ,dVal,eVal);
+		准 /=Math.pow(10,deltaX)
+		if(准 <0.001)准 =0.001;	else if(准 >1)准 =1;	else 准 =准 .decimal3()
+		vibms=50;
+	}
+	if(维 ==1 && dVal>1){步 =准 *1000;dVal=Math.round(dVal)}	else if(维 ==2) 步 =1;	else 步 =准 
+	vib(vibms);
+	var editString=改 >0 ? "</br><small>↕"+步 +"</small>" : ""
+	var dString=改 ==1 ? "<mark>"+dVal+"</mark>":改 ==2 ? "<small>"+dVal+"</small>":dVal
+	var eString=改 ==2 ? "±<mark>"+eVal+"</mark>":D[点 ][2]==0 && 维 ==1 ?"":"<small>±"+eVal+"</small>"
+	setdiv.innerHTML=D[点 ][0]+"."+C[维 ]+"<small>↕"+步 +"</small>="+dString+eString
+	setdiv.style.fontWeight=改 >0 ? "bold": "normal"
+	var F2=F.length>60?F.substring(0,57)+"...":F
+	DE2F(); 	hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&"+F+"'>"+T+"&"+F2+"</a>"
+	走 = 1
+}
+function showPosition(position){
+	var lat = Math.round(100*(360-position.coords.latitude)/360)/100+""
+	var lon = Math.round(100*(90-position.coords.longitude)/360)/100+""
+
+	X=lat.replace("0.",".")+lon.replace("0.",".")
+	nav(0,0)
+}
+function start(){
+
+	V=document.getElementById("glcanvas")
+	I=document.getElementById('imgcanvas')
+	U=document.getElementById('uicanvas')
+	window.addEventListener('devicemotion',function(ev){Im=ev})
+	U.ontouchstart=function(ev){
+		ev.preventDefault();
+		Mx0=ev.touches[0].clientX;My0=ev.touches[0].clientY
+		改 = ev.touches.length-1
+		//nav(0,0)
+		摸 =1;动 =0;走 =0
+	}
+	U.ontouchmove=function(ev){
+		ev.preventDefault();	走 =1
+		var touch0=ev.touches[ev.touches.length-1]
+		if(做 ){Mx0=touch0.clientX;My0=touch0.clientY;做 =0}
+		if(摸 ){
+		 	Mx=touch0.clientX-Mx0;My=touch0.clientY-My0
+		 	if(Mx>30)nav(1,0);else if(Mx<-30)nav(-1,0)
+		 	else if(My>20)nav(0,1);else if(My<-20)nav(0,-1)
+	
+		}
+	}
+	U.ontouchend=function(ev){
+		var minD=1
+		var cw=U2d.canvas.clientWidth
+		var Mx1=2*Mx0/cw-1, My1=2*My0/cw-1
+		if(动 ==0 && (/*D[点 ][2]!=0 || */ 维 !=1)){
+			if(My0 < cw/10 && Mx0 < cw/2)setVar(prompt("Rename Title","T:"+T))
+			else if(My0 < cw/10 && Mx0 > cw/2)setVar(prompt("Set Font","Font:"+Font))
+			else if(My0>9*cw/10)setDE()
+			else{
+				var id=0
+				for(i=0;i<dvx.length;i++){
+					var newD = Math.sqrt( Math.pow(dvx[i]-Mx1,2) + Math.pow(dvy[i]+My1,2) )
+					if(newD < minD){minD = newD; id=i}
+				}
+				//if(点 ==id)setP()
+				点 = id
+			}	
+		 }
+		 改 = ev.touches.length-1
+ 		 if(ev.touches.length<1){摸 =0; 改 =0}
+		 //nav(0,0)
+	}
+	document.onkeydown=function(ev){
+		 var code=ev.keyCode+32, num=ev.keyCode-48, keyC = String.fromCharCode(code)
+		var lock=false
+		var navx=0,navy=0
+		if(ev.code){
+			keyi++
+			keyLog.innerHTML+=big60(keyi)+"="+ev.code+", "
+			keyLog.scrollTop=keyLog.scrollHeight
+		}
+		if(window.event.altKey){
+			lock=true;
+			var par=点 >0?点 -1-D[点 -1][2]:0
+			if(num >=0&&num<=9){saveM(num,window.event.shiftKey?"":getVar("="));lock=true}
+			else{
+				var end=D.length-1
+				var shft=window.event.shiftKey
+				switch(ev.code){
+					case "ArrowLeft":改 =改 ==0?2:(改 -1);break
+					case "ArrowUp":navy-=shft?25:5;break
+					case "ArrowRight":改 =(改 +1)%3;break
+					case "ArrowDown":navy+=shft?25:5;break
+					case "Backspace":点 =点 ==0?end-D[end][2]:par;break
+					case "Enter":点 =点 +D[par][1]>end?0:点 -D[点 ][2]+D[par][1];break
+					case "KeyA":updateP(点 ,!shft?(D[点 ][0]+"+"+D[点 ][0]):"");break
+					case "KeyV":抖 = !抖 ;break
+					case "KeyU":arrows=true;break
+					default:lock=false
+				}
+			}
+		}
+		else{
+			走 =1
+			if(code!=c("i")&&code>=c("a")&&code<=c("z") && L[keyC]){维 =L[keyC];lock=true}
+			else if(num >=0&&num<=9){loadM(num);lock=true}
+			else{
+				lock=true
+				switch(ev.code){
+					case "ArrowLeft":navx=-号 ;break
+					case "ArrowUp":navy=-1;break
+					case "ArrowRight":navx=号 ;break
+					case "ArrowDown":navy=1;break
+					case "Backspace":点 =点 ==0?D.length:点 -1;break
+					case "Enter":点 =(点 +1)%D.length;break
+					case "Period":I2d.globalAlpha+=0.1;updateI();break
+					case "Comma":I2d.globalAlpha-=0.1;updateI();break
+					case "Backquote":setDE();break
+					case "F2":setP();break
+					case "F3":console.log(Im.accelerationIncludingGravity.x);break
+					case "F4":readTextUrl("D_Atoms.txt");break;
+					default:lock=false
+				}
+			}
+		}
+		if(lock){ev.preventDefault(); nav(navx,navy)}
+	}
+	nav(0,0)
+	navigator.geolocation.getCurrentPosition(showPosition)	
+	V.width=SS;V.height=SS
+	I.width=SS;I.height=SS
+	U.width=SS;U.height=SS
+
+	gl=V.getContext("webgl")
+	I2d=I.getContext('2d')
+	U2d=U.getContext('2d')
+
+	if (gl) {
+		gl.clearColor(0,0,0,1)
+		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
+		window.requestAnimationFrame(loop)
+	}
+}
+function loop(time){
+	if(走){
+		DE2B(D,E)
+		if(Bm.length>0){
+			var ii=Bm[0], ic=Bm[1], iD=Bm[2], iE=Bm[3]
+			if(Math.abs(D[ii][ic]-iD)>0.001)D[ii][ic]=(D[ii][ic]+iD)/2	
+			else if(Math.abs(E[ii][ic]-iE)>0.001)E[ii][ic]=(E[ii][ic]+iE)/2		
+			else{
+				D[ii][ic]=iD 
+				E[ii][ic]=iE
+				Bm.splice(0,4)
+			}
+		}
+		else if(Vvm!=Vv){
+			if(Math.abs(Vvm-Vv)>0.001)Vvm=(Vvm+Vv)/2
+			else Vvm=Vv
+		}
+		else{
+			DE2F()
+			var F2=F.length>60?F.substring(0,57)+"...":F
+				hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&"+F+"'>"+T+"&"+F2+"</a>"
+			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";Vv:"+Vv+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";M:"+M+";F:"+F+";"+A;
+			走 =0
+			M1=0
+		}
+		draw()
+	}
+	window.requestAnimationFrame(loop);
+}
+function draw() {
+	var Bv,Bc
+	Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
+	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
+	var Gprog=gl.createProgram()
+	gl.attachShader(Gprog, Gvert);		gl.attachShader(Gprog, Gfrag)
+	gl.linkProgram(Gprog);gl.useProgram(Gprog)
+	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt)
+	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt)
+
+	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW);
+	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW);
+
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0);
+	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0);
+	gl.drawArrays(gl.POINTS, 0, Bdv.length/4);
+}
+function setDE(){setVar(prompt("Rename variable",getVar(":")))}
+function getVar(sep){return D[点 ][0]+"."+C[维 ]+sep+D[点 ][维 ]+"±"+E[点 ][维 ]}
+function setP(){setVar(prompt("Rename variable",D[点 ][0]+"."+C[0]+":"+D[点 ][0]))}
+function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
+function c(v){return v.charCodeAt()}
+function DE(i,str,s){return D[i][L[str]]+(Err(i,L[str],s)*E[i-D[i][2]][L[str]]);}
+function PDE(i,str,s){return D[i-D[i][2]][L[str]];}
+function Err(i,j,s){ if(E[i][j]==0)return 0;else if(s>=0)return E[i][j]*(2*s-1); else return E[i][j]*(Math.random()-Math.random())}
+function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
+function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(Math.floor(v%60))}
+function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
+function vib(ms){if(抖 )navigator.vibrate(ms)}
+Number.prototype.decimal3=function(){return Math.round(this*1000)/1000}
+</script>
+<style>
+	html,body{margin:1px;padding:0}
+	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
+	textarea{width:100%}
+	@media screen and (orientation:portrait){.wrap{display:inline-block;width:100%}}
+	@media screen and (orientation:landscape){.wrap{display:inline-block;width:49%}}
+</style>
+</head><body onload="start()">
+<canvas id="imgcanvas" class="wrap"></canvas>
+<canvas id="uicanvas" class="wrap"></canvas>
+<canvas id="glcanvas" class="wrap"></canvas>
+<div id="rightdiv" class="wrap">
+	<p id="setdiv"></p>
+	<p id="hrefdiv"></p>
+	<textarea id="outLog" cols=100 rows=10 disabled></textarea><br>
+	File:<input type="file" id="fileInput" onchange="readTextFile()"></input>
+	<input type="button" value="save" onclick="download()"></input>
+	<textarea id="keyLog"></textarea>
+</div>
+<div id="imagediv">
+Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></inpu>
+</div>
+</body></html>
