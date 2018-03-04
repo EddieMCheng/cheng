@@ -1,4 +1,4 @@
-<!--http://eddie.cheng.se/V/3KI2OIA0L_FixlessThan1.html, --><!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></script><script type="text/javascript">
+<!--http://eddie.cheng.se/V.html, --><!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></script><script type="text/javascript">
 /*
 	Copyright 2017 Eddie Cheng
 
@@ -22,13 +22,15 @@ readTextUrl(TF[0]+".txt")
 F=TF.length>1?TF[1]:"Group=zero*0x*0y+0.1*one.zero*x*y"
 T=TF.length>1?TF[0].substring(0,1)=="D"?TF[0]:"D_"+TF[0]:"D"
 window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
-var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS"]
+var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS","HC","dT"]
 var C="slipxyzrgbuvwdt";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0]
 var B=[],D=[],E=[],G=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=1.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
-var Mx,My,Mx0,My0,摸 =0,做 =0,动 =0,走 =1,改 =0,画 =0,秒 =0,keyi=0
+var Mx,My,Mx0,My0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
-var Gfrag, Gvert, vibms, lastTime=new Date().getTime()
+var Gfrag, Gvert, vibms, go =1, time, dT=1, lastTime=new Date().getTime()
+var HC=["zero.x=getD('zero.x')+0.01"]
 updateL();F2DEG();DE2B()
+
 
 function updateCF(s){
 	var arr = s.split(";")
@@ -40,7 +42,7 @@ function updateCF(s){
 		if(CD[i]=="")CD[i]=0;else CD[i]=parseFloat(CD[i]);C1[i]=parseFloat(C1[i]);if(CE[i]=="")CE[i]=0;CE[i]=parseFloat(CE[i])}
 		F=arr.slice(3*C.length+3,arr.length-1).join(",")
 	}
-	维 =4;点 =0;走 =1;D=[];E=[]; F2DEG();DE2B();M1=1;//nav(0,0)
+	维 =4;点 =0;go =1;D=[];E=[]; F2DEG();DE2B();M1=1;//nav(0,0)
 }
 function readTextFile(){
 	var file=fileInput.files[0], reader = new FileReader()
@@ -118,7 +120,7 @@ function download(filename, text) {
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
-function setVar(s){
+function setVar(s, direct){
 	if(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
@@ -130,7 +132,11 @@ function setVar(s){
 			else {
 				改 =0
 				var sDE=sVal.split("±")
-				Bm.push(L[sName],L[sType],parseFloat(sDE[0]),parseFloat(sDE[1]))
+				if(direct){
+					D[L[sName]][L[sType]]=parseFloat(sDE[0])
+					E[L[sName]][L[sType]]=parseFloat(sDE[1])
+				}
+				else Bm.push(L[sName],L[sType],parseFloat(sDE[0]),parseFloat(sDE[1]))
 			}
 		}
 		else if(sArr[0]=="echo")alert(this[sVal])
@@ -171,7 +177,7 @@ function updateP(idx, val){
 		N+=cpD.length
 	}
 	else {D[idx][0]=val}//;nav(0,0);
-	DE2F();F2DEG();走 =1
+	DE2F();F2DEG();go =1
 }
 function updateL(){
 	L=[]
@@ -293,6 +299,13 @@ function F2DEG(){
 function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
+	if(HC){
+		for(var i=0;i<HC.length;i++){
+			var HCiPair = HC[i].split("=");
+			var valuePair=HCiPair[1].split("±");
+			setVar(HCiPair[0]+":"+eval(valuePair[0]?valuePair[0]:"0")+"±"+eval(valuePair[1]?valuePair[1]:"0"),true);
+		}
+	}
 	for(var i=N; i>0; i--){
 		if(D[i][2]==0)i--
 		var par=i-D[i][2]
@@ -375,7 +388,7 @@ function nav(deltaX,deltaY){
 	}
 	if(改 && 维 >0){
 		var deltaYD=改 ==1 ? deltaY:0;	var deltaYE=改 ==2 ? deltaY:0
-		var useD=走 &&deltaYD?dVal:D[点 ][维 ];		var useE=走 &&deltaYE?eVal:E[点 ][维 ]
+		var useD=go &&deltaYD?dVal:D[点 ][维 ];		var useE=go &&deltaYE?eVal:E[点 ][维 ]
 		dVal=(useD - deltaYD*步 ).decimal3()
 		eVal=(useE - deltaYE*步 ).decimal3()
 		if(dVal<0)dVal=0;	else if(dVal>C1[维 ])dVal=C1[维 ]
@@ -394,7 +407,7 @@ function nav(deltaX,deltaY){
 	setdiv.style.fontWeight=改 >0 ? "bold": "normal"
 	var F2=F.length>60?F.substring(0,57)+"...":F
 	DE2F(); 	hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&"+F+"'>"+T+"&"+F2+"</a>"
-	走 = 1
+	go = 1
 }
 function showPosition(position){
 	var lat = Math.round(100*(360-position.coords.latitude)/360)/100+""
@@ -414,10 +427,10 @@ function start(){
 		Mx0=ev.touches[0].clientX;My0=ev.touches[0].clientY
 		改 = ev.touches.length-1
 		//nav(0,0)
-		摸 =1;动 =0;走 =0
+		摸 =1;动 =0;go =0
 	}
 	U.ontouchmove=function(ev){
-		ev.preventDefault();	走 =1
+		ev.preventDefault();	go =1
 		var touch0=ev.touches[ev.touches.length-1]
 		if(做 ){Mx0=touch0.clientX;My0=touch0.clientY;做 =0}
 		if(摸 ){
@@ -480,7 +493,7 @@ function start(){
 			}
 		}
 		else{
-			走 =1
+			go =1
 			if(code!=c("i")&&code>=c("a")&&code<=c("z") && L[keyC]){维 =L[keyC];lock=true}
 			else if(num >=0&&num<=9){loadM(num);lock=true}
 			else{
@@ -521,7 +534,10 @@ function start(){
 	}
 }
 function loop(time){
-	if(走){
+	time= new Date().getTime()
+	if(dT!=0&&time-lastTime>dT*1000){go=1;lastTime=time}
+
+	if(go){
 		DE2B(D,E)
 		if(Bm.length>0){
 			var ii=Bm[0], ic=Bm[1], iD=Bm[2], iE=Bm[3]
@@ -542,7 +558,7 @@ function loop(time){
 			var F2=F.length>60?F.substring(0,57)+"...":F
 				hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&"+F+"'>"+T+"&"+F2+"</a>"
 			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";Vv:"+Vv+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";M:"+M+";F:"+F+";"+A;
-			走 =0
+			go =0
 			M1=0
 		}
 		draw()
@@ -567,6 +583,8 @@ function draw() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0);
 	gl.drawArrays(gl.POINTS, 0, Bdv.length/4);
 }
+function getD(s){var pair=s.split(".");return D[L[pair[0]]][L[pair[pair.length-1]]];}
+function getE(s){var pair=s.split(".");return E[L[pair[0]]][L[pair[pair.length-1]]];}
 function setDE(){setVar(prompt("Rename variable",getVar(":")))}
 function getVar(sep){return D[点 ][0]+"."+C[维 ]+sep+D[点 ][维 ]+"±"+E[点 ][维 ]}
 function setP(){setVar(prompt("Rename variable",D[点 ][0]+"."+C[0]+":"+D[点 ][0]))}
