@@ -241,8 +241,8 @@ function DE2F(){
 			var CEj = D[i][2]==0?1:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
 				if(j>0)F+="*"
-				if(D[i][j]!=1)	F+=(D[i][j]+"").replace("0.",".")
-				if(j>2){		F+=C[j];	if(E[i][j]!=CEj)F+="±"+(E[i][j]+"").replace("0.",".")}
+				if(D[i][j]!=1)	F+=(D[i][j].decimal3()+"").replace("0.",".")
+				if(j>2){		F+=C[j];	if(E[i][j]!=CEj)F+="±"+(E[i][j].decimal3()+"").replace("0.",".")}
 			}
 		}
 		if(D[i][2]==0)F+="="
@@ -557,7 +557,7 @@ function loop(time){
 			DE2F()
 			var F2=F.length>60?F.substring(0,57)+"...":F
 				hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&"+F+"'>"+T+"&"+F2+"</a>"
-			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";Vv:"+Vv+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";M:"+M+";F:"+F+";"+A;
+			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";Vv:"+Vv+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";M:"+M+"HC:"+HC+";F:"+F+";"+A;
 			go =0
 			M1=0
 		}
