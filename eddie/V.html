@@ -19,18 +19,36 @@ var V,I,U,Im,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],
 var ATF=window.location.href.split("?"), A=ATF[0], TF =ATF.length>1?ATF[1].split("&"):0,F,T
 var X=((Math.round(100*(24+(new Date().getTimezoneOffset()/60)%24)/24)/100)+"").replace("0.",".")
 readTextUrl(TF[0]+".txt")
-F=TF.length>1?TF[1]:"Group=zero*0x*0y+0.1*one.zero*x*y"
+F=TF.length>1?TF[1]:"aStatus*.1v±1*.1w±1=zero+.02X_acc.zero*0g*0b+.02Y_acc.zero*0r*0b+.02Z_acc.zero*0r*0g+.01aRing*.1u*v±1*.9w+.01thresholdRing*.1u*v±1*.9w*0b"+
+",gameStatus=inAir*t+time_start*t+time_point*t+points*.2x*.2y+gameState*0t*.2x*y+.01gameTime*0t*.7u*.5v±.5*0r*.5g"
 T=TF.length>1?TF[0].substring(0,1)=="D"?TF[0]:"D_"+TF[0]:"D"
-window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
+//window.history.pushState(null, "Title", "?"+T+"&"+F); 
+document.title=T
 var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS","G","dT"]
 var C="slipxyzrgbuvwdt";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0]
-var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=1.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
+var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=2.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
 var Mx,My,Mx0,My0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
-var Gfrag, Gvert, vibms, go =1, time, dT=0, lastTime=new Date().getTime()
+var Gfrag, Gvert, vibms, go =1, time=0, dT=1, initTime=new Date().getTime(), lastTime=new Date().getTime()
 var websock
 var Ws=[]
-var G=["zero.name='ZERO X is '+getD('zero.x')","zero.font='20px sans-serif'","one.zero.name='Alias1'","zero.x=getD('zero.x')>1?getD('zero.x')!getD('zero.x')+0.01","dT=getD('zero.x')>1?1!0.1"]
+var G=["X_acc.x=0.5+0.05*Ws[2]","Y_acc.y=0.5+0.05*Ws[3]","Z_acc.z=0.5+0.05*Ws[4]",
+"points.name=getD('points.t')","points.font='20px sans-serif'","gameState.font='30px sans-serif'","gameTime.font='30px sans-serif'",
+"aRing.u=Math.abs(Math.pow(0.05*Ws[2],2)+Math.pow(0.05*Ws[3],2)+Math.pow(0.05*Ws[4],2))",
+"inAir.t=getD('aRing.u')>getD('thresholdRing.u')?1!0",
+"thresholdRing.r=getD('inAir.t')",
+"thresholdRing.g=1-getD('inAir.t')",
+"time_start.t=getD('gameState.t')>0?getD('time_start.t')!time",
+"time_point.t=getD('inAir.t')<0.5?getD('time_point.t')!time",
+"points.t=getD('gameState.t')<2?getD('points.t')+time-getD('time_point.t')!getD('points.t')",
+"gameState.t=getD('points.t')<1000?0!getD('gameTime.t')<10?1!2",
+"gameState.name= getD('gameState.t')<1?'START'!getD('gameState.t')<2?'GAME ON'!'GAME OVER'",
+"points.t=getD('gameState.t')>0 || getD('inAir.t')<0.5?getD('points.t')!0",
+"gameTime.t=getD('gameState.t')<2?Math.round((time-getD('time_start.t'))/1000)!getD('gameTime.t')",
+"gameTime.v=0.5-(getD('gameTime.t'))/20±0.5-(getD('gameTime.t')/20)",
+
+"gameTime.name=(10-getD('gameTime.t'))+'s'"
+]
 updateL();F2DEG();DE2B()
 
 function updateCF(s){
@@ -63,7 +81,7 @@ function updateI(idx){
 	}
 }
 function updateU(idx){
-	if(U){
+	if(U && 改 >0){
 		U2d.fillStyle="#FFFFFF"; U2d.textBaseline = "top"; U2d.textAlign = "left"; U2d.font=Font
 		U2d.fillText(T,10,10)
 
@@ -93,8 +111,8 @@ function updateUP(idx,font,alpha){
 		U2d.font=改 ==0&&goFont?goFont:font
 		U2d.textBaseline = "top"
 		var edit=改 >0 && idx ==点 ?"."+C[维 ]+"↕"+步 +"="+(改 ==1?"[ "+dVal+" ]":dVal)+"±"+(改 ==2?"[ "+eVal+" ]":eVal):""
-		var names=D[idx][0].split(".")
-		var dots=names.length>1?"...":"";
+		var names=改 >0? D[idx][0].split("."):" "
+		var dots=改 >0 && names.length>1?"...":"";
 		U2d.fillText(改 ==0&&goName!="undefined"?goName:(names[0]+dots+edit),(SS/2)+dvx[idx]*(SS/2),(SS/2)-dvy[idx]*(SS/2))
 	}
 }
@@ -108,10 +126,12 @@ console.log("load file:"+file)
 			{
 				console.log(raw.responseText)
 				updateCF(raw.responseText);
-				window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
+				//window.history.pushState(null, "Title", "?"+T+"&"+F); 
+				document.title=T
 			}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
-			else window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
+			//else window.history.pushState(null, "Title", "?"+T+"&"+F); 
+			document.title=T
 		}
 	}
 	raw.send(null);
@@ -320,7 +340,7 @@ function DE2B(){
 		var jlen=len<1&&len>0?Math.ceil(1/len):Math.ceil(len)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
-		if(点 == i || 点 ==par || M1){
+		if(点 == i || 点 ==par || M1 || (dT>0 && 改 == 0)){
 			var PArray=D[i][0].split(".")
 			dv[i]=[];dc[i]=[];dvx[i]=0;dvy[i]=0
 			for(var j=0; j<jlen; j++){
@@ -351,7 +371,7 @@ function DE2B(){
 				var x5=x4*zScale, y4 = y3*zScale
 				var r1=r*zScale*PDE(i,"r",s), g1=g*zScale*PDE(i,"g",s), b1=b*zScale*PDE(i,"b",s)
 				
-				var idx=G[i][0]?L[G[i][0]]:L[G[par][0]]
+				var idx=H[i][0]?L[H[i][0]]:L[H[par][0]]
 				
 				if(dv[idx] && idx!=i){
 					for(var ii=0;ii<dv[idx].length;ii+=4){
@@ -431,6 +451,15 @@ function start(){
 	if(window.location.hostname){
 		document.title = 'TIM'+window.location.hostname.split(".")[3];
 		websock = new WebSocket('ws://' + window.location.hostname + ':81/');
+		websock.onmessage = function(evt) {
+			if(evt.data.includes(",")){
+				Ws=evt.data.split(",")
+				go = 1
+			}
+		};
+	}
+	else{
+		websock = new WebSocket('ws://192.168.1.231:81/');
 		websock.onmessage = function(evt) {
 			if(evt.data.includes(",")){
 				Ws=evt.data.split(",")
@@ -533,7 +562,7 @@ function start(){
 		if(lock){ev.preventDefault(); nav(navx,navy)}
 	}
 	nav(0,0)
-	navigator.geolocation.getCurrentPosition(showPosition)	
+	//navigator.geolocation.getCurrentPosition(showPosition)	
 	V.width=SS;V.height=SS
 	I.width=SS;I.height=SS
 	U.width=SS;U.height=SS
@@ -548,8 +577,8 @@ function start(){
 		window.requestAnimationFrame(loop)
 	}
 }
-function loop(time){
-	time= new Date().getTime()
+function loop(){
+	time= new Date().getTime()-initTime
 	if(dT!=0&&time-lastTime>dT*1000&&改==0 ){go=1;lastTime=time}
 
 	if(go){
@@ -618,6 +647,8 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	html,body{margin:1px;padding:0}
 	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
 	textarea{width:100%}
+	#rightdiv{display:none}
+	#imagediv{display:none}
 </style>
 </head><body onload="start()">
 <canvas id="imgcanvas" class="wrap"></canvas>
@@ -627,10 +658,11 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	<p id="setdiv"></p>
 	<p id="hrefdiv"></p>
 	<textarea id="outLog" cols=100 rows=10 disabled></textarea><br>
-	File:<input type="file" id="fileInput" onchange="readTextFile()"></input>
-	<input type="button" value="save" onclick="download()"></input>
+	
 	<textarea id="keyLog"></textarea>
-</div>
+</div><br>
+File:<input type="file" id="fileInput" onchange="readTextFile()"></input>
+	<input type="button" value="save" onclick="download()"></input>
 <div id="imagediv">
 Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></inpu>
 </div>
