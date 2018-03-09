@@ -22,15 +22,16 @@ readTextUrl(TF[0]+".txt")
 F=TF.length>1?TF[1]:"Group=zero*0x*0y+0.1*one.zero*x*y"
 T=TF.length>1?TF[0].substring(0,1)=="D"?TF[0]:"D_"+TF[0]:"D"
 window.history.pushState(null, "Title", "?"+T+"&"+F); document.title=T
-var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS","HC","dT"]
+var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS","G","dT"]
 var C="slipxyzrgbuvwdt";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0]
-var B=[],D=[],E=[],G=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=1.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
+var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=1.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
 var Mx,My,Mx0,My0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
 var Gfrag, Gvert, vibms, go =1, time, dT=0, lastTime=new Date().getTime()
-var HC=["zero.name='ZERO X is '+getD('zero.x')","zero.font='20px sans-serif'","one.zero.name='Alias1'","zero.x=getD('zero.x')>1?getD('zero.x')!getD('zero.x')+0.01","dT=getD('zero.x')>1?1!0.1"], S=[]
+var websock
+var Ws=[]
+var G=["zero.name='ZERO X is '+getD('zero.x')","zero.font='20px sans-serif'","one.zero.name='Alias1'","zero.x=getD('zero.x')>1?getD('zero.x')!getD('zero.x')+0.01","dT=getD('zero.x')>1?1!0.1"]
 updateL();F2DEG();DE2B()
-
 
 function updateCF(s){
 	var arr = s.split(";")
@@ -88,7 +89,7 @@ function updateUP(idx,font,alpha){
 		var goName=(L[D[idx][0]+".name"]+"").replace("±0","")
 		var goFont=L[D[idx][0]+".font"]
 		U2d.textAlign = "left"
-		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+alpha*D[idx][L["p"]]+')'
+		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(改 ==0&&goName?1:alpha*D[idx][L["p"]])+')'
 		U2d.font=改 ==0&&goFont?goFont:font
 		U2d.textBaseline = "top"
 		var edit=改 >0 && idx ==点 ?"."+C[维 ]+"↕"+步 +"="+(改 ==1?"[ "+dVal+" ]":dVal)+"±"+(改 ==2?"[ "+eVal+" ]":eVal):""
@@ -143,7 +144,7 @@ function setVar(s, direct){
 			}
 		}
 		else if(sArr[0]=="echo")alert(this[sVal])
-		else if(sArr[0]=="HC")HC=sVal.split(",").join(":")
+		else if(sArr[0]=="G")G=sVal.split(",").join(":")
 		else if(sArr[0]=="IS"){
 			IS=sVal
 			updateI()
@@ -181,7 +182,7 @@ function updateP(idx, val){
 		D.splice(idx,0,...cpD);				E.splice(idx,0,...cpE);	dv.splice(idx,0,...cpdv);	 dc.splice(idx,0,...cpdc);
 		N+=cpD.length
 	}
-	else {D[idx][0]=val}//;nav(0,0);
+	else {D[idx][0]=val}
 	DE2F();F2DEG();go =1
 }
 function updateL(){
@@ -262,7 +263,7 @@ function F2DEG(){
 		var adds=commas[I].replace("=","+").split("+")
 		for(var i=0; i<adds.length; i++){
 			N++
-			D[N]=[], E[N]=[],G[N]=[],	D[N][0]="", D[N][1]=i==0?adds.length:CP[1]; 	D[N][2]=i
+			D[N]=[], E[N]=[],H[N]=[],	D[N][0]="", D[N][1]=i==0?adds.length:CP[1]; 	D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
 				var props=multis[j].split("±")
@@ -290,8 +291,8 @@ function F2DEG(){
 					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
 					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):CE[propIndex]
 				}
-				if(multis[j].includes("("))G[N][j]=multis[j].substring(multis[j].indexOf("(")+1,multis[j].indexOf(")"))
-				else G[N][j]=""
+				if(multis[j].includes("("))H[N][j]=multis[j].substring(multis[j].indexOf("(")+1,multis[j].indexOf(")"))
+				else H[N][j]=""
 			}
 			if(D[N][0]=="")		D[N][0]=CD[0]+big(Math.round(Math.random()*60))+big(Math.round(Math.random()*60))
 			for(var ii=1; ii<C.length; ii++){
@@ -304,11 +305,11 @@ function F2DEG(){
 function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
-	if(HC && 改 == 0){
-		for(var i=0;i<HC.length;i++){
-			var HCiPair = HC[i].split("!").join(":").split("=");
-			var valuePair=HCiPair[1].split("±");
-			setVar(HCiPair[0]+":"+eval(valuePair[0]?valuePair[0]:"0")+"±"+eval(valuePair[1]?valuePair[1]:"0"),true);
+	if(G && 改 == 0){
+		for(var i=0;i<G.length;i++){
+			var GiPair = G[i].split("!").join(":").split("=");
+			var valuePair=GiPair[1].split("±");
+			setVar(GiPair[0]+":"+eval(valuePair[0]?valuePair[0]:"0")+"±"+eval(valuePair[1]?valuePair[1]:"0"),true);
 		}
 	}
 	for(var i=N; i>0; i--){
@@ -422,16 +423,26 @@ function showPosition(position){
 	nav(0,0)
 }
 function start(){
-
+	
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
 	window.addEventListener('devicemotion',function(ev){Im=ev})
+	if(window.location.hostname){
+		document.title = 'TIM'+window.location.hostname.split(".")[3];
+		websock = new WebSocket('ws://' + window.location.hostname + ':81/');
+		websock.onmessage = function(evt) {
+			if(evt.data.includes(",")){
+				Ws=evt.data.split(",")
+				go = 1
+			}
+		};
+	}
 	U.ontouchstart=function(ev){
 		ev.preventDefault();
 		Mx0=ev.touches[0].clientX;My0=ev.touches[0].clientY
 		改 = ev.touches.length-1
-		//nav(0,0)
+
 		摸 =1;动 =0;go =0
 	}
 	U.ontouchmove=function(ev){
@@ -440,8 +451,8 @@ function start(){
 		if(做 ){Mx0=touch0.clientX;My0=touch0.clientY;做 =0}
 		if(摸 ){
 		 	Mx=touch0.clientX-Mx0;My=touch0.clientY-My0
-		 	if(Mx>30)nav(1,0);else if(Mx<-30)nav(-1,0)
-		 	else if(My>20)nav(0,1);else if(My<-20)nav(0,-1)
+//		 	if(Mx>30)nav(1,0);else if(Mx<-30)nav(-1,0)
+//		 	else if(My>20)nav(0,1);else if(My<-20)nav(0,-1)
 	
 		}
 	}
@@ -465,7 +476,6 @@ function start(){
 		 }
 		 改 = ev.touches.length-1
  		 if(ev.touches.length<1){摸 =0; 改 =0}
-		 //nav(0,0)
 	}
 	document.onkeydown=function(ev){
 		 var code=ev.keyCode+32, num=ev.keyCode-48, keyC = String.fromCharCode(code)
@@ -562,7 +572,7 @@ function loop(time){
 			DE2F()
 			var F2=F.length>60?F.substring(0,57)+"...":F
 				hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&"+F+"'>"+T+"&"+F2+"</a>"
-			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";Vv:"+Vv+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+(M!=""?";M:"+M:"")+";HC:"+HC+";F:"+F+";"+A;
+			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";Vv:"+Vv+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+(M!=""?";M:"+M:"")+";G:"+G+";F:"+F+";"+A;
 			go=0
 			M1=0
 		}
@@ -608,8 +618,6 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	html,body{margin:1px;padding:0}
 	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
 	textarea{width:100%}
-	@media screen and (orientation:portrait){.wrap{display:inline-block;width:100%}}
-	@media screen and (orientation:landscape){.wrap{display:inline-block;width:49%}}
 </style>
 </head><body onload="start()">
 <canvas id="imgcanvas" class="wrap"></canvas>
