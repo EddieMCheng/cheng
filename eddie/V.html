@@ -17,38 +17,20 @@
 */
 var V,I,U,Im,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[]
 var ATF=window.location.href.split("?"), A=ATF[0], TF =ATF.length>1?ATF[1].split("&"):0,F,T
-var X=((Math.round(100*(24+(new Date().getTimezoneOffset()/60)%24)/24)/100)+"").replace("0.",".")
 readTextUrl(TF[0]+".txt")
-F=TF.length>1?TF[1]:"aStatus*.1v±1*.1w±1=zero+.02X_acc.zero*0g*0b+.02Y_acc.zero*0r*0b+.02Z_acc.zero*0r*0g+.01aRing*.1u*v±1*.9w+.01thresholdRing*.1u*v±1*.9w*0b"+
-",gameStatus=inAir*t+time_start*t+time_point*t+points*.2x*.2y+gameState*0t*.2x*y+.01gameTime*0t*.7u*.5v±.5*0r*.5g"
+F=TF.length>1?TF[1]:"clock=.05sec*.5u±.5*0b+.05min*.4u±.4*0r+.05hrs*.3u±.3*0g+.085face*u*v±.5"
 T=TF.length>1?TF[0].substring(0,1)=="D"?TF[0]:"D_"+TF[0]:"D"
 //window.history.pushState(null, "Title", "?"+T+"&"+F); 
 document.title=T
 var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS","G","dT"]
-var C="slipxyzrgbuvwdt";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0]
-var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=2.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
-var Mx,My,Mx0,My0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
+var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,1]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
+var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif", VS=3.5, Vv=0, SS=512,IS=1, Bm=[], Vvm=0
+var Mx,My,Mx0,My0,Mx1,My1,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
-var Gfrag, Gvert, vibms, go =1, time=0, dT=1, initTime=new Date().getTime(), lastTime=new Date().getTime()
-var websock
-var Ws=[]
-var G=["X_acc.x=0.5+0.05*Ws[2]","Y_acc.y=0.5+0.05*Ws[3]","Z_acc.z=0.5+0.05*Ws[4]",
-"points.name=getD('points.t')","points.font='20px sans-serif'","gameState.font='30px sans-serif'","gameTime.font='30px sans-serif'",
-"aRing.u=Math.abs(Math.pow(0.05*Ws[2],2)+Math.pow(0.05*Ws[3],2)+Math.pow(0.05*Ws[4],2))",
-"inAir.t=getD('aRing.u')>getD('thresholdRing.u')?1!0",
-"thresholdRing.r=getD('inAir.t')",
-"thresholdRing.g=1-getD('inAir.t')",
-"time_start.t=getD('gameState.t')>0?getD('time_start.t')!time",
-"time_point.t=getD('inAir.t')<0.5?getD('time_point.t')!time",
-"points.t=getD('gameState.t')<2?getD('points.t')+time-getD('time_point.t')!getD('points.t')",
-"gameState.t=getD('points.t')<1000?0!getD('gameTime.t')<10?1!2",
-"gameState.name= getD('gameState.t')<1?'START'!getD('gameState.t')<2?'GAME ON'!'GAME OVER'",
-"points.t=getD('gameState.t')>0 || getD('inAir.t')<0.5?getD('points.t')!0",
-"gameTime.t=getD('gameState.t')<2?Math.round((time-getD('time_start.t'))/1000)!getD('gameTime.t')",
-"gameTime.v=0.5-(getD('gameTime.t'))/20±0.5-(getD('gameTime.t')/20)",
-
-"gameTime.name=(10-getD('gameTime.t'))+'s'"
-]
+var Gfrag, Gvert, vibms, go =1, time=0, dT=0.04,qTime=0, loopTime=new Date().getTime(), timeZone=new Date().getTimezoneOffset()/60;
+var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
+var websock, Ws=[]
+var G=["sec.v=time/1000/60%60","min.v=time/1000/60/60%60","hrs.v=(time/1000/60/60-timeZone)/12%12"]
 updateL();F2DEG();DE2B()
 
 function updateCF(s){
@@ -106,7 +88,8 @@ function updateUP(idx,font,alpha){
 		if(!idx)idx=点
 		var goName=(L[D[idx][0]+".name"]+"").replace("±0","")
 		var goFont=L[D[idx][0]+".font"]
-		U2d.textAlign = "left"
+		var goAlign=L[D[idx][0]+".align"]
+		U2d.textAlign =goAlign?goAlign:"left"
 		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(改 ==0&&goName?1:alpha*D[idx][L["p"]])+')'
 		U2d.font=改 ==0&&goFont?goFont:font
 		U2d.textBaseline = "top"
@@ -151,8 +134,8 @@ function setVar(s, direct){
 		if(sArr.length>1){
 			var sName=sArr[0]
 			var sType=sArr[sArr.length-1]
-			if(sType == C[0])updateP(L[sName],sVal.split(" ").join("_"))
-			else if(sType == "name" || sType == "font")L[sPair[0]]=sPair[1]
+			if(sType == C[0])updateP(L[sName],sVal.replace(/ /g,"_"))
+			else if(sType == "name" || sType == "font" || sType=="align")L[sPair[0]]=sPair[1]
 			else {
 				改 =0
 				var sDE=sVal.split("±")
@@ -325,13 +308,15 @@ function F2DEG(){
 function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
+
 	if(G && 改 == 0){
 		for(var i=0;i<G.length;i++){
-			var GiPair = G[i].split("!").join(":").split("=");
+			var GiPair = G[i].split("=");
 			var valuePair=GiPair[1].split("±");
-			setVar(GiPair[0]+":"+eval(valuePair[0]?valuePair[0]:"0")+"±"+eval(valuePair[1]?valuePair[1]:"0"),true);
+			setVar(GiPair[0]+":"+vdScript(valuePair[0],getD(GiPair[0]))+"±"+vdScript(valuePair[1],getE(GiPair[0])),true);
 		}
 	}
+
 	for(var i=N; i>0; i--){
 		if(D[i][2]==0)i--
 		var par=i-D[i][2]
@@ -395,12 +380,14 @@ function DE2B(){
 		}
 		n+=jlen+nn
 	}
+
 	if(D[点 ][2]==0){
 		dvx[点 ]=D[点 ][L["x"]]-.5; dvy[点 ]=D[点 ][L["y"]]-.5
 		updateUP(i-D[i][2],"bold "+Font,1)
 	}
 	算 =n
 	updateU()
+	
 }
 function nav(deltaX,deltaY){
 	做 =1; if(摸)动 =1;
@@ -468,43 +455,16 @@ function start(){
 		};
 	}
 	U.ontouchstart=function(ev){
-		ev.preventDefault();
+	//	ev.preventDefault();
 		Mx0=ev.touches[0].clientX;My0=ev.touches[0].clientY
 		改 = ev.touches.length-1
-
-		摸 =1;动 =0;go =0
 	}
 	U.ontouchmove=function(ev){
-		ev.preventDefault();	go =1
-		var touch0=ev.touches[ev.touches.length-1]
-		if(做 ){Mx0=touch0.clientX;My0=touch0.clientY;做 =0}
-		if(摸 ){
-		 	Mx=touch0.clientX-Mx0;My=touch0.clientY-My0
-//		 	if(Mx>30)nav(1,0);else if(Mx<-30)nav(-1,0)
-//		 	else if(My>20)nav(0,1);else if(My<-20)nav(0,-1)
-	
-		}
+		//ev.preventDefault();	go =1
+		Mx=ev.touches[0].clientX;My=ev.touches[0].clientY
 	}
 	U.ontouchend=function(ev){
-		var minD=1
-		var cw=U2d.canvas.clientWidth
-		var Mx1=2*Mx0/cw-1, My1=2*My0/cw-1
-		if(动 ==0 && (/*D[点 ][2]!=0 || */ 维 !=1)){
-			if(My0 < cw/10 && Mx0 < cw/2)setVar(prompt("Rename Title","T:"+T))
-			else if(My0 < cw/10 && Mx0 > cw/2)setVar(prompt("Set Font","Font:"+Font))
-			else if(My0>9*cw/10)setDE()
-			else{
-				var id=0
-				for(i=0;i<dvx.length;i++){
-					var newD = Math.sqrt( Math.pow(dvx[i]-Mx1,2) + Math.pow(dvy[i]+My1,2) )
-					if(newD < minD){minD = newD; id=i}
-				}
-				//if(点 ==id)setP()
-				点 = id
-			}	
-		 }
-		 改 = ev.touches.length-1
- 		 if(ev.touches.length<1){摸 =0; 改 =0}
+		Mx1=ev.touches[0].clientX;My1=ev.touches[0].clientY
 	}
 	document.onkeydown=function(ev){
 		 var code=ev.keyCode+32, num=ev.keyCode-48, keyC = String.fromCharCode(code)
@@ -578,9 +538,10 @@ function start(){
 	}
 }
 function loop(){
-	time= new Date().getTime()-initTime
-	if(dT!=0&&time-lastTime>dT*1000&&改==0 ){go=1;lastTime=time}
-
+	loopTime = time
+	time= new Date().getTime()
+	if(time-qTime>dT*1000){qTime=time;go=1}
+	
 	if(go){
 		DE2B(D,E)
 		if(Bm.length>0){
@@ -609,25 +570,34 @@ function loop(){
 	}
 	window.requestAnimationFrame(loop);
 }
-function draw() {
+function draw(a) {
+	if(!a)a=1
 	var Bv,Bc
 	Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
 	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	var Gprog=gl.createProgram()
 	gl.attachShader(Gprog, Gvert);		gl.attachShader(Gprog, Gfrag)
 	gl.linkProgram(Gprog);gl.useProgram(Gprog)
 	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt)
 	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt)
 
+
 	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW);
 	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW);
 
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0);
-	gl.drawArrays(gl.POINTS, 0, Bdv.length/4);
+	gl.drawArrays(gl.POINT, 0, Bdv.length/4);
+//	gl.drawArrays(gl.LINE_STRIP, Bdv.length/8, Bdv.length/8);
 }
-function getD(s){var pair=s.split(".");return D[L[pair[0]]][L[pair[pair.length-1]]]}
+function vdScript(s,exc){
+	var ext=""
+	if(s&&s.includes("?")&&!s.includes("!"))ext=":"+(exc?exc:"0")
+	return s?eval(s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DE])\(/g,"get$1('").replace(/\.([a-z])\)/g,".$1')")+ext):0
+}
+//function vdScript(s,exc){return s?eval(s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DE])\(/g,"get$1('").replace(/\.([a-z])\)/g,".$1')")):"0"}
+function getD(s){console.log(s);var pair=s.split(".");return D[L[pair[0]]][L[pair[pair.length-1]]]}
 function getE(s){var pair=s.split(".");return E[L[pair[0]]][L[pair[pair.length-1]]]}
 function setDE(){setVar(prompt("Rename variable",getVar(":")))}
 function getVar(sep){return D[点 ][0]+"."+C[维 ]+sep+D[点 ][维 ]+"±"+E[点 ][维 ]}
@@ -647,7 +617,7 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	html,body{margin:1px;padding:0}
 	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
 	textarea{width:100%}
-	#rightdiv{display:none}
+	#rightdiv{}
 	#imagediv{display:none}
 </style>
 </head><body onload="start()">
