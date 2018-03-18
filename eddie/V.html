@@ -28,15 +28,20 @@ var Gfrag, Gvert, vibms, go =1, time=0, dT=0.04,qTime=0, loopTime=new Date().get
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var websock, Ws=[]
 updateL();F2DEG();DE2B()
-init()
 function init(){
 	
 	var ATD=window.location.href.replace("?",";").split(";"); 
 	A=ATD[0]
 	updateD(1,ATD)
 	readTextUrl("./"+T+".txt")
+	
+	if (gl) {
+	gl.clearColor(0,0,0,1)
+	gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
+	window.requestAnimationFrame(loop)
+	}
 }
-function updateT(s){T=s?s.substring(0,1)=="D"?s:"D_"+s:"D"; document.title=T;/* window.history.pushState(null, "Title", ";"+T); */}
+function updateT(s){T=s?s.substring(0,1)=="D"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T);}
 function updateD(Tidx,arr){
 	updateT(arr[Tidx])
 	if(arr.length>2){
@@ -50,11 +55,10 @@ function readTextFile(){
 	reader.readAsText(file);
 }
 function readTextUrl(file){
+	console.log("attempt to read "+file)
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
 	raw.onreadystatechange = function (){
-		alert("file:"+file+" readyState:"+raw.readyState+" status:"+raw.status)
 		if(raw.readyState === 4 && (raw.status === 200 || raw.status == 0)){
-			alert("text:"+raw.responseText)
 			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
 			document.title=T
@@ -509,6 +513,7 @@ function start(){
 		}
 		if(lock){ev.preventDefault(); nav(navx,navy)}
 	}
+	
 	nav(0,0)
 	//navigator.geolocation.getCurrentPosition(showPosition)	
 	V.width=SS;V.height=SS
@@ -518,12 +523,7 @@ function start(){
 	gl=V.getContext("webgl")
 	I2d=I.getContext('2d')
 	U2d=U.getContext('2d')
-
-	if (gl) {
-		gl.clearColor(0,0,0,1)
-		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
-		window.requestAnimationFrame(loop)
-	}
+	init()
 }
 function loop(){
 	loopTime = time

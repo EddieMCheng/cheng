@@ -1,1 +1,0 @@
-D_2,3KI14DdxC.96,Plipxyzrgbuvwdt,p,1,,1,.5,.5,.5,1,1,1,,,,,,&lt;,1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,±,,,,,,,,,,,,,,,coordinate*.3x*.3y=100*lineX*.5x±.5*0g*0b+100*lineY*.5y±.5*0r*0b+100*lineZ*.5z±.5*0r*0g,http://www.cheng.se/eddie/V.html
