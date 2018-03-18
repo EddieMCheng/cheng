@@ -34,7 +34,7 @@ function init(){
 	var ATD=window.location.href.replace("?",";").split(";"); 
 	A=ATD[0]
 	updateD(1,ATD)
-	readTextUrl(T+".txt")
+	readTextUrl("./"+T+".txt")
 }
 function updateT(s){T=s?s.substring(0,1)=="D"?s:"D_"+s:"D"; document.title=T;/* window.history.pushState(null, "Title", ";"+T); */}
 function updateD(Tidx,arr){
@@ -423,7 +423,7 @@ function start(){
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
 	window.addEventListener('devicemotion',function(ev){Im=ev})
-	if(window.location.hostname){
+/*	if(window.location.hostname){
 		document.title = 'TIM'+window.location.hostname.split(".")[3];
 		websock = new WebSocket('ws://' + window.location.hostname + ':81/');
 		websock.onmessage = function(evt) {
@@ -440,7 +440,7 @@ function start(){
 				Ws=evt.data.split(",")
 				go = 1
 			}
-		};
+*/		};
 	}
 	U.ontouchstart=function(ev){
 	//	ev.preventDefault();
