@@ -34,8 +34,7 @@ function init(){
 	var ATD=window.location.href.replace("?",";").split(";"); 
 	A=ATD[0]
 	updateD(1,ATD)
-	//readTextUrl(T+".txt")
-	readTextUrl("D_orion.txt")
+	readTextUrl(T+".txt")
 }
 function updateT(s){T=s?s.substring(0,1)=="D"?s:"D_"+s:"D"; document.title=T;/* window.history.pushState(null, "Title", ";"+T); */}
 function updateD(Tidx,arr){
@@ -57,7 +56,7 @@ function readTextUrl(file){
 		if(raw.readyState === 4 && (raw.status === 200 || raw.status == 0)){
 			alert("text:"+raw.responseText)
 			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
-			//else if(file.includes("_"))readTextUrl(file.replace("_","/"))
+			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
 			document.title=T
 		}
 		//else if(file.includes("_"))readTextUrl(file.replace("_","/"))
