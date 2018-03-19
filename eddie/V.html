@@ -58,6 +58,7 @@ function readTextUrl(file){
 	console.log("attempt to read "+file)
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
 	raw.onreadystatechange = function (){
+	console.log("readyState: "+raw.readyState+" status:"+raw.status)
 		if(raw.readyState === 4 && (raw.status === 200 || raw.status == 0)){
 			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
