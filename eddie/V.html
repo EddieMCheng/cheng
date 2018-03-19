@@ -17,7 +17,7 @@
 */
 var V,I,U,Im,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[]
 var A,T="D"
-var F="clock=.05sec*.5u±.5*0b+.05min*.4u±.4*0r+.05hrs*.3u±.3*0g+.085face*u*v±.5"
+var F="clock*.2w=.05sec*.5u±.5*0b+.05min*.4u±.4*0r+.05hrs*.3u±.3*0g+.085face*u*v±.5"
 var G=["sec.v=time/1000/60%60","min.v=time/1000/60/60%60","hrs.v=(time/1000/60/60-timeZone)/12%12"]
 var 让 =["C","CP","CD","C1","CE","T","F","M","Font","VS","Vv","SS","IS","G","dT"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,1]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
@@ -514,8 +514,7 @@ function start(){
 		if(lock){ev.preventDefault(); nav(navx,navy)}
 	}
 	
-	nav(0,0)
-	//navigator.geolocation.getCurrentPosition(showPosition)	
+	navigator.geolocation.getCurrentPosition(showPosition)	
 	V.width=SS;V.height=SS
 	I.width=SS;I.height=SS
 	U.width=SS;U.height=SS
@@ -577,7 +576,7 @@ function draw(a) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0);
 	gl.drawArrays(gl.POINT, 0, Bdv.length/4);
-//	gl.drawArrays(gl.LINE_STRIP, Bdv.length/8, Bdv.length/8);
+//	gl.drawArrays(gl.LINE_STRIP, 0, Bdv.length/4);
 }
 function vdScript(s,exc){
 	var ext=""
