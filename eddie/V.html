@@ -63,7 +63,7 @@ function readTextUrl(file){
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
 			document.title=T
 		}
-		//else if(file.includes("_"))readTextUrl(file.replace("_","/"))
+		else if(raw.status == 404 && file.includes("_"))readTextUrl(file.replace("_","/"))
 	}
 	raw.send(null);
 }
