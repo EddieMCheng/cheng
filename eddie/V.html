@@ -55,10 +55,10 @@ function readTextFile(){
 	reader.readAsText(file);
 }
 function readTextUrl(file){
-	console.log("attempt to read "+file)
+	log("attempt to read "+file,"",58)
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
 	raw.onreadystatechange = function (){
-	console.log("readyState: "+raw.readyState+" status:"+raw.status)
+	log("readyState: "+raw.readyState+" status:"+raw.status)
 		if(raw.readyState === 4 && (raw.status === 200 || raw.status == 0)){
 			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
@@ -422,6 +422,10 @@ function showPosition(position){
 	X=lat.replace("0.",".")+lon.replace("0.",".")
 	nav(0,0)
 }
+function log(message, url, lineNo){
+	debugLog.innerHTML+=(lineNo!=undefined?lineNo+":":"")+message + '\n';
+	return true;
+}
 function start(){
 	
 	V=document.getElementById("glcanvas")
@@ -447,6 +451,7 @@ function start(){
 			}
 		};
 	}*/
+	window.addEventListener('onerror',log)
 	U.ontouchstart=function(ev){
 	//	ev.preventDefault();
 		Mx0=ev.touches[0].clientX;My0=ev.touches[0].clientY
@@ -616,8 +621,8 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	<p id="setdiv"></p>
 	<p id="hrefdiv"></p>
 	<textarea id="outLog" cols=100 rows=10 disabled></textarea><br>
-	
 	<textarea id="keyLog"></textarea>
+	<textarea id="debugLog"></textarea>
 </div><br>
 File:<input type="file" id="fileInput" onchange="readTextFile()"></input>
 	<input type="button" value="save" onclick="download()"></input>
