@@ -43,7 +43,7 @@ function init(){
 }
 function updateT(s){T=s?s.substring(0,1)=="D"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T);}
 function updateD(Tidx,arr){
-	updateT(arr[Tidx])
+	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
 		维 =4;点 =0;go =1;D=[];E=[]; F2DEG();DE2B();M1=1;
@@ -60,7 +60,7 @@ function readTextUrl(file){
 	raw.onreadystatechange = function (){
 	log("readyState: "+raw.readyState+" status:"+raw.status)
 		if(raw.readyState === 4 && (raw.status === 200 || raw.status == 0)){
-			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
+			if(raw.responseText){updateD(-1,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
 			document.title=T
 		}
