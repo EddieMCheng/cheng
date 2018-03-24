@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var V,I,U,Im,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[]
+var V,I,U,Im,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
 var A,T="D"
 var F="clock*.2w=.05sec*.5u±.5*0b+.05min*.4u±.4*0r+.05hrs*.3u±.3*0g+.085face*u*v±.5"
 var G=["sec.v=time/1000/60%60","min.v=time/1000/60/60%60","hrs.v=(time/1000/60/60-timeZone)/12%12"]
@@ -41,7 +41,7 @@ function init(){
 	window.requestAnimationFrame(loop)
 	}
 }
-function updateT(s){T=s?s.substring(0,1)=="D"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T);}
+function updateT(s){T=s?s.substring(0,2)=="D_"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T);}
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
@@ -320,7 +320,7 @@ function DE2B(){
 		var par=i-D[i][2]
 		if(!dv[par] || i==N){dv[par]=[];dc[par]=[]}
 		var len=DE(i,"l")
-		var jlen=len<1&&len>0?Math.ceil(1/len):Math.ceil(len)
+		var jlen=len<1&&len>0?Math.ceil(1/len+2):Math.ceil(len)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
 		if(点 == i || 点 ==par || M1 || (dT>0 && 改 == 0)){
@@ -372,11 +372,14 @@ function DE2B(){
 		}
 		dv[par]=dv[par].concat(dv[i]); dc[par]=dc[par].concat(dc[i])
 		if(dv[i]){
+			dvi[i]=Bdv.length
 			var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[i].length):dv[i].length
 			Bdv = Bdv.concat(dv[i].slice(0,skip));Bdc = Bdc.concat(dc[i].slice(0,skip))
+			
 		}
 		n+=jlen+nn
 	}
+	dvi[i]=Bdv.length
 	if(D[点 ][2]==0){
 		dvx[点 ]=D[点 ][L["x"]]-.5; dvy[点 ]=D[点 ][L["y"]]-.5
 		updateUP(i-D[i][2],"bold "+Font,1)
@@ -581,8 +584,16 @@ function draw(a) {
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0);
-	gl.drawArrays(gl.POINT, 0, Bdv.length/4);
-//	gl.drawArrays(gl.LINE_STRIP, 0, Bdv.length/4);
+	
+	for(var i=N; i>0; i--){
+		var type=D[i][L["a"]]
+		log((dvi[i]/4)+"-"+((dvi[i-1]-dvi[i])/4-1))
+		if(type==0)gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
+		else gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
+	}
+//	log((dvi[1]/4)+"-"+(dvi[0]/4))
+//	gl.drawArrays(gl.POINT, 68, 72);
+//	log(dvi[dvi.length-1]+" "+Bdv.length/4);
 }
 function vdScript(s,exc){
 	var ext=""
