@@ -20,7 +20,7 @@ var A,T="D"
 var F="clock=.9sec*.4u±.4*0b*a+.05min*.4u±.4*0r+.05hrs*.3u±.3*0g+.085marks*u*v±.5"
 var G=["sec.v=time/1000/60%60","min.v=time/1000/60/60%60","hrs.v=(time/1000/60/60-timeZone)/12%12"]
 var 让 =["C","CP","CD","C1","CE","T","F","M","Font","LS","VS","Vv","SS","IS","G","dT"]
-var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,1]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
+var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif",LS=2, VS="3.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
 var Mx,My,Mx0,My0,Mx1,My1,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
@@ -319,7 +319,7 @@ function DE2B(){
 		if(!dv[par] || i==N){dv[par]=[];dc[par]=[]}
 		var len=DE(i,"l")
 		var isFrac=len<1&&len>0
-		var jlen=isFrac?Math.round(1/len+1)+1:Math.ceil(len)
+		var jlen=isFrac?Math.round(1/len+1)+1:Math.ceil(len+1)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
 		if(点 == i || 点 ==par || M1 || (dT>0 && 改 == 0)){
@@ -588,8 +588,9 @@ function draw(a) {
 	
 	for(var i=N; i>0; i--){
 		var type=D[i][L["a"]]
-		if(type==0)gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
-		else gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
+		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
+		if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
+		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
 	}
 //	log((dvi[1]/4)+"-"+(dvi[0]/4))
 //	gl.drawArrays(gl.POINT, 68, 72);
