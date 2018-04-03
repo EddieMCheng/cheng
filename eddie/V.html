@@ -30,7 +30,7 @@ var websock, Ws=[]
 updateL();F2DEG();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";"); 
-	A=ATD[0];updateD(1,ATD);readTextUrl("./"+T+".txt")
+	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
@@ -43,7 +43,7 @@ function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
-		维 =4;点 =0;go =1;D=[];E=[]; F2DEG();DE2B();M1=1;
+		维 =4;点 =0;go =1;D=[];E=[]; F2DEG();DE2B();M1=1
 	}
 }
 function readTextFile(){
@@ -57,7 +57,7 @@ function readTextUrl(file){
 	raw.onreadystatechange = function (){
 	log("readyState: "+raw.readyState+" status:"+raw.status)
 		if(raw.readyState==4&&(raw.status==200||raw.status==0)){
-			if(raw.responseText){updateD(-1,raw.responseText.split(";"))}
+			if(raw.responseText){log("raw response:"+raw.responseText);updateD(-1,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
 			document.title=T
 		}
@@ -117,9 +117,9 @@ function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function readImgFile(idx){images[idx]=new Image; images[idx].onload = function(){updateI(idx)};	images[idx].src = URL.createObjectURL(imgInput.files[0])}
 
 function download(filename, text) {
-	if(!filename){var arr = outLog.innerHTML.split(";");	filename= arr[0]+"_"+arr[1]+".txt"}
-	if(!text)text=outLog.innerHTML
-	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)); pom.setAttribute('download', filename);
+	if(!filename){var arr = outLog.value.split(";");	filename= arr[0].replace(".txt","")+"_"+arr[1]+".txt"}
+	if(!text)text=outLog.value
+	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
@@ -255,6 +255,7 @@ function DE2F(){
 function F2DEG(){
 	F=decodeURI(F)
 	var commas=F.split(",")
+	console.log("flen:"+F.length)
 	N=-1
 	for(var I=0; I<commas.length; I++){
 		var adds=commas[I].replace("=","+").split("+")
@@ -432,37 +433,17 @@ function start(){
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
 	window.addEventListener('devicemotion',function(ev){Im=ev})
-/*	if(window.location.hostname){
-		document.title = 'TIM'+window.location.hostname.split(".")[3];
-		websock = new WebSocket('ws://' + window.location.hostname + ':81/');
-		websock.onmessage = function(evt) {
-			if(evt.data.includes(",")){
-				Ws=evt.data.split(",")
-				go = 1
-			}
-		};
-	}
-	else{
-		websock = new WebSocket('ws://192.168.1.231:81/');
-		websock.onmessage = function(evt) {
-			if(evt.data.includes(",")){
-				Ws=evt.data.split(",")
-				go = 1
-			}
-		};
-	}*/
 	window.addEventListener('onerror',log)
 	U.ontouchstart=function(ev){
-	//	ev.preventDefault();
-		Mx0=ev.touches[0].clientX;My0=ev.touches[0].clientY
-		改 = ev.touches.length-1
+		Mx0=ev.touches[0].clientX/SS;My0=ev.touches[0].clientY/SS
+		Mx1=-1;My1=-1		
 	}
 	U.ontouchmove=function(ev){
-		//ev.preventDefault();	go =1
-		Mx=ev.touches[0].clientX;My=ev.touches[0].clientY
+		Mx=ev.touches[0].clientX/SS;My=ev.touches[0].clientY/SS
 	}
 	U.ontouchend=function(ev){
-		Mx1=ev.touches[0].clientX;My1=ev.touches[0].clientY
+		Mx0=-1;My0=-1
+		Mx1=ev.touches[0].clientX/SS;My1=ev.touches[0].clientY/SS
 	}
 	document.onkeydown=function(ev){
 		 var code=ev.keyCode+32, num=ev.keyCode-48, keyC = String.fromCharCode(code)
@@ -533,7 +514,7 @@ function start(){
 function loop(){
 	loopTime = time
 	time= new Date().getTime()
-	if(time-qTime>dT*1000){qTime=time;go=1}
+	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	
 	if(go){
 		DE2B(D,E)
@@ -554,8 +535,9 @@ function loop(){
 		else{
 			DE2F()
 			var F2=F.length>60?F.substring(0,57)+"...":F
-				hrefdiv.innerHTML ="<a href='"+A+";"+T+";"+F+"'>"+T+";"+F2+"</a>"
-			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+(M!=""?";M:"+M:"")+";G:"+G+";F:"+F+";"+A;
+			hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&F:"+F+"'>"+T+"&F:"+F2+"</a>"
+			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+(M!=""?";M:"+M:"")+";G:"+G+";F:"+F+";"+A;
+			savebtn.value=((outLog.value.length)/1000)+" kb"
 			go=0
 			M1=0
 		}
@@ -589,16 +571,13 @@ function draw(a) {
 		if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
 		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
 	}
-//	log((dvi[1]/4)+"-"+(dvi[0]/4))
-//	gl.drawArrays(gl.POINT, 68, 72);
-//	log(dvi[dvi.length-1]+" "+Bdv.length/4);
 }
 function vdScript(s,exc){
 	var ext=""
 	if(s&&s.includes("?")&&!s.includes("!"))ext=":"+(exc?exc:"0")
-	return s?eval(s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DE])\(/g,"get$1('").replace(/\.([a-z])\)/g,".$1')")+ext):0
+	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DE])\(/g,"get$1('").replace(/\.([a-z])\)/g,".$1')").replace(/∞/g,"%")+ext:0
+	return eval(s2)
 }
-//function vdScript(s,exc){return s?eval(s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DE])\(/g,"get$1('").replace(/\.([a-z])\)/g,".$1')")):"0"}
 function getD(s){var pair=s.split(".");return D[L[pair[0]]][L[pair[pair.length-1]]]}
 function getE(s){var pair=s.split(".");return E[L[pair[0]]][L[pair[pair.length-1]]]}
 function setDE(){setVar(prompt("Rename variable",getVar(":")))}
@@ -634,8 +613,8 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	<textarea id="debugLog"></textarea>
 </div><br>
 File:<input type="file" id="fileInput" onchange="readTextFile()"></input>
-	<input type="button" value="save" onclick="download()"></input>
+	<input id="savebtn" type="button" value="save" onclick="download()"></input>
 <div id="imagediv">
 Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></inpu>
-</div>
+</div> v.02
 </body></html>
