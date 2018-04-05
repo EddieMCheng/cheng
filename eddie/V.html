@@ -41,7 +41,7 @@ var Mx,My,Mt=0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
-var websock=[],W="",dat=[]
+var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DEG();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
@@ -184,8 +184,8 @@ function setVar(s, direct){
 			W=sPair[1]
 			var dataArray=W.split(",")
 			for(var i=0;i<dataArray.length;i++){
-				if(i==0&&dataArray[0]=="this"){window.addEventListener('devicemotion',function(ev){
-					dat[0]=["device",time,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
+				if(dataArray[i]=="this"){thisIdx=i;window.addEventListener('devicemotion',function(ev){
+					dat[thisIdx]=["device",time,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
 				})}
 				else{
 					dat[i] = []
