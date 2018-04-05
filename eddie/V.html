@@ -19,8 +19,8 @@ var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=
 var A,T="D_game_pong"//±
 var F="game=score*a*y+.9leftPad*0x*.5y±.1*a+.9rightPad*x*.7y±.1*a+ball*0r*t+direction*a*x*y+.25field*a*0g*0b*1.5u*.125v±.5+state*a*0t"
 var G=[
-"leftPad.y=(-acc[0]/10)+0.5",
-//"rightPad.y=(-dat[0][2]/10)+0.5",
+"leftPad.y=(-W(0.2)/10)+0.5",
+"rightPad.y=(-W(1.2)/10)+0.5",
 "leftPad.t=D(ball.x)>1&&D(state.t)><0?D(leftPad.t)+1",
 "rightPad.t=D(ball.x)<0&&D(state.t)><0?D(rightPad.t)+1",
 "state.t=D(ball.x)>1||D(ball.x)<0?1!Mt><1?2!0",
@@ -45,7 +45,7 @@ var websock=[],dat=[],acc=[],rot=[]
 updateL();F2DEG();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
+	A=ATD[0];updateD(1,ATD);//readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
@@ -53,7 +53,7 @@ function init(){
 		nav(0,0)
 	}
 }
-function updateT(s){T=s?s.substring(0,2)=="D_"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T);}
+function updateT(s){T=s?s.substring(0,2)=="D_"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T)}
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
@@ -178,13 +178,10 @@ function setVar(s, direct){
 		else if(sArr[0]=="ws"){
 			var i = websock.length
 			dat[i] = []
-			log(i+" "+sVal)
 			websock[i] = new WebSocket('ws://'+sVal+':81/');//192.168.1.231
 			websock[i].onmessage = function(evt) {
 				if(evt.data.includes(",")){
-
 					dat[i]=evt.data.split(",")
-					console.log(i+" "+dat[i])
 					go = 1
 				}
 			}
@@ -468,7 +465,8 @@ function start(){
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
 	if(dA)window.addEventListener('devicemotion',function(ev){
-		acc[0]=ev.accelerationIncludingGravity.x;acc[1]=ev.accelerationIncludingGravity.y;acc[2]=ev.accelerationIncludingGravity.z;
+		dat[0]=[0,0,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
+
 	//	rot[0]=ev.deviceRotationRate.beta;rot[1]=ev.deviceRotationRate.gamma;rot[2]=ev.deviceRotationRate.alpha;
 	})
 	window.addEventListener('onerror',log)
@@ -614,13 +612,19 @@ function draw(a) {
 function vdScript(s,exc){
 	var ext=""
 	if(s&&(s.split("?").length-1)==(s.split("!").length))ext=":"+(exc?exc:"0")
-	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
+	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
 	return eval(s2)
 }
 function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
 function getS(s){return L[s]?L[s]+"":""}
+function getW(s){
+	var sArr=s.split(".")
+	var i=parseInt(sArr[0])
+	var j=parseInt(sArr[1])
+	return !dat[i]?0:dat[i][j]?dat[i][j]:0
+}
 function setDE(){setVar(prompt("Rename variable",getVar(":")))}
 function getVar(sep){return D[点 ][0]+"."+C[维 ]+sep+D[点 ][维 ]+"±"+E[点 ][维 ]}
 function setP(){setVar(prompt("Rename variable",D[点 ][0]+"."+C[0]+":"+D[点 ][0]))}
