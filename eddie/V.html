@@ -34,17 +34,18 @@ var G=[
 "ball.x=D(ball.x)+N(ball.xVel)*D(direction.x)",
 "ball.y=D(ball.y)+N(ball.yVel)*D(direction.y)",
 ]
-var 让 =["C","CP","CD","C1","CE","T","F","M","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
+var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif",LS=3, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
 var Mx,My,Mt=0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
-var websock=[],dat=[],acc=[],rot=[]
+var websock=[],W="",dat=[]
 updateL();F2DEG();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
+	log(ATD)
 	A=ATD[0];updateD(1,ATD);//readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
@@ -54,9 +55,8 @@ function init(){
 	}
 }
 function updateT(s){
-var wsString=";"
-for (var i=0;i<websock.length;i++)wsString=websock[i]?wsString+"ws:"+(websock[i].url+"").replace(/\//g,"").split(":")[1]+";":"";
-T=s?s.substring(0,2)=="D_"||s=="D"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
+	var wsString=W?";W:"+W+";":""
+	T=s?s.substring(0,2)=="D_"||s=="D"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
 }
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
@@ -179,18 +179,25 @@ function setVar(s, direct){
 			gl.viewport(0,0,SS,SS)
 		}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(sArr[0]=="ws"){
-			var i = websock.length
-			dat[i] = []
-			websock[i] = new WebSocket('ws://'+sVal+':81/');//192.168.1.231
-			websock[i].onmessage = function(evt) {
-				if(evt.data.includes(",")){
-					dat[i]=evt.data.split(",")
-					go = 1
+		else if(sArr[0]=="W"){
+			W=sPair[1]
+			var dataArray=W.split(",")
+			for(var i=0;i<dataArray.length;i++){
+				if(i==0&&dataArray[0]=="this"){window.addEventListener('devicemotion',function(ev){
+					dat[0]=["device",time,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
+				})}
+				else{
+					dat[i] = []
+					websock[i] = new WebSocket('ws://'+dataArray[i]+':81');
+					websock[i].idx=i;
+					websock[i].onmessage = function(evt) {
+						if(evt.data.includes(",")){
+							dat[this.idx]=evt.data.split(",")
+						}
+					}
 				}
 			}
-			websock[i].onopen=function(evt){updateT()}
-			
+			updateT()
 		}
 		else if(sArr.length == 1){
 			var lock=true
@@ -470,11 +477,6 @@ function start(){
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
-	if(dA)window.addEventListener('devicemotion',function(ev){
-		dat[0]=[0,0,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
-
-	//	rot[0]=ev.deviceRotationRate.beta;rot[1]=ev.deviceRotationRate.gamma;rot[2]=ev.deviceRotationRate.alpha;
-	})
 	window.addEventListener('onerror',log)
 	U.ontouchstart=function(ev){
 		ev.preventDefault()
