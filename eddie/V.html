@@ -20,7 +20,7 @@ var A,T="D_game_pong"//±
 var F="game=score*a*y+.9leftPad*0x*.5y±.1*a+.9rightPad*x*.7y±.1*a+ball*0r*t+direction*a*x*y+.25field*a*0g*0b*1.5u*.125v±.5+state*a*0t"
 var G=[
 "leftPad.y=(-acc[0]/10)+0.5",
-"rightPad.y=(-acc[0]/10)+0.5",
+//"rightPad.y=(-dat[0][2]/10)+0.5",
 "leftPad.t=D(ball.x)>1&&D(state.t)><0?D(leftPad.t)+1",
 "rightPad.t=D(ball.x)<0&&D(state.t)><0?D(rightPad.t)+1",
 "state.t=D(ball.x)>1||D(ball.x)<0?1!Mt><1?2!0",
@@ -45,8 +45,6 @@ var websock=[],dat=[],acc=[],rot=[]
 updateL();F2DEG();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	//ATD.push("ws:"+window.location.hostname)
-	//ATD.push("ws:192.168.1.231")
 	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
@@ -179,11 +177,16 @@ function setVar(s, direct){
 		else if(sArr[0]=="T")updateT(sVal)
 		else if(sArr[0]=="ws"){
 			var i = websock.length
+			dat[i] = []
+			log(i+" "+sVal)
 			websock[i] = new WebSocket('ws://'+sVal+':81/');//192.168.1.231
-			websock[i].onmessage = function(evt,i) {
-			if(evt.data.includes(",")){
-				data[i]=evt.data.split(",")
-				go = 1
+			websock[i].onmessage = function(evt) {
+				if(evt.data.includes(",")){
+
+					dat[i]=evt.data.split(",")
+					console.log(i+" "+dat[i])
+					go = 1
+				}
 			}
 		}
 		else if(sArr.length == 1){
@@ -284,7 +287,6 @@ function DE2F(){
 function F2DEG(){
 	F=decodeURI(F)
 	var commas=F.split(",")
-	console.log("flen:"+F.length)
 	N=-1
 	for(var I=0; I<commas.length; I++){
 		var adds=commas[I].replace("=","+").split("+")
