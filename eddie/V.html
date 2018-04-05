@@ -46,7 +46,7 @@ updateL();F2DEG();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
 	log(ATD)
-	A=ATD[0];updateD(1,ATD);//readTextUrl(T.includes(".txt")?T:T+".txt")
+	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
@@ -55,8 +55,9 @@ function init(){
 	}
 }
 function updateT(s){
+
 	var wsString=W?";W:"+W+";":""
-	T=s?s.substring(0,2)=="D_"||s=="D"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
+	T=!s?"D":s.substring(0,2)=="D_"||s=="D"?s:"D_"+s;console.log(T); document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
 }
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
@@ -197,7 +198,7 @@ function setVar(s, direct){
 					}
 				}
 			}
-			updateT()
+			updateT(T)
 		}
 		else if(sArr.length == 1){
 			var lock=true
