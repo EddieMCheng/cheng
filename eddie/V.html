@@ -16,37 +16,22 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
-var A,T="D_game_pong"//±
-var F="game=score*a*y+.9leftPad*0x*.5y±.1*a+.9rightPad*x*.7y±.1*a+ball*0r*t+direction*a*x*y+.25field*a*0g*0b*1.5u*.125v±.5+state*a*0t"
-var G=[
-"leftPad.y=(-W(0.2)/10)+0.5",
-"rightPad.y=(-W(1.2)/10)+0.5",
-"leftPad.t=D(ball.x)>1&&D(state.t)><0?D(leftPad.t)+1",
-"rightPad.t=D(ball.x)<0&&D(state.t)><0?D(rightPad.t)+1",
-"state.t=D(ball.x)>1||D(ball.x)<0?1!Mt><1?2!0",
-"ball.x=Mt><1?.5","ball.y=Mt><1&&D(state.t)><1?Math.random()",
-"score.name=D(leftPad.t)+' - '+D(rightPad.t)",
-"score.align='center'","score.font='20px Helvetica'",
-"ball.xVel=D(state.t)><0?.02!0","ball.yVel=D(state.t)><0?.01!0",
-"direction.x=D(ball.x)>.98&&D(direction.x)>0&&Math.abs(D(ball.y)-D(rightPad.y))<.08?-Math.random()*.4-.8!D(ball.x)<0.02&&D(direction.x)<0&&Math.abs(D(ball.y)-D(leftPad.y))<.08?Math.random()*.4+.8",
-"direction.y=D(ball.y)>1&&D(direction.y)>0?-1!D(ball.y)<0&&D(direction.y)<0?1",
-
-"ball.x=D(ball.x)+N(ball.xVel)*D(direction.x)",
-"ball.y=D(ball.y)+N(ball.yVel)*D(direction.y)",
-]
+var A,T="D_Molecules"//±
+//var F="Carbondioxide*.6x*y*.6z*.5v=CO2_0*.116u*.5v*0w+CO2*.116u*0v*0w+CO2*0v*0w,water*.4x*.6z*.85v=H2O_0*.097u*.29v*0w+H2O_1*.097u*0v*0w+H2O*0v*0w,nitrogen*.2x*.8y*.6z*.5v=N2_0*.054u*.5v*0w+N2*.054u*0v*0w,oxygen*.2x*y*.6z*.5v=O2_0*.057u*.5v*0w+O2*.057u*0v*0w,hydrogen*0x*y*.6z*.5v=H_0*.032u*.5v*0w+H_1*.032u*0v*0w"
+var F="system=particle*.4x,system2=particle2,system3=particle3*.6x,system4=particle4*.6x,system5=particle5*.6x"
+var G=[]
 var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif",LS=3, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
 var Mx,My,Mt=0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0, dT=0,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var websock=[],W="",dat=[]
-updateL();F2DEG();DE2B()
+updateL();F2DEH();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	log(ATD)
-	A=ATD[0];updateD(1,ATD);//readTextUrl(T.includes(".txt")?T:T+".txt")
+	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
@@ -62,7 +47,7 @@ function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
-		维 =4;点 =0;go =1;D=[];E=[]; F2DEG();DE2B();M1=1
+		维 =4;点 =0;go =1;D=[];E=[]; F2DEH();DE2B();M1=1
 	}
 }
 function readTextFile(){
@@ -223,7 +208,7 @@ function updateP(idx, val){
 		N+=cpD.length
 	}
 	else {D[idx][0]=val}
-	DE2F();F2DEG();go =1
+	DE2F();F2DEH();go =1
 }
 function updateL(){
 	L=[]
@@ -294,7 +279,7 @@ function DE2F(){
 		else if(i<N && D[i+1][2]!=0) F+="+"
 	}
 }
-function F2DEG(){
+function F2DEH(){
 	F=decodeURI(F)
 	var commas=F.split(",")
 	N=-1
@@ -355,14 +340,13 @@ function DE2B(){
 			setVar(GiPair[0]+":"+dValue+eValue,true);
 		}
 	}
-
 	for(var i=N; i>0; i--){
 		if(D[i][2]==0)i--
 		var par=i-D[i][2]
 		if(!dv[par] || i==N){dv[par]=[];dc[par]=[]}
 		var len=DE(i,"l")
 		var isFrac=len<1&&len>0
-		var jlen=isFrac?Math.round(1/len+1)+1:Math.ceil(len+1)
+		var jlen=isFrac?Math.round(1/len+1)+1:Math.ceil(len)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
 		if(点 == i || 点 ==par || M1 || (dT>0 && 改 == 0)){
@@ -397,7 +381,6 @@ function DE2B(){
 				var r1=r*zScale*PDE(i,"r",s), g1=g*zScale*PDE(i,"g",s), b1=b*zScale*PDE(i,"b",s)
 				
 				var idx=H[i][0]?L[H[i][0]]:L[H[par][0]]
-				
 				if(dv[idx] && idx!=i){
 					for(var ii=0;ii<dv[idx].length;ii+=4){
 						dv[i].push(dv[idx][ii]+x5-dvx[idx],dv[idx][ii+1]+y4-dvy[idx],1,1)
@@ -417,7 +400,6 @@ function DE2B(){
 			dvi[i]=Bdv.length
 			var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[i].length):dv[i].length
 			Bdv = Bdv.concat(dv[i].slice(0,skip));Bdc = Bdc.concat(dc[i].slice(0,skip))
-			
 		}
 		n+=jlen+nn
 	}
@@ -609,12 +591,14 @@ function draw(a) {
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0);
-	
 	for(var i=N; i>0; i--){
+		var skip=1
+		if(D[i][2]==0)i--
+		if(D[i][2]==1 && i>1)skip=2
 		var type=D[i][L["a"]]
-		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
-		if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
-		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-1]-dvi[i])/4-1));
+		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
+		else if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
+		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
 	}
 }
 function vdScript(s,exc){
