@@ -27,10 +27,18 @@ var Mx,My,Mt=0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
+<<<<<<< HEAD
 var websock=[],W="",dat=[]
 updateL();F2DEH();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
+=======
+var websock=[],W="",dat=[],thisIdx=0;
+updateL();F2DEG();DE2B()
+function init(){
+	var ATD=window.location.href.replace("?",";").split(";");
+	log(ATD)
+>>>>>>> 3c860ae577a5cd35bb0cd724e144819b4a0f479e
 	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
@@ -40,8 +48,9 @@ function init(){
 	}
 }
 function updateT(s){
+
 	var wsString=W?";W:"+W+";":""
-	T=s?s.substring(0,2)=="D_"||s=="D"?s:"D_"+s:"D"; document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
+	T=!s?"D":s.substring(0,2)=="D_"||s=="D"?s:"D_"+s;console.log(T); document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
 }
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
@@ -168,8 +177,8 @@ function setVar(s, direct){
 			W=sPair[1]
 			var dataArray=W.split(",")
 			for(var i=0;i<dataArray.length;i++){
-				if(i==0&&dataArray[0]=="this"){window.addEventListener('devicemotion',function(ev){
-					dat[0]=["device",time,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
+				if(dataArray[i]=="this"){thisIdx=i;window.addEventListener('devicemotion',function(ev){
+					dat[thisIdx]=["device",time,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
 				})}
 				else{
 					dat[i] = []
@@ -182,7 +191,7 @@ function setVar(s, direct){
 					}
 				}
 			}
-			updateT()
+			updateT(T)
 		}
 		else if(sArr.length == 1){
 			var lock=true
