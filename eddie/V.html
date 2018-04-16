@@ -17,28 +17,20 @@
 */
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
 var A,T="D_Molecules"//±
-//var F="Carbondioxide*.6x*y*.6z*.5v=CO2_0*.116u*.5v*0w+CO2*.116u*0v*0w+CO2*0v*0w,water*.4x*.6z*.85v=H2O_0*.097u*.29v*0w+H2O_1*.097u*0v*0w+H2O*0v*0w,nitrogen*.2x*.8y*.6z*.5v=N2_0*.054u*.5v*0w+N2*.054u*0v*0w,oxygen*.2x*y*.6z*.5v=O2_0*.057u*.5v*0w+O2*.057u*0v*0w,hydrogen*0x*y*.6z*.5v=H_0*.032u*.5v*0w+H_1*.032u*0v*0w"
-var F="system=particle*.4x,system2=particle2,system3=particle3*.6x,system4=particle4*.6x,system5=particle5*.6x"
+var F="NH3*.6x*y*a*.1w=.9H_9.N_2*.102u*.33v*.67w+.9H_8.N_2*.102u*.33v*.33w+.9H_7.N_2*.33v*.102u+N_2*.19r*.31g*.97b,CH4*.5x*y*a=.9H_7.C_1*.109u*.3v*.66w+.9H_6.C_1*.109u*.3v*.33w+.9H_5.C_1*.109u*.3v+.9H_4.C_1*.109u+C_1*.56r*.56g*.56b,C02*.4x*y*.6z*.5v*a=.9*O_4.C_0*0g*0b*.116u*.5v+.9*O_3.C_0*0g*0b*.116u+C_0*.56r*.56g*.56b,H2O*.3x*y*.6z*.85v*a=.9*H_3.O_2*.097u*.29v+.9*H_2.O_2*.097u+O_2*0g*0b,N2*.2x*y*.6z*.5v*a=.9*N_1.N_0*.19r*.31g*.97b*.054u*.5v+N_0*.19r*.31g*.97b*.054u,O2*.1x*y*.6z*.5v*a=.9*O_1.O_0*0g*0b*.057u*.5v+O_0*0g*0b*.057u,H2*0x*y*.6z*.5v*a=.9*H_1.H_0*.032u*.5v+H_0*.032u"
 var G=[]
 var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif",LS=3, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
+var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif",LS=1.5, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
 var Mx,My,Mt=0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
 var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
-<<<<<<< HEAD
-var websock=[],W="",dat=[]
+
+var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DEH();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-=======
-var websock=[],W="",dat=[],thisIdx=0;
-updateL();F2DEG();DE2B()
-function init(){
-	var ATD=window.location.href.replace("?",";").split(";");
-	log(ATD)
->>>>>>> 3c860ae577a5cd35bb0cd724e144819b4a0f479e
 	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
 	if(gl){
 		gl.clearColor(0,0,0,1)
@@ -130,7 +122,7 @@ function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function readImgFile(idx){images[idx]=new Image; images[idx].onload = function(){updateI(idx)};	images[idx].src = URL.createObjectURL(imgInput.files[0])}
 
 function download(filename, text) {
-	if(!filename){var arr = outLog.value.split(";");	filename= arr[0].replace(".txt","")+"_"+arr[1]+".txt"}
+	if(!filename){var arr = outLog.value.split(";");filename= arr[0].replace(".txt","")+"_"+arr[1]+".txt"}
 	if(!text)text=outLog.value
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
@@ -273,15 +265,15 @@ function DE2F(){
 	for(var i=0; i<N+1; i++){
 		if(D[i][2]==0)C0=CP
 		else C0 = CD
-		if(D[i][2]==0 && i>0)F+=","
-		if(D[i][1]>0 && D[i][1]!=CD[1])F+=(D[i][1]+"").replace("0.",".")+"*"
+		if(D[i][2]==0&&i>0)F+=","
+		if(D[i][1]>0&&D[i][1]!=CD[1]&&D[i][2]!=0)F+=(D[i][1]+"").replace("0.",".")+"*"
 		F+=D[i][0]
-		for(var j=3; j<C.length;j++){
-			var CEj = D[i][2]==0?1:CE[j]
+		for(var j=3;j<C.length;j++){
+			var CEj=D[i][2]==0?1:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
 				if(j>0)F+="*"
 				if(D[i][j]!=1)	F+=(D[i][j]+"").replace("0.",".")
-				if(j>2){		F+=C[j];	if(E[i][j]!=CEj)F+="±"+(E[i][j]+"").replace("0.",".")}
+				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(E[i][j]+"").replace("0.",".")}
 			}
 		}
 		if(D[i][2]==0)F+="="
@@ -322,7 +314,7 @@ function F2DEH(){
 						D[N][0] += propName
 					}
 					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
-					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):CE[propIndex]
+					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):D[N][2]==0?1:CE[propIndex]
 				}
 				if(multis[j].includes("("))H[N][j]=multis[j].substring(multis[j].indexOf("(")+1,multis[j].indexOf(")"))
 				else H[N][j]=""
@@ -355,14 +347,14 @@ function DE2B(){
 		if(!dv[par] || i==N){dv[par]=[];dc[par]=[]}
 		var len=DE(i,"l")
 		var isFrac=len<1&&len>0
-		var jlen=isFrac?Math.round(1/len+1)+1:Math.ceil(len)
+		var jlen=isFrac?Math.round(1/len+1):Math.ceil(len)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
 		if(点 == i || 点 ==par || M1 || (dT>0 && 改 == 0)){
 			var PArray=D[i][0].split(".")
 			dv[i]=[];dc[i]=[];dvx[i]=0;dvy[i]=0
 			for(var j=0; j<jlen; j++){
-				var s=isFrac?j/(jlen-2):-1
+				var s=isFrac?j/(jlen-1):-1
 				var d=DE(i,"d",s)
 				if(PArray.length>1){
 					var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
@@ -604,7 +596,7 @@ function draw(a) {
 		var skip=1
 		if(D[i][2]==0)i--
 		if(D[i][2]==1 && i>1)skip=2
-		var type=D[i][L["a"]]
+		var type=D[i][L["a"]]+D[i-D[i][2]][L["a"]]
 		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
 		else if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
 		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
