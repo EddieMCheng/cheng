@@ -16,15 +16,15 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
-var A,T="D_Molecules"//±
-var F="NH3*.6x*y*a*.1w=.9H_9.N_2*.102u*.33v*.67w+.9H_8.N_2*.102u*.33v*.33w+.9H_7.N_2*.33v*.102u+N_2*.19r*.31g*.97b,CH4*.5x*y*a=.9H_7.C_1*.109u*.3v*.66w+.9H_6.C_1*.109u*.3v*.33w+.9H_5.C_1*.109u*.3v+.9H_4.C_1*.109u+C_1*.56r*.56g*.56b,C02*.4x*y*.6z*.5v*a=.9*O_4.C_0*0g*0b*.116u*.5v+.9*O_3.C_0*0g*0b*.116u+C_0*.56r*.56g*.56b,H2O*.3x*y*.6z*.85v*a=.9*H_3.O_2*.097u*.29v+.9*H_2.O_2*.097u+O_2*0g*0b,N2*.2x*y*.6z*.5v*a=.9*N_1.N_0*.19r*.31g*.97b*.054u*.5v+N_0*.19r*.31g*.97b*.054u,O2*.1x*y*.6z*.5v*a=.9*O_1.O_0*0g*0b*.057u*.5v+O_0*0g*0b*.057u,H2*0x*y*.6z*.5v*a=.9*H_1.H_0*.032u*.5v+H_0*.032u"
-var G=[]
+var A,T="D_Molecules"//±∞
+var F="system*.25w=.01point*.2u*.25v±.25*4w±2"
+var G=["system.w=time/1000/60∞1"]
 var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif",LS=1.5, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
 var Mx,My,Mt=0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
-var 算 ,步 ,维 =4,点 =0,号 =1,准 =0.1,dVal=0,eVal=0,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=0,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
+var 算 ,步 ,维 =4,点 =0,号 =1,准 =1 ,dVal=0,eVal=0,抖 =1
+var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 
 var websock=[],W="",dat=[],thisIdx=0;
@@ -48,6 +48,7 @@ function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
+        if(typeof(G)=='string')G=G.split(",")
 		维 =4;点 =0;go =1;D=[];E=[]; F2DEH();DE2B();M1=1
 	}
 }
@@ -113,7 +114,8 @@ function updateUP(idx,font,alpha){
 		U2d.font=改 ==0&&goFont?goFont:font
 		U2d.textBaseline = "top"
 		var edit=改 >0 && idx ==点 ?"."+C[维 ]+"↕"+步 +"="+(改 ==1?"[ "+dVal+" ]":dVal)+"±"+(改 ==2?"[ "+eVal+" ]":eVal):""
-		var names=改 >0? D[idx][0].split("."):" "
+		var type=D[idx][L["a"]]+D[idx-D[idx][2]][L["a"]]%1
+        var names=改 >0 || type==0.01? D[idx][0].split("."):" "
 		var dots=改 >0 && names.length>1?"...":"";
 		U2d.fillText(改 ==0&&goName!="undefined"?goName:(names[0]+dots+edit),(SS/2)+dvx[idx]*(SS/2),(SS/2)-dvy[idx]*(SS/2))
 	}
@@ -129,11 +131,12 @@ function download(filename, text) {
 	else pom.click();
 }
 function setVar(s, direct){
+    
 	if(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
 		var sArr=sPair[0].split(".")
-		if(sArr.length>1 && L[sArr[0]]){
+		if(sArr.length>1 && L[sArr[0]]!=undefined){
 			var sName=sArr[0]
 			var sType=sArr[sArr.length-1]
 			if(sType == C[0])updateP(L[sName],sVal.replace(/ /g,"_"))
@@ -587,19 +590,19 @@ function draw(a) {
 	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt)
 
 
-	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW);
-	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW);
+	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW)
+	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW)
 
-	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0);
-	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0);
+	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0)
+	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var i=N; i>0; i--){
 		var skip=1
 		if(D[i][2]==0)i--
 		if(D[i][2]==1 && i>1)skip=2
 		var type=D[i][L["a"]]+D[i-D[i][2]][L["a"]]
-		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
-		else if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
-		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4));
+		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
+		else if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
+		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
 	}
 }
 function vdScript(s,exc){
