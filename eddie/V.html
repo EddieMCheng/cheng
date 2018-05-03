@@ -16,17 +16,15 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
-var A,out,T="D_Molecules"//±∞
+var A,out,T="new"//±∞
 var F="system*.25w=.01point*.2u*.25v±.25*4w±2"
 var G=["system.w=time/1000/60∞1"]
 var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],H=[],L=[],P=[],M1=1,N=0,Font="10px Sans-Serif",LS=1.5, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
-var Mx,My,Mt=0,摸 =0,做 =0,动 =0,画 =0,秒 =0,keyi=0
-var 算 ,步 ,号 =1,准 =1 ,dVal=0,eVal=0,抖 =1
+var B=[],D=[],E=[],H=[],L=[],P=[],M1=1,N=0,Font="10px Sans-Serif",LS=1.5, VS="4.0", Vv=0, SS=512,IS=1,Vvm=0
+var Mx,My,Mt=0,算 ,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
-
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
@@ -39,9 +37,8 @@ function init(){
 	}
 }
 function updateT(s){
-
 	var wsString=W?";W:"+W+";":""
-	T=!s?"D":s.substring(0,2)=="D_"||s=="D"?s:"D_"+s;console.log(T); document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
+	if(s)T=s; document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
 }
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
@@ -52,9 +49,19 @@ function updateD(Tidx,arr){
 	}
 }
 function readTextFile(){
-	var file=fileInput.files[0], reader = new FileReader()
+	var file=loadD.files[0], reader = new FileReader()
 	reader.onload=function(e){updateD(0,reader.result.split(";"))}
 	reader.readAsText(file);
+}
+function readF(){
+	var rdr=new FileReader()
+	rdr.onload=function(){F=F+","+rdr.result;inF()}
+	rdr.readAsText(loadF.files[0])
+}
+function readG(){
+	var rdr=new FileReader()
+	rdr.onload=function(){G.push(rdr.result);inG()}
+	rdr.readAsText(loadG.files[0])
 }
 function readTextUrl(file){
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
@@ -113,14 +120,13 @@ function updateUP(idx,font,alpha){
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function readImgFile(idx){images[idx]=new Image; images[idx].onload = function(){updateI(idx)};	images[idx].src = URL.createObjectURL(imgInput.files[0])}
 
-function download(filename, text) {
-	if(!filename){var arr = out.split(";");filename= arr[0].replace(".txt","")+"_"+arr[1]+".txt"}
-	if(!text)text=out
+function download(type, text) {
+	filename= type+"_"+T+"_"+HE()+X+".txt"
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
-function setVar(s, direct){
+function setVar(s){
 	if(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
@@ -303,7 +309,7 @@ function DE2B(){
 			if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
 			else dValue=vdScript(valuePair[0],L[GiPair[0]])
 			var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
-			setVar(GiPair[0]+":"+dValue+eValue,true);
+			setVar(GiPair[0]+":"+dValue+eValue);
 		}
 	}
 	for(var i=N; i>0; i--){
@@ -401,7 +407,6 @@ function start(){
 			case "Up":I2d.globalAlpha+=0.1;updateI();break
 			case "Down":I2d.globalAlpha-=0.1;updateI();break
 			case "Backquote":setVar(prompt("Set variable",getVar("T")));break
-			case "KeyV":抖 = !抖 ;break
 			default:lock=false
 		}
 		if(lock)ev.preventDefault()
@@ -421,8 +426,10 @@ function loop(){
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	if(go){
 		DE2B(D,E);DE2F()
-		out=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
-		savebtn.value=((out.length)/1000)+" kb"
+		out="D_"+T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		saveD.value="D_"+T+" ("+kb(out)+")"
+		saveF.value="F_"+T+" ("+kb(F)+")"
+		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
 		go=0;M1=0;draw()
 	}
 	 ping= new Date().getTime()-time
@@ -468,6 +475,8 @@ function inF(){fLog.value=F}
 function outF(){F=fLog.value;F2DE()}
 function inG(){gLog.value=G}
 function outG(){G=gLog.value.split(",");}
+function outVar(){valtxt.value=this[vartxt.value]}
+function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
@@ -481,6 +490,7 @@ function getW(s){
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
+function kb(s){return s.length/1000+" kb"}
 function DE(i,str,s){return D[i][L[str]]+(Err(i,L[str],s)*E[i-D[i][2]][L[str]]);}
 function PDE(i,str,s){return D[i-D[i][2]][L[str]];}
 function Err(i,j,s){ if(E[i][j]==0)return 0;else if(s>=0)return E[i][j]*(2*s-1); else return E[i][j]*(Math.random()-Math.random())}
@@ -501,15 +511,18 @@ function decimal3(v){return Math.round(v*1000)/1000}
 <canvas id="imgcanvas" class="wrap"></canvas>
 <canvas id="uicanvas" class="wrap"></canvas>
 <canvas id="glcanvas" class="wrap"></canvas>
-<div id="rightdiv" class="wrap">
-	<p id="setdiv"></p>
-	<p id="hrefdiv"></p>
-	<p><input id="vartxt" type="text"><input id="valtxt" type="text"></p>
-	F:<textarea id="fLog" onchange="outF()" onfocus="inF()"></textarea>
-	G:<textarea id="gLog" onchange="outG()" onfocus="inG()"></textarea>
-</div><br>
-File:<input type="file" id="fileInput" onchange="readTextFile()"></input>
-	<input id="savebtn" type="button" value="save" onclick="download()"></input>
+<input id="loadD" type="file" onchange="readTextFile()"></input>
+<input id="saveD" type="button" value="save" onclick="download('D',out)"></input>
+	
+	<p><input id="vartxt" onchange="outVar()" type="text"><input id="valtxt" onchange="outVal()" type="text"></p>
+	<textarea id="fLog" onchange="outF()" onfocus="inF()"></textarea>
+	<input id="loadF" type="file" onchange="readF()"></input>
+	<input id="saveF" type="button" value="F" onclick="download('F',F)"></input>
+	<textarea id="gLog" onchange="outG()" onfocus="inG()"></textarea>
+	<input id="loadG" type="file" onchange="readG()"></input>
+	<input id="saveG" type="button" value="G" onclick="download('G',G)"></input>
+<br>
+
 <div id="imagediv">
 Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></inpu>
 </div>
