@@ -16,19 +16,19 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
-var A,T="D_Molecules"//±∞
+var A,out,T="D_Molecules"//±∞
 var F="system*.25w=.01point*.2u*.25v±.25*4w±2"
 var G=["system.w=time/1000/60∞1"]
 var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],H=[],L=[],P=[],M=[],M1=1,N=0,Font="10px Sans-Serif",LS=1.5, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
-var Mx,My,Mt=0,摸 =0,做 =0,动 =0,改 =0,画 =0,秒 =0,keyi=0
-var 算 ,步 ,维 =4,点 =0,号 =1,准 =1 ,dVal=0,eVal=0,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0,loopTime=new Date().getTime(),timeZone=new Date().getTimezoneOffset()/60;
+var B=[],D=[],E=[],H=[],L=[],P=[],M1=1,N=0,Font="10px Sans-Serif",LS=1.5, VS="4.0", Vv=0, SS=512,IS=1, Bm=[], Vvm=0
+var Mx,My,Mt=0,摸 =0,做 =0,动 =0,画 =0,秒 =0,keyi=0
+var 算 ,步 ,号 =1,准 =1 ,dVal=0,eVal=0,抖 =1
+var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 
 var websock=[],W="",dat=[],thisIdx=0;
-updateL();F2DEH();DE2B()
+updateL();F2DE();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
 	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
@@ -36,7 +36,6 @@ function init(){
 		gl.clearColor(0,0,0,1)
 		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
 		window.requestAnimationFrame(loop)
-		nav(0,0)
 	}
 }
 function updateT(s){
@@ -48,8 +47,8 @@ function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
-        if(typeof(G)=='string')G=G.split(",")
-		维 =4;点 =0;go =1;D=[];E=[]; F2DEH();DE2B();M1=1
+    if(typeof(G)=='string')G=G.split(",")
+		go =1;D=[];E=[]; F2DE();DE2B();M1=1
 	}
 }
 function readTextFile(){
@@ -58,10 +57,8 @@ function readTextFile(){
 	reader.readAsText(file);
 }
 function readTextUrl(file){
-	log("read file:"+file,"",58)
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
 	raw.onreadystatechange = function (){
-	log("readyState:"+raw.readyState+" status:"+raw.status)
 		if(raw.readyState==4&&(raw.status==200||raw.status==0)){
 			if(raw.responseText){updateD(-1,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
@@ -83,7 +80,7 @@ function updateI(idx){
 	}
 }
 function updateU(idx){
-	if(U && 改 >0){
+	if(U){
 		U2d.fillStyle="#FFFFFF"; U2d.textBaseline = "top"; U2d.textAlign = "left"; U2d.font=Font
 		U2d.fillText(T,10,10)
 
@@ -91,13 +88,8 @@ function updateU(idx){
 		U2d.fillText(Font,SS-10,10)
 
 		U2d.textAlign = "left";	U2d.textBaseline = "bottom"
-		U2d.fillText(""+点 +"/"+N+"",10,SS-10)
+		U2d.fillText(N+"",10,SS-10)
 
-		for(i=0;i<C.length;i++){
-			if(i==维 )U2d.fillStyle="#FFFFFF"
-			else U2d.fillStyle="#707070"
-			U2d.fillText(C[i],SS/6+(2*SS/3)/C.length*i,SS-10)
-		}
 		U2d.fillStyle="#FFFFFF"
 		U2d.textAlign = "right"
 		U2d.fillText(算 ,SS-10,SS-10)
@@ -105,33 +97,30 @@ function updateU(idx){
 }
 function updateUP(idx,font,alpha){
 	if(U){
-		if(!idx)idx=点
 		var goName=(L[D[idx][0]+".name"]+"")
 		var goFont=L[D[idx][0]+".font"]
 		var goAlign=L[D[idx][0]+".align"]
+		var typeA=D[idx][L["a"]]+D[idx-D[idx][2]][L["a"]]%1
 		U2d.textAlign =goAlign?goAlign:"left"
-		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(改 ==0&&goName?1:alpha*D[idx][L["p"]])+')'
-		U2d.font=改 ==0&&goFont?goFont:font
+		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(goName?1:typeA*alpha*D[idx][L["p"]])+')'
+		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
-		var edit=改 >0 && idx ==点 ?"."+C[维 ]+"↕"+步 +"="+(改 ==1?"[ "+dVal+" ]":dVal)+"±"+(改 ==2?"[ "+eVal+" ]":eVal):""
-		var type=D[idx][L["a"]]+D[idx-D[idx][2]][L["a"]]%1
-        var names=改 >0 || type==0.01? D[idx][0].split("."):" "
-		var dots=改 >0 && names.length>1?"...":"";
-		U2d.fillText(改 ==0&&goName!="undefined"?goName:(names[0]+dots+edit),(SS/2)+dvx[idx]*(SS/2),(SS/2)-dvy[idx]*(SS/2))
+    	var names=typeA>0? D[idx][0].split("."):" "
+		var dots=names.length>1?"...":"";
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+dvx[idx]*(SS/2),(SS/2)-dvy[idx]*(SS/2))
 	}
 }
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function readImgFile(idx){images[idx]=new Image; images[idx].onload = function(){updateI(idx)};	images[idx].src = URL.createObjectURL(imgInput.files[0])}
 
 function download(filename, text) {
-	if(!filename){var arr = outLog.value.split(";");filename= arr[0].replace(".txt","")+"_"+arr[1]+".txt"}
-	if(!text)text=outLog.value
+	if(!filename){var arr = out.split(";");filename= arr[0].replace(".txt","")+"_"+arr[1]+".txt"}
+	if(!text)text=out
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
 function setVar(s, direct){
-    
 	if(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
@@ -142,13 +131,9 @@ function setVar(s, direct){
 			if(sType == C[0])updateP(L[sName],sVal.replace(/ /g,"_"))
 			else if(sType == "name" || sType == "font" || sType=="align")L[sPair[0]]=sPair[1]
 			else if(sType.length==1 && sType.search(/[a-z]/g)==0){
-				改 =0
 				var sDE=sVal.split("±")
-				if(direct){
-					D[L[sName]][L[sType]]=decimal3(parseFloat(sDE[0]))
-					if(sDE.length==2)E[L[sName]][L[sType]]=decimal3(parseFloat(sDE[1]))
-				}
-				else Bm.push(L[sName],L[sType],parseFloat(sDE[0]),parseFloat(sDE[1]))
+				D[L[sName]][L[sType]]=decimal3(parseFloat(sDE[0]))
+				if(sDE.length==2)E[L[sName]][L[sType]]=decimal3(parseFloat(sDE[1]))
 			}
 			else{L[sPair[0]]=sVal}
 		}
@@ -212,7 +197,7 @@ function updateP(idx, val){
 		N+=cpD.length
 	}
 	else {D[idx][0]=val}
-	DE2F();F2DEH();go =1
+	DE2F();F2DE();go =1
 }
 function updateL(){
 	L=[]
@@ -239,29 +224,6 @@ function updateL(){
 		D[j][0]=D[j][0].replace(nm,nNm+ext)
 	}
 }
-function saveM(idx,val){
-	if(!M)M=[]
-	var Midx=M[idx]?M[idx].split(" "):[]
-	if(img){images[idx]=img;updateI(idx)}
-	if(val=="")M[idx]=""
-	else{
-		Midx[0]="Vv="+Vv
-		var valArr=val.split("=")
-		var jdx=Midx.findIndex(x=>x.startsWith(valArr[0]))
-		if(jdx<0){
-			Midx.push(val)
-		}
-		else Midx[jdx]=val
-		M[idx]=Midx.join(" ")
-	}
-}
-function loadM(idx){
-	var Midx=M[idx].split(" ")
-	if(images[idx])img = images[idx]
-	for(var i=0;i<M[idx].length;i++)if(Midx[i])setVar(Midx[i].replace("=",":"));
-	updateI(idx)
-	M1=true
-}
 function DE2F(){
 	F=""
 	var C0
@@ -283,7 +245,7 @@ function DE2F(){
 		else if(i<N && D[i+1][2]!=0) F+="+"
 	}
 }
-function F2DEH(){
+function F2DE(){
 	F=decodeURI(F)
 	var commas=F.split(",")
 	N=-1
@@ -333,7 +295,7 @@ function F2DEH(){
 function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
-	if(G && 改 == 0){
+	if(G){
 		for(var i=0;i<G.length;i++){
 			var GiPair = G[i].split("=");
 			var valuePair=GiPair[1].split("±");
@@ -353,7 +315,7 @@ function DE2B(){
 		var jlen=isFrac?Math.round(1/len+1):Math.ceil(len)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
-		if(点 == i || 点 ==par || M1 || (dT>0 && 改 == 0)){
+		if(dT>0){
 			var PArray=D[i][0].split(".")
 			dv[i]=[];dc[i]=[];dvx[i]=0;dvy[i]=0
 			for(var j=0; j<jlen; j++){
@@ -397,7 +359,6 @@ function DE2B(){
 					dvx[i]+=x5; dvy[i]+=y4
 			}
 			dvx[i]/=jlen;dvy[i]/=jlen
-			updateUP(i,Font,D[点 ][2]==0?0.5:1)
 		}
 		dv[par]=dv[par].concat(dv[i]); dc[par]=dc[par].concat(dc[i])
 		if(dv[i]){
@@ -408,130 +369,43 @@ function DE2B(){
 		n+=jlen+nn
 	}
 	dvi[i]=Bdv.length
-	if(D[点 ][2]==0){
-		dvx[点 ]=D[点 ][L["x"]]-.5; dvy[点 ]=D[点 ][L["y"]]-.5
-		updateUP(i-D[i][2],"bold "+Font,1)
-	}
 	算 =n
 	updateU()
 }
-function nav(deltaX,deltaY){
-	做 =1; if(摸)动 =1;
-	if(点 >=D.length)点 =D.length-1
-	if(!改 ){
-		点 +=deltaY;	if(点 <0)点 =D.length-1;	else if(点 >D.length-1)点 =0
-		维 +=deltaX;	if(维 ==2)维 +=deltaX
-		if (维 <1)维 =C.length-1;	else if(维 >=C.length)维 =1
-		dVal=D[点 ][维 ];	eVal=E[点 ][维 ]
-		vibms=25
-	}
-	if(改 && 维 >0){
-		var deltaYD=改 ==1 ? deltaY:0;	var deltaYE=改 ==2 ? deltaY:0
-		var useD=go &&deltaYD?dVal:D[点 ][维 ];		var useE=go &&deltaYE?eVal:E[点 ][维 ]
-		dVal=decimal3(useD - deltaYD*步 )
-		eVal=decimal3(useE - deltaYE*步 )
-		if(dVal<0)dVal=0;	else if(dVal>C1[维 ])dVal=C1[维 ]
-		if(eVal<0)eVal=0;	else if(eVal>C1[维 ])eVal=C1[维 ]
-		Bm.push(点 ,维 ,dVal,eVal);
-		准 /=Math.pow(10,deltaX)
-		if(准 <0.001)准 =0.001;	else if(准 >1)准 =1;	else 准 =decimal3(准 )
-		vibms=50;
-	}
-	if(维 ==1 && dVal>1){步 =准 *1000;dVal=Math.round(dVal)}	else if(维 ==2) 步 =1;	else 步 =准 
-	vib(vibms);
-	var editString=改 >0 ? "</br><small>↕"+步 +"</small>" : ""
-	var dString=改 ==1 ? "<mark>"+dVal+"</mark>":改 ==2 ? "<small>"+dVal+"</small>":dVal
-	var eString=改 ==2 ? "±<mark>"+eVal+"</mark>":D[点 ][2]==0 && 维 ==1 ?"":"<small>±"+eVal+"</small>"
-	setdiv.innerHTML=D[点 ][0]+"."+C[维 ]+"<small>↕"+步 +"</small>="+dString+eString
-	setdiv.style.fontWeight=改 >0 ? "bold": "normal"
-	go = 1
-}
+
 function showPosition(position){
 	var lat = Math.round(100*(360-position.coords.latitude)/360)/100+""
 	var lon = Math.round(100*(90-position.coords.longitude)/360)/100+""
 
 	X=lat.replace("0.",".")+lon.replace("0.",".")
-	nav(0,0)
 }
-function log(message, url, lineNo){
-	debugLog.innerHTML+=(lineNo!=undefined?lineNo+":":"")+message + '\n';
-	debugLog.scrollTop=debugLog.scrollHeight
-	return true;
-}
+function setM(ev){Mx=decimal3(ev.touches[0].clientX/SS);My=decimal3(ev.touches[0].clientY/SS)}
 function start(){
-	
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
-	window.addEventListener('onerror',log)
+	inF();inG();
 	U.ontouchstart=function(ev){
-		ev.preventDefault()
-		Mx=ev.touches[0].clientX/SS;My=ev.touches[0].clientY/SS
+		if(gLog.value.includes("Mx")||gLog.value.includes("My"))ev.preventDefault()
+		setM(ev)
 		Mt=1
 	}
 	U.ontouchmove=function(ev){
-		Mx=ev.touches[0].clientX/SS;My=ev.touches[0].clientY/SS
+		setM(ev)
+		Mt+=1
 	}
-	U.ontouchend=function(ev){
-		Mt=0
-		Mx=ev.touches[0].clientX/SS;My=ev.touches[0].clientY/SS	
-	}
+	U.ontouchend=function(ev){Mt=-1}
 	document.onkeydown=function(ev){
-		 var code=ev.keyCode+32, num=ev.keyCode-48, keyC = String.fromCharCode(code)
-		var lock=false
-		var navx=0,navy=0
-		if(ev.code){
-			keyi++
-			keyLog.innerHTML+=big60(keyi)+"="+ev.code+", "
-			keyLog.scrollTop=keyLog.scrollHeight
+		var lock=true;go=1
+		switch(ev.code){
+			case "Up":I2d.globalAlpha+=0.1;updateI();break
+			case "Down":I2d.globalAlpha-=0.1;updateI();break
+			case "Backquote":setVar(prompt("Set variable",getVar("T")));break
+			case "KeyV":抖 = !抖 ;break
+			default:lock=false
 		}
-		if(window.event.altKey){
-			lock=true;
-			var par=点 >0?点 -1-D[点 -1][2]:0
-			if(num >=0&&num<=9){saveM(num,window.event.shiftKey?"":getVar("="));lock=true}
-			else{
-				var end=D.length-1
-				var shft=window.event.shiftKey
-				switch(ev.code){
-					case "ArrowLeft":改 =改 ==0?2:(改 -1);break
-					case "ArrowUp":navy-=shft?25:5;break
-					case "ArrowRight":改 =(改 +1)%3;break
-					case "ArrowDown":navy+=shft?25:5;break
-					case "Backspace":点 =点 ==0?end-D[end][2]:par;break
-					case "Enter":点 =点 +D[par][1]>end?0:点 -D[点 ][2]+D[par][1];break
-					case "KeyA":updateP(点 ,!shft?(D[点 ][0]+"+"+D[点 ][0]):"");break
-					case "KeyV":抖 = !抖 ;break
-					case "KeyU":arrows=true;break
-					default:lock=false
-				}
-			}
-		}
-		else{
-			go =1
-			if(code!=c("i")&&code>=c("a")&&code<=c("z") && L[keyC]){维 =L[keyC];lock=true}
-			else if(num >=0&&num<=9){loadM(num);lock=true}
-			else{
-				lock=true
-				switch(ev.code){
-					case "ArrowLeft":navx=-号 ;break
-					case "ArrowUp":navy=-1;break
-					case "ArrowRight":navx=号 ;break
-					case "ArrowDown":navy=1;break
-					case "Backspace":点 =点 ==0?D.length:点 -1;break
-					case "Enter":点 =(点 +1)%D.length;break
-					case "Period":I2d.globalAlpha+=0.1;updateI();break
-					case "Comma":I2d.globalAlpha-=0.1;updateI();break
-					case "Backquote":setDE();break
-					case "F2":setP();break
-					case "F3":console.log(Im.accelerationIncludingGravity.x);break
-					case "F4":readTextUrl("D_Atoms.txt");break;
-					default:lock=false
-				}
-			}
-		}
-		if(lock){ev.preventDefault(); nav(navx,navy)}
+		if(lock)ev.preventDefault()
 	}
-	
 	navigator.geolocation.getCurrentPosition(showPosition)	
 	V.width=SS;V.height=SS
 	I.width=SS;I.height=SS
@@ -543,37 +417,15 @@ function start(){
 	init()
 }
 function loop(){
-	loopTime = time
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	
 	if(go){
-		DE2B(D,E)
-		if(Bm.length>0){
-			var ii=Bm[0], ic=Bm[1], iD=Bm[2], iE=Bm[3]
-			if(Math.abs(D[ii][ic]-iD)>0.001)D[ii][ic]=(D[ii][ic]+iD)/2	
-			else if(Math.abs(E[ii][ic]-iE)>0.001)E[ii][ic]=(E[ii][ic]+iE)/2		
-			else{
-				D[ii][ic]=iD 
-				E[ii][ic]=iE
-				Bm.splice(0,4)
-			}
-		}
-		else if(Vvm!=Vv){
-			if(Math.abs(Vvm-Vv)>0.001)Vvm=(Vvm+Vv)/2
-			else Vvm=Vv
-		}
-		else{
-			DE2F()
-			var F2=F.length>60?F.substring(0,57)+"...":F
-			hrefdiv.innerHTML ="<a href='"+A+"?"+T+"&F:"+F+"'>"+T+"&F:"+F2+"</a>"
-			outLog.innerHTML=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+(M!=""?";M:"+M:"")+";G:"+G+";F:"+F+";"+A;
-			savebtn.value=((outLog.value.length)/1000)+" kb"
-			go=0
-			M1=0
-		}
-		draw()
+		DE2B(D,E);DE2F()
+		out=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		savebtn.value=((out.length)/1000)+" kb"
+		go=0;M1=0;draw()
 	}
+	 ping= new Date().getTime()-time
 	window.requestAnimationFrame(loop);
 }
 function draw(a) {
@@ -611,6 +463,11 @@ function vdScript(s,exc){
 	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
 	return eval(s2)
 }
+function id(s){return document.getElementById(s)}
+function inF(){fLog.value=F}
+function outF(){F=fLog.value;F2DE()}
+function inG(){gLog.value=G}
+function outG(){G=gLog.value.split(",");}
 function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
@@ -621,9 +478,7 @@ function getW(s){
 	var j=parseInt(sArr[1])
 	return !dat[i]?0:dat[i][j]?dat[i][j]:0
 }
-function setDE(){setVar(prompt("Rename variable",getVar(":")))}
-function getVar(sep){return D[点 ][0]+"."+C[维 ]+sep+D[点 ][维 ]+"±"+E[点 ][维 ]}
-function setP(){setVar(prompt("Rename variable",D[点 ][0]+"."+C[0]+":"+D[点 ][0]))}
+function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function DE(i,str,s){return D[i][L[str]]+(Err(i,L[str],s)*E[i-D[i][2]][L[str]]);}
@@ -649,13 +504,13 @@ function decimal3(v){return Math.round(v*1000)/1000}
 <div id="rightdiv" class="wrap">
 	<p id="setdiv"></p>
 	<p id="hrefdiv"></p>
-	<textarea id="outLog" cols=100 rows=10 disabled></textarea><br>
-	<textarea id="keyLog"></textarea>
-	<textarea id="debugLog"></textarea>
+	<p><input id="vartxt" type="text"><input id="valtxt" type="text"></p>
+	F:<textarea id="fLog" onchange="outF()" onfocus="inF()"></textarea>
+	G:<textarea id="gLog" onchange="outG()" onfocus="inG()"></textarea>
 </div><br>
 File:<input type="file" id="fileInput" onchange="readTextFile()"></input>
 	<input id="savebtn" type="button" value="save" onclick="download()"></input>
 <div id="imagediv">
 Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></inpu>
-</div> v.02
+</div>
 </body></html>
