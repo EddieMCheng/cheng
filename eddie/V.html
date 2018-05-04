@@ -1,4 +1,5 @@
-<!--http://eddie.cheng.se/V.html --><!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></script><script type="text/javascript">
+<!--http://eddie.cheng.se/V.html -->
+<!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></script><script type="text/javascript">
 /*
 	Copyright 2017 Eddie Cheng
 
@@ -15,14 +16,14 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
-var A,out,T="new"//±∞
-var F="system*.25w=.01point*.2u*.25v±.25*4w±2"
+var F="system=.01*point*.2u*.25v±.25*4w±3"
 var G=["system.w=time/1000/60∞1"]
+var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
+var A,all,out,T="New"//±∞
 var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],H=[],L=[],P=[],M1=1,N=0,Font="10px Sans-Serif",LS=1.5, VS="4.0", Vv=0, SS=512,IS=1,Vvm=0
-var Mx,My,Mt=0,算 ,抖 =1
+var B=[],D=[],E=[],H=[],L=[],P=[],N=0,Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
+var Mx=.5,My=.5,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var websock=[],W="",dat=[],thisIdx=0;
@@ -45,7 +46,7 @@ function updateD(Tidx,arr){
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
     if(typeof(G)=='string')G=G.split(",")
-		go =1;D=[];E=[]; F2DE();DE2B();M1=1
+		D=[];E=[];inF();inG();outF()
 	}
 }
 function readTextFile(){
@@ -120,8 +121,8 @@ function updateUP(idx,font,alpha){
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function readImgFile(idx){images[idx]=new Image; images[idx].onload = function(){updateI(idx)};	images[idx].src = URL.createObjectURL(imgInput.files[0])}
 
-function download(type, text) {
-	filename= type+"_"+T+"_"+HE()+X+".txt"
+function download(type, text, ext) {
+	filename= type+"_"+T+"_"+HE()+X+"."+ext
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
@@ -183,7 +184,7 @@ function setVar(s){
 			var lock=true
 			for(var i=0;i<让 .length;i++)if(让 [i]==sArr[0])lock=false
 			if(!lock)this[sArr[0]]=sVal.includes(",")?sVal.split(","):sVal
-			else log("error:"+s)
+			
 		}
 	}
 }
@@ -203,7 +204,7 @@ function updateP(idx, val){
 		N+=cpD.length
 	}
 	else {D[idx][0]=val}
-	DE2F();F2DE();go =1
+	DE2F();F2DE()
 }
 function updateL(){
 	L=[]
@@ -296,12 +297,12 @@ function F2DE(){
 			}
 		}
 	}
-	updateL()
+	updateL();go=1;
 }
 function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
-	if(G){
+	if(G && G.length>0 && G!=""){
 		for(var i=0;i<G.length;i++){
 			var GiPair = G[i].split("=");
 			var valuePair=GiPair[1].split("±");
@@ -321,51 +322,50 @@ function DE2B(){
 		var jlen=isFrac?Math.round(1/len+1):Math.ceil(len)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
-		if(dT>0){
-			var PArray=D[i][0].split(".")
-			dv[i]=[];dc[i]=[];dvx[i]=0;dvy[i]=0
-			for(var j=0; j<jlen; j++){
-				var s=isFrac?j/(jlen-1):-1
-				var d=DE(i,"d",s)
-				if(PArray.length>1){
-					var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
-					var i0 = L[PArray[ii]]
-					var i1 = L[PArray[ii+1]]
-					if(i0 && i1){
-						var d2 = (PArray.length-1)*d-ii
-						var x=(1-d2)*DE(i0,"x",s)+d2*DE(i1,"x",s),	y=(1-d2)*DE(i0,"y",s)+d2*DE(i1,"y",s),	z=(1-d2)*DE(i0,"z",s)+d2*DE(i1,"z",s)
-						var r=(1-d2)*DE(i0,"r",s)+d2*DE(i1,"r",s),	g=(1-d2)*DE(i0,"g",s)+d2*DE(i1,"g",s),	b=(1-d2)*DE(i0,"b",s)+d2*DE(i1,"b",s)
-						var u=(1-d2)*DE(i0,"u",s)+d2*DE(i1,"u",s),	v=(1-d2)*DE(i0,"v",s)+d2*DE(i1,"v",s),	w=(1-d2)*DE(i0,"w",s)+d2*DE(i1,"w",s)				
-					}
+		var PArray=D[i][0].split(".")
+		dv[i]=[];dc[i]=[];dvx[i]=0;dvy[i]=0
+		for(var j=0; j<jlen; j++){
+			var s=isFrac?j/(jlen-1):-1
+			var d=DE(i,"d",s)
+			if(PArray.length>1){
+				var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
+				var i0 = L[PArray[ii]]
+				var i1 = L[PArray[ii+1]]
+				if(i0 && i1){
+					var d2 = (PArray.length-1)*d-ii
+					var x=(1-d2)*DE(i0,"x",s)+d2*DE(i1,"x",s),	y=(1-d2)*DE(i0,"y",s)+d2*DE(i1,"y",s),	z=(1-d2)*DE(i0,"z",s)+d2*DE(i1,"z",s)
+					var r=(1-d2)*DE(i0,"r",s)+d2*DE(i1,"r",s),	g=(1-d2)*DE(i0,"g",s)+d2*DE(i1,"g",s),	b=(1-d2)*DE(i0,"b",s)+d2*DE(i1,"b",s)
+					var u=(1-d2)*DE(i0,"u",s)+d2*DE(i1,"u",s),	v=(1-d2)*DE(i0,"v",s)+d2*DE(i1,"v",s),	w=(1-d2)*DE(i0,"w",s)+d2*DE(i1,"w",s)				
 				}
-				else{
-					var x=DE(i,"x",s),		y=DE(i,"y",s),		z=DE(i,"z",s)
-					var r=DE(i,"r",s),		g=DE(i,"g",s),		b=DE(i,"b",s)
-					var u=DE(i,"u",s),		v=DE(i,"v",s),		w=DE(i,"w",s)				
-				}
-				var Pu = PDE(i,"u",s),		Pv = PDE(i,"v",s),	Pw = PDE(i,"w",s),	pii = 2*Math.PI
-				var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+(x*2-1), 	y1=u*Math.cos(v*pii)+(y*2-1),			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+(z*2-1)
-				var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+(PDE(i,"y",s)*2-1)
-				var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+(PDE(i,"x",s)*2-1), 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+PDE(i,"z",s)
-				var	x4=x3*Math.cos(Vvm*pii)+y2*Math.sin(Vvm*pii);	y3 =y2*Math.cos(Vvm*pii)-x3*Math.sin(Vvm*pii)
-				var zScale=1/(2-z2),	m=j*4
-				var x5=x4*zScale, y4 = y3*zScale
-				var r1=r*zScale*PDE(i,"r",s), g1=g*zScale*PDE(i,"g",s), b1=b*zScale*PDE(i,"b",s)
-				
-				var idx=H[i][0]?L[H[i][0]]:L[H[par][0]]
-				if(dv[idx] && idx!=i){
-					for(var ii=0;ii<dv[idx].length;ii+=4){
-						dv[i].push(dv[idx][ii]+x5-dvx[idx],dv[idx][ii+1]+y4-dvy[idx],1,1)
-						dc[i].push(r1*D[idx][L["r"]],g1*D[idx][L["g"]],b1*D[idx][L["b"]],1)
-						nn++
-					}
-					nn--
-				}
-				else{dv[i].push(x5,y4,1,1); dc[i].push(r1,g1,b1,1)}
-					dvx[i]+=x5; dvy[i]+=y4
 			}
-			dvx[i]/=jlen;dvy[i]/=jlen
+			else{
+				var x=DE(i,"x",s),		y=DE(i,"y",s),		z=DE(i,"z",s)
+				var r=DE(i,"r",s),		g=DE(i,"g",s),		b=DE(i,"b",s)
+				var u=DE(i,"u",s),		v=DE(i,"v",s),		w=DE(i,"w",s)				
+			}
+			var Pu = PDE(i,"u",s),		Pv = PDE(i,"v",s),	Pw = PDE(i,"w",s),	pii = 2*Math.PI
+			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+(x*2-1), 	y1=u*Math.cos(v*pii)+(y*2-1),			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+(z*2-1)
+			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+(PDE(i,"y",s)*2-1)
+			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+(PDE(i,"x",s)*2-1), 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+PDE(i,"z",s)
+			var	x4=x3*Math.cos(Vvm*pii)+y2*Math.sin(Vvm*pii);	y3 =y2*Math.cos(Vvm*pii)-x3*Math.sin(Vvm*pii)
+			var zScale=1/(2-z2),	m=j*4
+			var x5=x4*zScale, y4 = y3*zScale
+			var r1=r*zScale*PDE(i,"r",s), g1=g*zScale*PDE(i,"g",s), b1=b*zScale*PDE(i,"b",s)
+			
+			var idx=H[i][0]?L[H[i][0]]:L[H[par][0]]
+			if(dv[idx] && idx!=i){
+				for(var ii=0;ii<dv[idx].length;ii+=4){
+					dv[i].push(dv[idx][ii]+x5-dvx[idx],dv[idx][ii+1]+y4-dvy[idx],1,1)
+					dc[i].push(r1*D[idx][L["r"]],g1*D[idx][L["g"]],b1*D[idx][L["b"]],1)
+					nn++
+				}
+				nn--
+			}
+			else{dv[i].push(x5,y4,1,1); dc[i].push(r1,g1,b1,1)}
+				dvx[i]+=x5; dvy[i]+=y4
 		}
+		dvx[i]/=jlen;dvy[i]/=jlen
+		updateUP(i,Font,1)
 		dv[par]=dv[par].concat(dv[i]); dc[par]=dc[par].concat(dc[i])
 		if(dv[i]){
 			dvi[i]=Bdv.length
@@ -376,7 +376,9 @@ function DE2B(){
 	}
 	dvi[i]=Bdv.length
 	算 =n
+	
 	updateU()
+
 }
 
 function showPosition(position){
@@ -385,24 +387,26 @@ function showPosition(position){
 
 	X=lat.replace("0.",".")+lon.replace("0.",".")
 }
-function setM(ev){Mx=decimal3(ev.touches[0].clientX/SS);My=decimal3(ev.touches[0].clientY/SS)}
+function setM(ev){MxB.unshift(Mx);MyB.unshift(My);Mx=decimal3(ev.touches[0].clientX/SS);My=decimal3(1-(ev.touches[0].clientY/SS))}
 function start(){
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
-	inF();inG();
+	inF();inG();outVar()
+	all=document.documentElement.innerHTML
+	saV.value = "V ("+all.length/1000+" kb)"
 	U.ontouchstart=function(ev){
 		if(gLog.value.includes("Mx")||gLog.value.includes("My"))ev.preventDefault()
 		setM(ev)
-		Mt=1
 	}
 	U.ontouchmove=function(ev){
 		setM(ev)
-		Mt+=1
 	}
-	U.ontouchend=function(ev){Mt=-1}
+	U.ontouchend=function(ev){MxB=[],MyB=[]}
+	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
 	document.onkeydown=function(ev){
 		var lock=true;go=1
+		key=ev.code
 		switch(ev.code){
 			case "Up":I2d.globalAlpha+=0.1;updateI();break
 			case "Down":I2d.globalAlpha-=0.1;updateI();break
@@ -430,7 +434,8 @@ function loop(){
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(F)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
-		go=0;M1=0;draw()
+		go=0;
+		draw()
 	}
 	 ping= new Date().getTime()-time
 	window.requestAnimationFrame(loop);
@@ -504,23 +509,23 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	html,body{margin:1px;padding:0}
 	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
 	textarea{width:100%}
-	#rightdiv{}
-	#imagediv{}
+	#saV{display:none}
 </style>
 </head><body onload="start()">
 <canvas id="imgcanvas" class="wrap"></canvas>
 <canvas id="uicanvas" class="wrap"></canvas>
 <canvas id="glcanvas" class="wrap"></canvas>
+<p><input id="saV" type="button" value="V" onclick="download('V',"all",'html')"></input></p>
 <input id="loadD" type="file" onchange="readTextFile()"></input>
-<input id="saveD" type="button" value="save" onclick="download('D',out)"></input>
+<input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
 	
-	<p><input id="vartxt" onchange="outVar()" type="text"><input id="valtxt" onchange="outVal()" type="text"></p>
+	<p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 	<textarea id="fLog" onchange="outF()" onfocus="inF()"></textarea>
 	<input id="loadF" type="file" onchange="readF()"></input>
-	<input id="saveF" type="button" value="F" onclick="download('F',F)"></input>
+	<input id="saveF" type="button" value="F" onclick="download('F',F,'txt')"></input>
 	<textarea id="gLog" onchange="outG()" onfocus="inG()"></textarea>
 	<input id="loadG" type="file" onchange="readG()"></input>
-	<input id="saveG" type="button" value="G" onclick="download('G',G)"></input>
+	<input id="saveG" type="button" value="G" onclick="download('G',G,'txt')"></input>
 <br>
 
 <div id="imagediv">
