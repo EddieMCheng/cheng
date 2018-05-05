@@ -46,7 +46,7 @@ function updateD(Tidx,arr){
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
     if(typeof(G)=='string')G=G.split(",")
-		D=[];E=[];inF();inG();outF()
+		D=[];E=[];inF();inG();F2DE()
 	}
 }
 function readTextFile(){
@@ -56,7 +56,7 @@ function readTextFile(){
 }
 function readF(){
 	var rdr=new FileReader()
-	rdr.onload=function(){F=F+","+rdr.result;inF()}
+	rdr.onload=function(){F=F+","+rdr.result;inF();F2DE();}
 	rdr.readAsText(loadF.files[0])
 }
 function readG(){
@@ -113,7 +113,7 @@ function updateUP(idx,font,alpha){
 		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(goName?1:typeA*alpha*D[idx][L["p"]])+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
-    	var names=typeA>0? D[idx][0].split("."):" "
+    	var names=typeA%1>0? D[idx][0].split("."):" "
 		var dots=names.length>1?"...":"";
 		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+dvx[idx]*(SS/2),(SS/2)-dvy[idx]*(SS/2))
 	}
