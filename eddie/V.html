@@ -30,7 +30,8 @@ var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	A=ATD[0];updateD(1,ATD);readTextUrl(T.includes(".txt")?T:T+".txt")
+	A=ATD[0];updateD(1,ATD);
+	readTextUrl(ATD[1])
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
@@ -39,14 +40,15 @@ function init(){
 }
 function updateT(s){
 	var wsString=W?";W:"+W+";":""
-	if(s)T=s; document.title=T; window.history.pushState(null, "Title", "?"+T+wsString)
+	if(s)T=s.replace("D_","").split(".")[0]; document.title=T; window.history.pushState(null, "Title", "?"+"D_"+T+".txt"+wsString)
 }
 function updateD(Tidx,arr){
+console.log(Tidx+" "+arr)
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
     if(typeof(G)=='string')G=G.split(",")
-		D=[];E=[];inF();inG();F2DE()
+		D=[];E=[];inF();inG();F2DE();outVar();
 	}
 }
 function readTextFile(){
@@ -68,7 +70,7 @@ function readTextUrl(file){
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
 	raw.onreadystatechange = function (){
 		if(raw.readyState==4&&(raw.status==200||raw.status==0)){
-			if(raw.responseText){updateD(-1,raw.responseText.split(";"))}
+			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
 			document.title=T
 		}
@@ -430,7 +432,7 @@ function loop(){
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	if(go){
 		DE2B(D,E);DE2F()
-		out="D_"+T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		out=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";C1:"+C1+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(F)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
@@ -463,7 +465,7 @@ function draw(a) {
 		var skip=1
 		if(D[i][2]==0)i--
 		if(D[i][2]==1 && i>1)skip=2
-		var type=D[i][L["a"]]+D[i-D[i][2]][L["a"]]
+		var type=Math.floor(D[i][L["a"]]+D[i-D[i][2]][L["a"]])
 		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
 		else if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
 		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
@@ -519,13 +521,13 @@ function decimal3(v){return Math.round(v*1000)/1000}
 <input id="loadD" type="file" onchange="readTextFile()"></input>
 <input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
 	
-	<p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
-	<textarea id="fLog" onchange="outF()" onfocus="inF()"></textarea>
-	<input id="loadF" type="file" onchange="readF()"></input>
-	<input id="saveF" type="button" value="F" onclick="download('F',F,'txt')"></input>
-	<textarea id="gLog" onchange="outG()" onfocus="inG()"></textarea>
-	<input id="loadG" type="file" onchange="readG()"></input>
-	<input id="saveG" type="button" value="G" onclick="download('G',G,'txt')"></input>
+<p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
+<input id="loadF" type="file" onchange="readF()"></input>
+<input id="saveF" type="button" value="F" onclick="download('F',F,'txt')"></input>
+<textarea id="fLog" onchange="outF()" onfocus="inF()"></textarea>
+<input id="loadG" type="file" onchange="readG()"></input>
+<input id="saveG" type="button" value="G" onclick="download('G',G,'txt')"></input>
+<textarea id="gLog" onchange="outG()" onfocus="inG()"></textarea>
 <br>
 
 <div id="imagediv">
