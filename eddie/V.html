@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="3*system*.5x±.5=.01*point*.2u*.25v±.25*4w±3"
+var F=".2*system*.5x±.5=.01*point*.2u*.25v±.25*4w±3+point*0g*0b"
 var G=["system.w=time/1000/60∞1"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
@@ -278,7 +278,9 @@ function F2DE(){
 			}
 			for(var ii=1; ii<C.length; ii++){if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?0:CE[ii]}
 		}
-		for(var j=0; j<D[par][1];j++)Np=Np.concat(Ntmp)
+		var LEN=D[par][1]
+		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
+		for(var j=0; j<NLEN;j++)Np=Np.concat(Ntmp)
 	}
 	updateL();go=1;
 }
@@ -296,15 +298,20 @@ function DE2B(){
 			setVar(GiPair[0]+":"+dValue+eValue);
 		}
 	}
-	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw
+	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pend, Pcount=0
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
-		var par=i-D[i][2]
-		Px=PDE(i,"x",-1)*2-1;	Py=PDE(i,"y",-1)*2-1; Pz=PDE(i,"z",-1)
-		Pr=PDE(i,"r",-1);		Pg=PDE(i,"g",-1);	Pb=PDE(i,"b",-1)
-		Pu=PDE(i,"u",-1);		Pv=PDE(i,"v",-1);	Pw=PDE(i,"w",-1)
-	
-		if(!dv[par] || i==N){dv[par]=[];dc[par]=[]}
+		if(i>Np[Ni-1]){
+			var LEN=PDE(i,"l")
+			var FRAC=LEN<1&&LEN>0
+			var NLEN=FRAC?Math.round(1/LEN):Math.ceil(LEN)
+			if(Pcount<=0)Pcount=NLEN
+			else Pcount--
+			var S=FRAC?Pcount/NLEN:-1
+			Px=PDE(i,"x",S)*2-1;	Py=PDE(i,"y",S)*2-1; Pz=PDE(i,"z",S)
+			Pr=PDE(i,"r",S);		Pg=PDE(i,"g",S);	Pb=PDE(i,"b",S)
+			Pu=PDE(i,"u",S);		Pv=PDE(i,"v",S);	Pw=PDE(i,"w",S)
+		}
 		var len=DE(i,"l")
 		var isFrac=len<1&&len>0
 		var jlen=isFrac?Math.round(1/len+1):Math.ceil(len)
