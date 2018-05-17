@@ -16,15 +16,15 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="system=.01*point*.2u*.25v±.25*4w±3"
+var F="3*system*.5x±.5=.01*point*.2u*.25v±.25*4w±3"
 var G=["system.w=time/1000/60∞1"]
-var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvi=[]
+var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
 var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],H=[],L=[],P=[],N=0,Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
+var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
 var Mx=.5,My=.5,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0, dT=1,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
@@ -43,7 +43,6 @@ function updateT(s){
 	if(s)T=s.replace("D_","").split(".")[0]; document.title=T; window.history.pushState(null, "Title", "?"+"D_"+T+".txt"+wsString)
 }
 function updateD(Tidx,arr){
-console.log(Tidx+" "+arr)
 	if(Tidx>=0)updateT(arr[Tidx])
 	if(arr.length>2){
 		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
@@ -69,7 +68,7 @@ function readG(){
 function readTextUrl(file){
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
 	raw.onreadystatechange = function (){
-		if(raw.readyState==4&&(raw.status==200||raw.status==0)){
+		if(file && raw.readyState==4&&(raw.status==200||raw.status==0)){
 			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
 			document.title=T
@@ -137,8 +136,7 @@ function setVar(s){
 		if(sArr.length>1 && L[sArr[0]]!=undefined){
 			var sName=sArr[0]
 			var sType=sArr[sArr.length-1]
-			if(sType == C[0])updateP(L[sName],sVal.replace(/ /g,"_"))
-			else if(sType == "name" || sType == "font" || sType=="align")L[sPair[0]]=sPair[1]
+			if(sType == "name" || sType == "font" || sType=="align")L[sPair[0]]=sPair[1]
 			else if(sType.length==1 && sType.search(/[a-z]/g)==0){
 				var sDE=sVal.split("±")
 				D[L[sName]][L[sType]]=decimal3(parseFloat(sDE[0]))
@@ -167,15 +165,15 @@ function setVar(s){
 			var dataArray=W.split(",")
 			for(var i=0;i<dataArray.length;i++){
 				if(dataArray[i]=="this"){thisIdx=i;window.addEventListener('devicemotion',function(ev){
-					dat[thisIdx]=["device",time,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
+					com[thisIdx]=["device",time,ev.accelerationIncludingGravity.x,ev.accelerationIncludingGravity.y,ev.accelerationIncludingGravity.z]
 				})}
 				else{
-					dat[i] = []
+					com[i] = []
 					websock[i] = new WebSocket('ws://'+dataArray[i]+':81');
 					websock[i].idx=i;
 					websock[i].onmessage = function(evt) {
 						if(evt.data.includes(",")){
-							dat[this.idx]=evt.data.split(",")
+							com[this.idx]=evt.data.split(",")
 						}
 					}
 				}
@@ -189,24 +187,6 @@ function setVar(s){
 			
 		}
 	}
-}
-function updateP(idx, val){
-	if(val == ""){
-		var par = idx-D[idx][2]
-		if(D.length > 2 && D[idx][2]!=0){
-			var count=D[par][1]==2?2:1
-			D.splice(idx+1-count,count); E.splice(idx+1-count,count);	dv.splice(idx+1-count,count); dc.splice(idx+1-count,count)
-			N-=count
-		}
-	}
-	else if(val.includes("+")){
-		var count=D[idx][2]==0?D[idx][1]:1
-		var cpD = D.slice(idx,idx+count),	cpE = E.slice(idx,idx+count);	cpdv=dv.slice(idx,idx+count);	cpdc=dc.slice(idx,idx+count)
-		D.splice(idx,0,...cpD);				E.splice(idx,0,...cpE);	dv.splice(idx,0,...cpdv);	 dc.splice(idx,0,...cpdc);
-		N+=cpD.length
-	}
-	else {D[idx][0]=val}
-	DE2F();F2DE()
 }
 function updateL(){
 	L=[]
@@ -240,10 +220,10 @@ function DE2F(){
 		if(D[i][2]==0)C0=CP
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
-		if(D[i][1]>0&&D[i][1]!=CD[1]&&D[i][2]!=0)F+=(D[i][1]+"").replace("0.",".")+"*"
+		if(D[i][1]>0&&D[i][1]!=CD[1])F+=(D[i][1]+"").replace("0.",".")+"*"
 		F+=D[i][0]
 		for(var j=3;j<C.length;j++){
-			var CEj=D[i][2]==0?1:CE[j]
+			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
 				if(j>0)F+="*"
 				if(D[i][j]!=1)	F+=(D[i][j]+"").replace("0.",".")
@@ -258,17 +238,22 @@ function F2DE(){
 	F=decodeURI(F)
 	var commas=F.split(",")
 	N=-1
+	Np=[]
 	for(var I=0; I<commas.length; I++){
+		
 		var adds=commas[I].replace("=","+").split("+")
+		var Ntmp=[]
+		var par=N+1
 		for(var i=0; i<adds.length; i++){
 			N++
-			D[N]=[], E[N]=[],H[N]=[],	D[N][0]="", D[N][1]=i==0?adds.length:CP[1]; 	D[N][2]=i
+			if(i>0)Ntmp.push(N)
+			D[N]=[], E[N]=[],	D[N][0]="", D[N][1]=i==0?CP[1]:CD[1];	D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
 				var props=multis[j].split("±")
 				var prop=props[0]
 				var number=Number(prop)
-				if(!isNaN(number)&&i>0){D[N][1]*=number}
+				if(!isNaN(number)){D[N][1]*=number}
 				else{
 					var propValue=parseFloat(prop)
 					var valueStrLen
@@ -288,16 +273,12 @@ function F2DE(){
 						D[N][0] += propName
 					}
 					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
-					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):D[N][2]==0?1:CE[propIndex]
+					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):D[N][2]==0?0:CE[propIndex]
 				}
-				if(multis[j].includes("("))H[N][j]=multis[j].substring(multis[j].indexOf("(")+1,multis[j].indexOf(")"))
-				else H[N][j]=""
 			}
-			if(D[N][0]=="")		D[N][0]=CD[0]+big(Math.round(Math.random()*60))+big(Math.round(Math.random()*60))
-			for(var ii=1; ii<C.length; ii++){
-				if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?1:CE[ii]
-			}
+			for(var ii=1; ii<C.length; ii++){if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?0:CE[ii]}
 		}
+		for(var j=0; j<D[par][1];j++)Np=Np.concat(Ntmp)
 	}
 	updateL();go=1;
 }
@@ -315,9 +296,14 @@ function DE2B(){
 			setVar(GiPair[0]+":"+dValue+eValue);
 		}
 	}
-	for(var i=N; i>0; i--){
-		if(D[i][2]==0)i--
+	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw
+	for(var Ni=Np.length-1; Ni>=0; Ni--){
+		var i=Np[Ni]
 		var par=i-D[i][2]
+		Px=PDE(i,"x",-1)*2-1;	Py=PDE(i,"y",-1)*2-1; Pz=PDE(i,"z",-1)
+		Pr=PDE(i,"r",-1);		Pg=PDE(i,"g",-1);	Pb=PDE(i,"b",-1)
+		Pu=PDE(i,"u",-1);		Pv=PDE(i,"v",-1);	Pw=PDE(i,"w",-1)
+	
 		if(!dv[par] || i==N){dv[par]=[];dc[par]=[]}
 		var len=DE(i,"l")
 		var isFrac=len<1&&len>0
@@ -325,7 +311,8 @@ function DE2B(){
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
 		var PArray=D[i][0].split(".")
-		dv[i]=[];dc[i]=[];dvx[i]=0;dvy[i]=0
+
+		dv[Ni]=[];dc[Ni]=[];dvx[Ni]=0;dvy[Ni]=0
 		for(var j=0; j<jlen; j++){
 			var s=isFrac?j/(jlen-1):-1
 			var d=DE(i,"d",s)
@@ -345,48 +332,61 @@ function DE2B(){
 				var r=DE(i,"r",s),		g=DE(i,"g",s),		b=DE(i,"b",s)
 				var u=DE(i,"u",s),		v=DE(i,"v",s),		w=DE(i,"w",s)				
 			}
-			var Pu = PDE(i,"u",s),		Pv = PDE(i,"v",s),	Pw = PDE(i,"w",s),	pii = 2*Math.PI
+			var	pii = 2*Math.PI
 			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+(x*2-1), 	y1=u*Math.cos(v*pii)+(y*2-1),			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+(z*2-1)
-			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+(PDE(i,"y",s)*2-1)
-			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+(PDE(i,"x",s)*2-1), 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+PDE(i,"z",s)
+			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
+			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px, 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
 			var	x4=x3*Math.cos(Vvm*pii)+y2*Math.sin(Vvm*pii);	y3 =y2*Math.cos(Vvm*pii)-x3*Math.sin(Vvm*pii)
 			var zScale=1/(2-z2),	m=j*4
 			var x5=x4*zScale, y4 = y3*zScale
-			var r1=r*zScale*PDE(i,"r",s), g1=g*zScale*PDE(i,"g",s), b1=b*zScale*PDE(i,"b",s)
+			var r1=r*zScale*Pr, g1=g*zScale*Pg, b1=b*zScale*Pb
 			
-			var idx=H[i][0]?L[H[i][0]]:L[H[par][0]]
-			if(dv[idx] && idx!=i){
-				for(var ii=0;ii<dv[idx].length;ii+=4){
-					dv[i].push(dv[idx][ii]+x5-dvx[idx],dv[idx][ii+1]+y4-dvy[idx],1,1)
-					dc[i].push(r1*D[idx][L["r"]],g1*D[idx][L["g"]],b1*D[idx][L["b"]],1)
-					nn++
-				}
-				nn--
-			}
-			else{dv[i].push(x5,y4,1,1); dc[i].push(r1,g1,b1,1)}
-				dvx[i]+=x5; dvy[i]+=y4
+			dv[Ni].push(x5,y4,1,1); dc[Ni].push(r1,g1,b1,1)
+			dvx[Ni]+=x5; dvy[Ni]+=y4
 		}
-		dvx[i]/=jlen;dvy[i]/=jlen
+		dvx[Ni]/=jlen;dvy[Ni]/=jlen
 		updateUP(i,Font,1)
-		dv[par]=dv[par].concat(dv[i]); dc[par]=dc[par].concat(dc[i])
-		if(dv[i]){
-			dvi[i]=Bdv.length
-			var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[i].length):dv[i].length
-			Bdv = Bdv.concat(dv[i].slice(0,skip));Bdc = Bdc.concat(dc[i].slice(0,skip))
+		if(dv[Ni]){
+			dvi[Np.length-Ni-1]=Bdv.length
+			var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[Ni].length):dv[Ni].length
+			Bdv = Bdv.concat(dv[Ni].slice(0,skip));Bdc = Bdc.concat(dc[Ni].slice(0,skip))
+		
 		}
 		n+=jlen+nn
 	}
-	dvi[i]=Bdv.length
+	dvi[Np.length]=Bdv.length
 	算 =n
-	
 	updateU()
+}
+function draw(a) {
+	if(!a)a=1
+	var Bv,Bc
+	gl.lineWidth(LS)
+	Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
+	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	var Gprog=gl.createProgram()
+	gl.attachShader(Gprog, Gvert);		gl.attachShader(Gprog, Gfrag)
+	gl.linkProgram(Gprog); gl.useProgram(Gprog)
+	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt)
+	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt)
 
+
+	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW)
+	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW)
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0)
+	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
+	for(var Ni=Np.length-1; Ni>=0; Ni--){
+		var i=Np[Ni]
+		var type=Math.floor(D[i][L["a"]]+D[i-D[i][2]][L["a"]])
+		gl.drawArrays(type==2?gl.TRIANGLE_FAN:type==1?gl.LINE_STRIP:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
+	}
 }
 
 function showPosition(position){
 	var lat = Math.round(100*(360-position.coords.latitude)/360)/100+""
 	var lon = Math.round(100*(90-position.coords.longitude)/360)/100+""
-
 	X=lat.replace("0.",".")+lon.replace("0.",".")
 }
 function setM(ev){MxB.unshift(Mx);MyB.unshift(My);Mx=decimal3(ev.touches[0].clientX/SS);My=decimal3(1-(ev.touches[0].clientY/SS))}
@@ -442,35 +442,7 @@ function loop(){
 	 ping= new Date().getTime()-time
 	window.requestAnimationFrame(loop);
 }
-function draw(a) {
-	if(!a)a=1
-	var Bv,Bc
-	gl.lineWidth(LS)
-	Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
-	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	var Gprog=gl.createProgram()
-	gl.attachShader(Gprog, Gvert);		gl.attachShader(Gprog, Gfrag)
-	gl.linkProgram(Gprog);gl.useProgram(Gprog)
-	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt)
-	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt)
 
-
-	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW)
-	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW)
-
-	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0)
-	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
-	for(var i=N; i>0; i--){
-		var skip=1
-		if(D[i][2]==0)i--
-		if(D[i][2]==1 && i>1)skip=2
-		var type=Math.floor(D[i][L["a"]]+D[i-D[i][2]][L["a"]])
-		if(type==2)gl.drawArrays(gl.TRIANGLE_FAN, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
-		else if(type==1)gl.drawArrays(gl.LINE_STRIP, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
-		else gl.drawArrays(gl.POINT, (dvi[i]/4), ((dvi[i-skip]-dvi[i])/4))
-	}
-}
 function vdScript(s,exc){
 	var ext=""
 	if(s&&(s.split("?").length-1)==(s.split("!").length))ext=":"+(exc?exc:"0")
@@ -492,14 +464,14 @@ function getW(s){
 	var sArr=s.split(".")
 	var i=parseInt(sArr[0])
 	var j=parseInt(sArr[1])
-	return !dat[i]?0:dat[i][j]?dat[i][j]:0
+	return !com[i]?0:com[i][j]?com[i][j]:0
 }
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DE(i,str,s){return D[i][L[str]]+(Err(i,L[str],s)*E[i-D[i][2]][L[str]]);}
-function PDE(i,str,s){return D[i-D[i][2]][L[str]];}
+function DE(i,str,s){return D[i][L[str]]+Err(i,L[str],s);}
+function PDE(i,str,s){return D[i-D[i][2]][L[str]]+Err(i-D[i][2],[L[str]],s);}
 function Err(i,j,s){ if(E[i][j]==0)return 0;else if(s>=0)return E[i][j]*(2*s-1); else return E[i][j]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
 function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(Math.floor(v%60))}
