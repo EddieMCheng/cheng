@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F=".2*system*.5x±.5=.01*point*.2u*.25v±.25*4w±3+point*0g*0b"
+var F=".3*system*.5x±.5=.01*shell*.2u*.25v±.25*4w±3+.05core*0g*0b*.1u*.5v±.5*a"
 var G=["system.w=time/1000/60∞1"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
@@ -24,13 +24,13 @@ var 让 =["C","CP","CD","C1","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0],	C1=["max",1000000,1,1,1,1,1,1,1,1,10,1000,1000,10,10,2]; CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
 var Mx=.5,My=.5,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=1,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	A=ATD[0];updateD(1,ATD);
+	A=ATD[0];updateD(1,ATD)
 	readTextUrl(ATD[1])
 	if(gl){
 		gl.clearColor(0,0,0,1)
@@ -301,7 +301,7 @@ function DE2B(){
 	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pend, Pcount=0
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
-		if(i>Np[Ni-1]){
+		if(i>Np[Ni-1]||D.length<=2){
 			var LEN=PDE(i,"l")
 			var FRAC=LEN<1&&LEN>0
 			var NLEN=FRAC?Math.round(1/LEN):Math.ceil(LEN)
@@ -347,7 +347,7 @@ function DE2B(){
 			var zScale=1/(2-z2),	m=j*4
 			var x5=x4*zScale, y4 = y3*zScale
 			var r1=r*zScale*Pr, g1=g*zScale*Pg, b1=b*zScale*Pb
-			
+		
 			dv[Ni].push(x5,y4,1,1); dc[Ni].push(r1,g1,b1,1)
 			dvx[Ni]+=x5; dvy[Ni]+=y4
 		}
@@ -384,8 +384,8 @@ function draw(a) {
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0)
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
-	for(var Ni=Np.length-1; Ni>=0; Ni--){
-		var i=Np[Ni]
+	for(var Ni=0;Ni<Np.length; Ni++){
+		var i=Np[Np.length-Ni-1]
 		var type=Math.floor(D[i][L["a"]]+D[i-D[i][2]][L["a"]])
 		gl.drawArrays(type==2?gl.TRIANGLE_FAN:type==1?gl.LINE_STRIP:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
