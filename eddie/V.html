@@ -195,22 +195,17 @@ function updateL(){
 		var par=j-D[j][2]
 		var nm=D[j][0].split(".")[0];
 		var nNm = nm
-		var ext=""
-		if(nm.includes("(")){
-			ext=nm.substring(nm.indexOf("("),nm.indexOf(")")+1)
-			nNm=nNm.replace(ext,"")
-			if(D[par][0].includes("(")&&D[j][2]!=0){ext="";L[j][0]=""}
-		}
+
 		var dp=0
-		while((L[nNm+ext] || L[nNm+"_"+dp+ext]) && dp<D.length-1){
+		while((L[nNm] || L[nNm+"_"+dp]) && dp<D.length-1){
 			var nmLen=nm.lastIndexOf("_")
 			var nmArr=nmLen<0?nm:nm.substring(0,nmLen)
 			var nmEndStr= parseInt(nm.substring(nmLen,nm.length)+1)
 			nNm=nmEndStr?nmArr+"_"+nmEndStr:nmArr+"_"+dp
 			dp++
 		}
-		L[nNm+ext] = j
-		D[j][0]=D[j][0].replace(nm,nNm+ext)
+		L[nNm] = j
+		D[j][0]=D[j][0].replace(nm,nNm)
 	}
 }
 function DE2F(){
