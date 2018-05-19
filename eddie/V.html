@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F=".3*system*.5x±.5=.01*shell*.2u*.25v±.25*4w±3+.05core*0g*0b*.1u*.5v±.5*a"
+var F=".3*system*.5x±.5*.1a=.01*shell*.2u*.25v±.25*4w±3+.05core*0g*0b*.1u*.5v±.5*a"
 var G=["system.w=time/1000/60∞1"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
@@ -104,8 +104,9 @@ function updateU(idx){
 		U2d.fillText(算 ,SS-10,SS-10)
 	}
 }
-function updateUP(idx,font,alpha){
+function updateUP(i,font,alpha){
 	if(U){
+		var idx=Np[i]
 		var goName=(L[D[idx][0]+".name"]+"")
 		var goFont=L[D[idx][0]+".font"]
 		var goAlign=L[D[idx][0]+".align"]
@@ -116,7 +117,7 @@ function updateUP(idx,font,alpha){
 		U2d.textBaseline = "top"
     	var names=typeA%1>0? D[idx][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+dvx[idx]*(SS/2),(SS/2)-dvy[idx]*(SS/2))
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+dvx[i]*(SS/2),(SS/2)-dvy[i]*(SS/2))
 	}
 }
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
@@ -347,7 +348,7 @@ function DE2B(){
 			dvx[Ni]+=x5; dvy[Ni]+=y4
 		}
 		dvx[Ni]/=jlen;dvy[Ni]/=jlen
-		updateUP(i,Font,1)
+		updateUP(Ni,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
 			var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[Ni].length):dv[Ni].length
