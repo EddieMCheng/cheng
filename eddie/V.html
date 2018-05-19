@@ -195,7 +195,6 @@ function updateL(){
 		var par=j-D[j][2]
 		var nm=D[j][0].split(".")[0];
 		var nNm = nm
-
 		var dp=0
 		while((L[nNm] || L[nNm+"_"+dp]) && dp<D.length-1){
 			var nmLen=nm.lastIndexOf("_")
@@ -296,10 +295,11 @@ function DE2B(){
 	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pend, Pcount=0
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
+		console.log(D.length)
 		if(i>Np[Ni-1]||D.length<=2){
 			var LEN=PDE(i,"l")
 			var FRAC=LEN<1&&LEN>0
-			var NLEN=FRAC?Math.round(1/LEN):Math.ceil(LEN)
+			var NLEN=FRAC?1/LEN:Math.ceil(LEN)
 			if(Pcount<=0)Pcount=NLEN
 			else Pcount--
 			var S=FRAC?Pcount/NLEN:-1
@@ -309,7 +309,7 @@ function DE2B(){
 		}
 		var len=DE(i,"l")
 		var isFrac=len<1&&len>0
-		var jlen=isFrac?Math.round(1/len+1):Math.ceil(len)
+		var jlen=isFrac?1/len+1:Math.ceil(len)
 		var pdep=DE(i,"p")*PDE(i,"p")
 		var nn=0
 		var PArray=D[i][0].split(".")
@@ -357,7 +357,7 @@ function DE2B(){
 		n+=jlen+nn
 	}
 	dvi[Np.length]=Bdv.length
-	算 =n
+	算 =Math.round(n)
 	updateU()
 }
 function draw(a) {
