@@ -16,16 +16,16 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F=".3*system*.5x±.5=.01*shell*.2u*.25v±.25*4w±3+.05core*0g*0b*.1u*.5v±.5*a"
+var F="water=O_1*0g*0b,.3*system*.5x±.5=.01*shell*.2u*.25v±.25*4w±3+.05core*0g*0b*.1u*.5v±.55*a"
 var G=["system.w=time/1000/60∞1"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
 var 让 =["C","CP","CD","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
+var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
 var Mx=.5,My=.5,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
-var X=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
+var Gfrag,Gvert,vibms,go=1,time=0, dT=1,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
@@ -124,7 +124,7 @@ function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function readImgFile(idx){images[idx]=new Image; images[idx].onload = function(){updateI(idx)};	images[idx].src = URL.createObjectURL(imgInput.files[0])}
 
 function download(type, text, ext) {
-	filename= type+"_"+T+"_"+HE()+X+"."+ext
+	filename= type+"_"+T+"_"+HE()+GPS+"."+ext
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
@@ -233,15 +233,15 @@ function F2DE(){
 	F=decodeURI(F)
 	var commas=F.split(",")
 	N=-1
-	Np=[]
+	Np=[],D=[],E=[],Nl=[]
 	for(var I=0; I<commas.length; I++){
 		
 		var adds=commas[I].replace("=","+").split("+")
-		var Ntmp=[]
+		var Np_=[],Nl_=[]
 		var par=N+1
 		for(var i=0; i<adds.length; i++){
 			N++
-			if(i>0)Ntmp.push(N)
+			if(i>0){Np_.push(N);Nl_.push(adds.length-1)}
 			D[N]=[], E[N]=[],	D[N][0]="", D[N][1]=i==0?CP[1]:CD[1];	D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
@@ -275,7 +275,7 @@ function F2DE(){
 		}
 		var LEN=D[par][1]
 		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
-		for(var j=0; j<NLEN;j++)Np=Np.concat(Ntmp)
+		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 	}
 	updateL();go=1;
 }
@@ -296,28 +296,29 @@ function DE2B(){
 	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pend, Pcount=0
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
-		console.log(D.length)
-		if(i>Np[Ni-1]||D.length<=2){
-			var LEN=PDE(i,"l")
+		var l=Nl[Ni]
+		if(D[i][2]==l){
+			var LEN=DE(i-l,"l")
 			var FRAC=LEN<1&&LEN>0
 			var NLEN=FRAC?1/LEN:Math.ceil(LEN)
 			if(Pcount<=0)Pcount=NLEN
 			else Pcount--
 			var S=FRAC?Pcount/NLEN:-1
-			Px=PDE(i,"x",S)*2-1;	Py=PDE(i,"y",S)*2-1; Pz=PDE(i,"z",S)
-			Pr=PDE(i,"r",S);		Pg=PDE(i,"g",S);	Pb=PDE(i,"b",S)
-			Pu=PDE(i,"u",S);		Pv=PDE(i,"v",S);	Pw=PDE(i,"w",S)
+			Px=DE(i-l,"x",S)*2-1;	Py=DE(i-l,"y",S)*2-1; Pz=DE(i-l,"z",S)
+			Pr=DE(i-l,"r",S);		Pg=DE(i-l,"g",S);	Pb=DE(i-l,"b",S)
+			Pu=DE(i-l,"u",S);		Pv=DE(i-l,"v",S);	Pw=DE(i-l,"w",S)
+			console.log(i+" "+Px)
 		}
 		var len=DE(i,"l")
 		var isFrac=len<1&&len>0
-		var jlen=isFrac?1/len+1:Math.ceil(len)
-		var pdep=DE(i,"p")*PDE(i,"p")
+		var jlen=isFrac?1/len:Math.ceil(len)
+		var pdep=DE(i,"p")*DE(i-l,"p")
 		var nn=0
 		var PArray=D[i][0].split(".")
 
 		dv[Ni]=[];dc[Ni]=[];dvx[Ni]=0;dvy[Ni]=0
 		for(var j=0; j<jlen; j++){
-			var s=isFrac?j/(jlen-1):-1
+			var s=isFrac?j/jlen:-1
 			var d=DE(i,"d",s)
 			if(PArray.length>1){
 				var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
@@ -388,9 +389,13 @@ function draw(a) {
 }
 
 function showPosition(position){
-	var lat = Math.round(100*(360-position.coords.latitude)/360)/100+""
-	var lon = Math.round(100*(90-position.coords.longitude)/360)/100+""
-	X=lat.replace("0.",".")+lon.replace("0.",".")
+	LAT=(360-position.coords.latitude)/360
+	LON=(90-position.coords.longitude)/360
+	ALT = position.coords.altitude
+	var lat = Math.round(100*LAT)/100+""
+	var lon = Math.round(100*LON)/100+""
+	var 
+	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 }
 function setM(ev){MxB.unshift(Mx);MyB.unshift(My);Mx=decimal3(ev.touches[0].clientX/SS);My=decimal3(1-(ev.touches[0].clientY/SS))}
 function start(){
@@ -415,7 +420,6 @@ function start(){
 		switch(ev.code){
 			case "Up":I2d.globalAlpha+=0.1;updateI();break
 			case "Down":I2d.globalAlpha-=0.1;updateI();break
-			case "Backquote":setVar(prompt("Set variable",getVar("T")));break
 			default:lock=false
 		}
 		if(lock)ev.preventDefault()
@@ -435,7 +439,7 @@ function loop(){
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	if(go){
 		DE2B(D,E);DE2F()
-		out=T+";"+HE()+X+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(F)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
@@ -474,7 +478,6 @@ function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.s
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
 function DE(i,str,s){return D[i][L[str]]+Err(i,L[str],s);}
-function PDE(i,str,s){return D[i-D[i][2]][L[str]]+Err(i-D[i][2],[L[str]],s);}
 function Err(i,j,s){ if(E[i][j]==0)return 0;else if(s>=0)return E[i][j]*(2*s-1); else return E[i][j]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
 function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(Math.floor(v%60))}
