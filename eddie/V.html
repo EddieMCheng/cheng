@@ -16,15 +16,15 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="water=O_1*0g*0b,.3*system*.5x±.5=.01*shell*.2u*.25v±.25*4w±3+.05core*0g*0b*.1u*.5v±.55*a"
-var G=["system.w=time/1000/60∞1"]
+var F=".49*system=.01*shell*.5u*.25v±.25*4w±3+.05core*0b*.2u*.5v±.55*a"
+var G=["system.w=time/1000/60∞1±time/1000/10∞4"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
 var 让 =["C","CP","CD","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
 var Mx=.5,My=.5,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=1,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
@@ -235,7 +235,6 @@ function F2DE(){
 	N=-1
 	Np=[],D=[],E=[],Nl=[]
 	for(var I=0; I<commas.length; I++){
-		
 		var adds=commas[I].replace("=","+").split("+")
 		var Np_=[],Nl_=[]
 		var par=N+1
@@ -276,6 +275,7 @@ function F2DE(){
 		var LEN=D[par][1]
 		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
+
 	}
 	updateL();go=1;
 }
@@ -311,7 +311,7 @@ function DE2B(){
 		var len=DE(i,1)
 		var isFrac=len<1&&len>0
 		var jlen=isFrac?1/len:Math.ceil(len)
-		var pdep=DE(i,3)*DE(i-l,3)
+		var pdep=DE(i,3)*DE(i-D[i][2],3)
 		var nn=0
 		var PArray=D[i][0].split(".")
 
