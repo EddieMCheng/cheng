@@ -110,9 +110,9 @@ function updateUP(i,font,alpha){
 		var goName=(L[D[idx][0]+".name"]+"")
 		var goFont=L[D[idx][0]+".font"]
 		var goAlign=L[D[idx][0]+".align"]
-		var typeA=D[idx][L["a"]]+D[idx-D[idx][2]][L["a"]]%1
+		var typeA=D[idx][15]+D[idx-D[idx][2]][15]%1
 		U2d.textAlign =goAlign?goAlign:"left"
-		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(goName?1:typeA*alpha*D[idx][L["p"]])+')'
+		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(goName?1:typeA*alpha*D[idx][3])+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
     	var names=typeA%1>0? D[idx][0].split("."):" "
@@ -298,43 +298,42 @@ function DE2B(){
 		var i=Np[Ni]
 		var l=Nl[Ni]
 		if(D[i][2]==l){
-			var LEN=DE(i-l,"l")
+			var LEN=DE(i-l,1)
 			var FRAC=LEN<1&&LEN>0
 			var NLEN=FRAC?1/LEN:Math.ceil(LEN)
 			if(Pcount<=0)Pcount=NLEN
 			else Pcount--
 			var S=FRAC?Pcount/NLEN:-1
-			Px=DE(i-l,"x",S)*2-1;	Py=DE(i-l,"y",S)*2-1; Pz=DE(i-l,"z",S)
-			Pr=DE(i-l,"r",S);		Pg=DE(i-l,"g",S);	Pb=DE(i-l,"b",S)
-			Pu=DE(i-l,"u",S);		Pv=DE(i-l,"v",S);	Pw=DE(i-l,"w",S)
-			console.log(i+" "+Px)
+			Px=DE(i-l,4,S)*2-1;	Py=DE(i-l,5,S)*2-1; Pz=DE(i-l,6,S)
+			Pr=DE(i-l,7,S);		Pg=DE(i-l,8,S);	Pb=DE(i-l,9,S)
+			Pu=DE(i-l,10,S);		Pv=DE(i-l,11,S);	Pw=DE(i-l,12,S)
 		}
-		var len=DE(i,"l")
+		var len=DE(i,1)
 		var isFrac=len<1&&len>0
 		var jlen=isFrac?1/len:Math.ceil(len)
-		var pdep=DE(i,"p")*DE(i-l,"p")
+		var pdep=DE(i,3)*DE(i-l,3)
 		var nn=0
 		var PArray=D[i][0].split(".")
 
 		dv[Ni]=[];dc[Ni]=[];dvx[Ni]=0;dvy[Ni]=0
 		for(var j=0; j<jlen; j++){
 			var s=isFrac?j/jlen:-1
-			var d=DE(i,"d",s)
+			var d=DE(i,13,s)
 			if(PArray.length>1){
 				var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
 				var i0 = L[PArray[ii]]
 				var i1 = L[PArray[ii+1]]
 				if(i0 && i1){
 					var d2 = (PArray.length-1)*d-ii
-					var x=(1-d2)*DE(i0,"x",s)+d2*DE(i1,"x",s),	y=(1-d2)*DE(i0,"y",s)+d2*DE(i1,"y",s),	z=(1-d2)*DE(i0,"z",s)+d2*DE(i1,"z",s)
-					var r=(1-d2)*DE(i0,"r",s)+d2*DE(i1,"r",s),	g=(1-d2)*DE(i0,"g",s)+d2*DE(i1,"g",s),	b=(1-d2)*DE(i0,"b",s)+d2*DE(i1,"b",s)
-					var u=(1-d2)*DE(i0,"u",s)+d2*DE(i1,"u",s),	v=(1-d2)*DE(i0,"v",s)+d2*DE(i1,"v",s),	w=(1-d2)*DE(i0,"w",s)+d2*DE(i1,"w",s)				
+					var x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s),	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s),	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
+					var r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s),	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s),	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
+					var u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s),	v=(1-d2)*DE(i0,11,s)+d2*DE(i1,11,s),	w=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s)				
 				}
 			}
 			else{
-				var x=DE(i,"x",s),		y=DE(i,"y",s),		z=DE(i,"z",s)
-				var r=DE(i,"r",s),		g=DE(i,"g",s),		b=DE(i,"b",s)
-				var u=DE(i,"u",s),		v=DE(i,"v",s),		w=DE(i,"w",s)				
+				var x=DE(i,4,s),		y=DE(i,5,s),		z=DE(i,6,s)
+				var r=DE(i,7,s),		g=DE(i,8,s),		b=DE(i,9,s)
+				var u=DE(i,10,s),		v=DE(i,11,s),		w=DE(i,12,s)				
 			}
 			var	pii = 2*Math.PI
 			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+(x*2-1), 	y1=u*Math.cos(v*pii)+(y*2-1),			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+(z*2-1)
@@ -477,7 +476,7 @@ function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DE(i,str,s){return D[i][L[str]]+Err(i,L[str],s);}
+function DE(i,j,s){return D[i][j]+Err(i,j,s);}
 function Err(i,j,s){ if(E[i][j]==0)return 0;else if(s>=0)return E[i][j]*(2*s-1); else return E[i][j]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
 function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(Math.floor(v%60))}
