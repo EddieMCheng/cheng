@@ -20,10 +20,10 @@ var F=".49*system=.01*shell*.5u*.25v±.25*4w±3+.05core*0b*.2u*.5v±.55*a"
 var G=["system.w=time/1000/60∞1±time/1000/10∞4"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
-var 让 =["C","CP","CD","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT","dA"]
+var 让 =["C","CP","CD","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
-var Mx=.5,My=.5,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
+var Mx=.5,My=.5,touch=0,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
 var websock=[],W="",dat=[],thisIdx=0;
@@ -34,7 +34,7 @@ function init(){
 	readTextUrl(ATD[1])
 	if(gl){
 		gl.clearColor(0,0,0,1)
-		gl.clearDepth(1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL)
+		gl.clearDepth(0);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.GREATER)
 		window.requestAnimationFrame(loop)
 	}
 }
@@ -151,7 +151,6 @@ function setVar(s){
 			updateI()
 		}
 		else if(sArr[0]=="dT")dT=parseFloat(sVal)
-		else if(sArr[0]=="dA"){dA=sVal}
 		else if(sArr[0]=="SS"){
 			SS=sVal
 			V.width=SS;V.height=SS
@@ -344,7 +343,7 @@ function DE2B(){
 			var x5=x4*zScale, y4 = y3*zScale
 			var r1=r*zScale*Pr, g1=g*zScale*Pg, b1=b*zScale*Pb
 		
-			dv[Ni].push(x5,y4,1,1); dc[Ni].push(r1,g1,b1,1)
+			dv[Ni].push(x5,y4,z2,1); dc[Ni].push(r1,g1,b1,1)
 			dvx[Ni]+=x5; dvy[Ni]+=y4
 		}
 		dvx[Ni]/=jlen;dvy[Ni]/=jlen
@@ -406,12 +405,13 @@ function start(){
 	saV.value = "V ("+all.length/1000+" kb)"
 	U.ontouchstart=function(ev){
 		if(gLog.value.includes("Mx")||gLog.value.includes("My"))ev.preventDefault()
+		touch=1
 		setM(ev)
 	}
 	U.ontouchmove=function(ev){
 		setM(ev)
 	}
-	U.ontouchend=function(ev){MxB=[],MyB=[]}
+	U.ontouchend=function(ev){MxB=[];MyB=[];touch=0}
 	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
 	document.onkeydown=function(ev){
 		var lock=true;go=1
