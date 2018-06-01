@@ -416,7 +416,7 @@ function start(){
 	}
 	U.ontouchend=function(ev){MxB=[];MyB=[];touch=0}
 	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
-	document.onkeydown=function(ev){key=ev.code; if(gLog.value.includes(key))ev.preventDefault()}
+	document.onkeydown=function(ev){key=ev.code}
 	navigator.geolocation.getCurrentPosition(showPosition)	
 	V.width=SS;V.height=SS
 	I.width=SS;I.height=SS
