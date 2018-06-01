@@ -16,13 +16,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F=".49*system=.01*shell*.5u*.25v±.25*4w±3+.05core*0b*.2u*.5v±.55*a"
-var G=["system.w=time/1000/60∞1±time/1000/10∞4"]
+var F="figure*.004w=.01*core*0b*.5u*.5v±.51*a"
+var G=["figure.w=Mx"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
 var 让 =["C","CP","CD","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,.5,.5,.5,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,.5,.5,.5,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0, SS=512,IS=1,Vvm=0
+var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Sans-Serif",LS=1.5, VS="2.0", Vv=0,Vw=0, SS=512,IS=1,Vvm=0, Ia=1
 var Mx=.5,My=.5,touch=0,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
 var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
@@ -148,6 +148,11 @@ function setVar(s){
 		else if(sArr[0]=="echo")alert(this[sVal])
 		else if(sArr[0]=="IS"){
 			IS=sVal
+			updateI()
+		}
+		else if(sArr[0]=="Ia"){
+			Ia=sVal
+			I2d.globalAlpha=Ia
 			updateI()
 		}
 		else if(sArr[0]=="dT")dT=parseFloat(sVal)
@@ -335,10 +340,11 @@ function DE2B(){
 				var u=DE(i,10,s),		v=DE(i,11,s),		w=DE(i,12,s)				
 			}
 			var	pii = 2*Math.PI
+			//Speed up with matrix calc
 			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+(x*2-1), 	y1=u*Math.cos(v*pii)+(y*2-1),			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+(z*2-1)
 			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
 			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px, 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
-			var	x4=x3*Math.cos(Vvm*pii)+y2*Math.sin(Vvm*pii);	y3 =y2*Math.cos(Vvm*pii)-x3*Math.sin(Vvm*pii)
+			var	x4=Vv==0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);	y3 =Vv==0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
 			var zScale=1/(2-z2),	m=j*4
 			var x5=x4*zScale, y4 = y3*zScale
 			var r1=r*zScale*Pr, g1=g*zScale*Pg, b1=b*zScale*Pb
@@ -381,7 +387,7 @@ function draw(a) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var Ni=0;Ni<Np.length; Ni++){
 		var i=Np[Np.length-Ni-1]
-		var type=Math.floor(D[i][L["a"]]+D[i-D[i][2]][L["a"]])
+		var type=Math.floor(D[i][15]+D[i-D[i][2]][15])
 		gl.drawArrays(type==2?gl.TRIANGLE_FAN:type==1?gl.LINE_STRIP:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
@@ -392,7 +398,6 @@ function showPosition(position){
 	ALT = position.coords.altitude
 	var lat = Math.round(100*LAT)/100+""
 	var lon = Math.round(100*LON)/100+""
-	var 
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 }
 function setM(ev){MxB.unshift(Mx);MyB.unshift(My);Mx=decimal3(ev.touches[0].clientX/SS);My=decimal3(1-(ev.touches[0].clientY/SS))}
@@ -401,10 +406,8 @@ function start(){
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
 	inF();inG();outVar()
-	all=document.documentElement.innerHTML
-	saV.value = "V ("+all.length/1000+" kb)"
 	U.ontouchstart=function(ev){
-		if(gLog.value.includes("Mx")||gLog.value.includes("My"))ev.preventDefault()
+		if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault()
 		touch=1
 		setM(ev)
 	}
@@ -413,16 +416,7 @@ function start(){
 	}
 	U.ontouchend=function(ev){MxB=[];MyB=[];touch=0}
 	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
-	document.onkeydown=function(ev){
-		var lock=true;go=1
-		key=ev.code
-		switch(ev.code){
-			case "Up":I2d.globalAlpha+=0.1;updateI();break
-			case "Down":I2d.globalAlpha-=0.1;updateI();break
-			default:lock=false
-		}
-		if(lock)ev.preventDefault()
-	}
+	document.onkeydown=function(ev){key=ev.code; if(gLog.value.includes(key))ev.preventDefault()}
 	navigator.geolocation.getCurrentPosition(showPosition)	
 	V.width=SS;V.height=SS
 	I.width=SS;I.height=SS
@@ -488,13 +482,12 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	html,body{margin:1px;padding:0}
 	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
 	textarea{width:100%}
-	#saV{display:none}
+
 </style>
 </head><body onload="start()">
 <canvas id="imgcanvas" class="wrap"></canvas>
 <canvas id="uicanvas" class="wrap"></canvas>
 <canvas id="glcanvas" class="wrap"></canvas>
-<p><input id="saV" type="button" value="V" onclick="download('V',"all",'html')"></input></p>
 <input id="loadD" type="file" onchange="readTextFile()"></input>
 <input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
 	
