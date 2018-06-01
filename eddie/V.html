@@ -407,12 +407,13 @@ function start(){
 	U=document.getElementById('uicanvas')
 	inF();inG();outVar()
 	U.ontouchstart=function(ev){
-		if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault()
+		//if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault()
 		touch=1
 		setM(ev)
 	}
 	U.ontouchmove=function(ev){
-		setM(ev)
+	if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault()
+		setM(ev);go=1
 	}
 	U.ontouchend=function(ev){MxB=[];MyB=[];touch=0}
 	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
