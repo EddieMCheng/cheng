@@ -393,8 +393,8 @@ function draw(a) {
 }
 
 function showPosition(position){
-	LAT=(360-position.coords.latitude)/360
-	LON=(90-position.coords.longitude)/360
+	LAT=(90-position.coords.latitude)/360
+	LON=(360-position.coords.longitude)/360
 	ALT = position.coords.altitude
 	var lat = Math.round(100*LAT)/100+""
 	var lon = Math.round(100*LON)/100+""
@@ -407,7 +407,6 @@ function start(){
 	U=document.getElementById('uicanvas')
 	inF();inG();outVar()
 	U.ontouchstart=function(ev){
-		//if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault()
 		touch=1
 		setM(ev)
 	}
