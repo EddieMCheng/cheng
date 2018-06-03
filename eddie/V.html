@@ -405,6 +405,7 @@ function start(){
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
+	
 	inF();inG();outVar()
 	U.ontouchstart=function(ev){
 		touch=1
@@ -450,10 +451,10 @@ function vdScript(s,exc){
 	return eval(s2)
 }
 function id(s){return document.getElementById(s)}
-function inF(){fLog.value=F}
-function outF(){F=fLog.value;F2DE()}
-function inG(){gLog.value=G}
-function outG(){G=gLog.value.split(",");}
+function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n").replace("=","\n=");}
+function outF(){F=fLog.value.replace(/\n\+/g,"+").replace(/,\n/g,",").replace("\n=","=");F2DE()}
+function inG(){gLog.value=G.join(",").replace(/,/g,",\n")}
+function outG(){G=gLog.value.replace(/,\n/g,",").split(",");}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
@@ -481,23 +482,22 @@ function decimal3(v){return Math.round(v*1000)/1000}
 <style>
 	html,body{margin:1px;padding:0}
 	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
-	textarea{width:100%}
 
 </style>
 </head><body onload="start()">
-<canvas id="imgcanvas" class="wrap"></canvas>
-<canvas id="uicanvas" class="wrap"></canvas>
-<canvas id="glcanvas" class="wrap"></canvas>
+<canvas id="imgcanvas"></canvas>
+<canvas id="uicanvas"></canvas>
+<canvas id="glcanvas"></canvas></br>
 <input id="loadD" type="file" onchange="readTextFile()"></input>
 <input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
 	
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="loadF" type="file" onchange="readF()"></input>
-<input id="saveF" type="button" value="F" onclick="download('F',F,'txt')"></input>
-<textarea id="fLog" onchange="outF()" onfocus="inF()"></textarea>
-<input id="loadG" type="file" onchange="readG()"></input>
-<input id="saveG" type="button" value="G" onclick="download('G',G,'txt')"></input>
-<textarea id="gLog" onchange="outG()" onfocus="inG()"></textarea>
+<input id="saveF" type="button" onclick="download('F',F,'txt')"></input></br>
+<textarea id="fLog" cols="48" rows="20" onchange="outF()" onfocus="inF()"></textarea>
+<p><input id="loadG" type="file" onchange="readG()"></input>
+<input id="saveG" type="button" onclick="download('G',G,'txt')"></input></br>
+<textarea id="gLog" cols="48" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 <br>
 
 <div id="imagediv">
