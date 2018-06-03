@@ -235,7 +235,7 @@ function DE2F(){
 }
 function F2DE(){
 	F=decodeURI(F)
-	var commas=F.split(",")
+	var commas=F.replace(/-./g,"-0.").split(",")
 	N=-1
 	Np=[],D=[],E=[],Nl=[]
 	for(var I=0; I<commas.length; I++){
