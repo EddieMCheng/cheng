@@ -24,7 +24,7 @@ var 让 =["C","CP","CD","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5, VS="2.0", Vv=0,Vw=0, SS=512,IS=1,Vvm=0, Ia=1
 var Mx=.5,My=.5,touch=0,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
-var Gfrag,Gvert,vibms,go=1,time=0, dT=0.04,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0, dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
@@ -235,7 +235,8 @@ function DE2F(){
 }
 function F2DE(){
 	F=decodeURI(F)
-	var commas=F.replace(/-./g,"-0.").split(",")
+	var commas=F.split(",")
+	console.log(commas)
 	N=-1
 	Np=[],D=[],E=[],Nl=[]
 	for(var I=0; I<commas.length; I++){
@@ -248,7 +249,7 @@ function F2DE(){
 			D[N]=[], E[N]=[],	D[N][0]="", D[N][1]=i==0?CP[1]:CD[1];	D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
-				var props=multis[j].split("±")
+				var props=multis[j].replace("-.","-0.").split("±")
 				var prop=props[0]
 				var number=Number(prop)
 				if(!isNaN(number)){D[N][1]*=number}
