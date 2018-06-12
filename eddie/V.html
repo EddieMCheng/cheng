@@ -415,7 +415,7 @@ function start(){
 	}
 	U.ontouchmove=function(ev){
 	if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0]);go=1}
-	U.onmousemove=function(ev){setM(ev);go=1}
+	U.onmousemove=function(ev){if(touch)setM(ev);go=1}
 	U.ontouchend=function(ev){MxB=[];MyB=[];touch=0}
 	U.onmouseup=function(ev){MxB=[];MyB=[];touch=0}
 	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
