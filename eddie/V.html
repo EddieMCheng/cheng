@@ -1,7 +1,7 @@
 <!--http://eddie.cheng.se/V.html -->
 <!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></script><script type="text/javascript">
 /*
-	Copyright 2017 Eddie Cheng
+	Copyright 2018 Eddie Cheng
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -398,7 +398,7 @@ function showPosition(position){
 	var lon = Math.round(100*LON)/100+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 }
-function setM(ev){MxB.unshift(Mx);MyB.unshift(My);Mx=decimal3(ev.touches[0].clientX/SS);My=decimal3(1-(ev.touches[0].clientY/SS))}
+function setM(ev){MxB.unshift(Mx);MyB.unshift(My);Mx=decimal3(ev.clientX/SS);My=decimal3(1-(ev.clientY/SS))}
 function start(){
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
@@ -407,13 +407,17 @@ function start(){
 	inF();inG();outVar()
 	U.ontouchstart=function(ev){
 		touch=1
+		setM(ev.touches[0])
+	}
+	U.onmousedown=function(ev){
+		touch=1
 		setM(ev)
 	}
 	U.ontouchmove=function(ev){
-	if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault()
-		setM(ev);go=1
-	}
+	if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0]);go=1}
+	U.onmousemove=function(ev){setM(ev);go=1}
 	U.ontouchend=function(ev){MxB=[];MyB=[];touch=0}
+	U.onmouseup=function(ev){MxB=[];MyB=[];touch=0}
 	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
 	document.onkeydown=function(ev){key=ev.code}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
