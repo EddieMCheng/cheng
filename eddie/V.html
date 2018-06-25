@@ -108,7 +108,6 @@ function updateU(idx){
 function updateUP(i,font,alpha){
 	var zS=dvz[i]>1.9?2:1/(2-dvz[i])
 	if(U){
-		var idx=Np[i]
 		var goName=(L[D[i][0]+".name"]+"")
 		var goFont=L[D[i][0]+".font"]
 		var goAlign=L[D[i][0]+".align"]
@@ -487,6 +486,7 @@ function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))
 function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
+function copy(){document.execCommand("copy");}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
@@ -502,11 +502,14 @@ function decimal3(v){return Math.round(v*1000)/1000}
 	
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="loadF" type="file" onchange="readF()"></input>
-<input id="saveF" type="button" onclick="download('F',F,'txt')"></input></br>
+<input id="saveF" type="button" onclick="download('F',F,'txt')"></input>
+<input type="button" onclick="fLog.select();copy()" value="📑"></input></br>
 <textarea id="fLog" cols="48" rows="20" onchange="outF()" onfocus="inF()"></textarea>
 <p><input id="loadG" type="file" onchange="readG()"></input>
-<input id="saveG" type="button" onclick="download('G',G,'txt')"></input></br>
+<input id="saveG" type="button" onclick="download('G',G,'txt')"></input>
+<input type="button" onclick="gLog.select();copy()" value="📑"></input></br>
 <textarea id="gLog" cols="48" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
+
 <br>
 
 <div id="imagediv">
