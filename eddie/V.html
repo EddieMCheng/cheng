@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="figure*.004w=.01*core*0b*.5u*.5v±.51*a"
+var F="figure*.59w*.1a=core_1*.2499*-1z*0b*.5u*.125v±.5*a+core_0*.2499*0b*.5u*.125v±.5*a+core*.2499*z*0b*.5u*.125v±.5*a"
 var G=["figure.w=Mx"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
@@ -106,19 +106,20 @@ function updateU(idx){
 	}
 }
 function updateUP(i,font,alpha){
+	var zS=dvz[i]>1.9?2:1/(2-dvz[i])
 	if(U){
 		var idx=Np[i]
-		var goName=(L[D[idx][0]+".name"]+"")
-		var goFont=L[D[idx][0]+".font"]
-		var goAlign=L[D[idx][0]+".align"]
-		var typeA=D[idx][15]+D[idx-D[idx][2]][15]%1
+		var goName=(L[D[i][0]+".name"]+"")
+		var goFont=L[D[i][0]+".font"]
+		var goAlign=L[D[i][0]+".align"]
+		var typeA=D[i][15]+D[i-D[i][2]][15]%1
 		U2d.textAlign =goAlign?goAlign:"left"
-		U2d.fillStyle='rgba('+getByte(idx,"r")+','+getByte(idx,"g")+','+getByte(idx,"b")+','+(goName?1:typeA*alpha*D[idx][3])+')'
+		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(goName?zS:zS*typeA*alpha*D[i][3])+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
-    	var names=typeA%1>0? D[idx][0].split("."):" "
+    	var names=typeA%1>0? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+dvx[i]*(SS/2),(SS/2)-dvy[i]*(SS/2))
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+zS*dvx[i]*(SS/2),(SS/2)-zS*dvy[i]*(SS/2))
 	}
 }
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
@@ -317,7 +318,7 @@ function DE2B(){
 		var nn=0
 		var PArray=D[i][0].split(".")
 
-		dv[Ni]=[];dc[Ni]=[];dvx[Ni]=0;dvy[Ni]=0,dvz[Ni]=0
+		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0,dvz[i]=0
 		for(var j=0; j<jlen; j++){
 			var s=isFrac?j/jlen:-1
 			var d=DE(i,13,s)
@@ -343,15 +344,16 @@ function DE2B(){
 			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
 			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px, 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
 			var	x4=Vv==0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);	y3 =Vv==0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
-			var zScale=1/(2-z2),	m=j*4
+			var zScale=z2>=1.9?2:1/(2-z2),	m=j*4
 			var x5=x4*zScale, y4 = y3*zScale
 			var r1=r*zScale*Pr, g1=g*zScale*Pg, b1=b*zScale*Pb
 		
 			dv[Ni].push(x5,y4,z2/10,1); dc[Ni].push(r1,g1,b1,1)
-			dvx[Ni]+=x5; dvy[Ni]+=y4; dvz[Ni]+=z2
+			dvx[i]+=x4; dvy[i]+=y3; dvz[i]+=z2
 		}
-		dvx[Ni]/=jlen;dvy[Ni]/=jlen;dvz[Ni]/=jlen
-		updateUP(Ni,Font,1)
+		var jlenT=Math.ceil(jlen)
+		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
+		updateUP(i,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
 			var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[Ni].length):dv[Ni].length
@@ -451,7 +453,7 @@ function loop(){
 function vdScript(s,exc){
 	var ext=""
 	if(s&&(s.split("?").length-1)==(s.split("!").length))ext=":"+(exc?exc:"0")
-	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
+	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([XYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
 	return eval(s2)
 }
 function id(s){return document.getElementById(s)}
@@ -481,7 +483,7 @@ function kb(s){return s.length/1000+" kb"}
 function DE(i,j,s){return D[i][j]+Err(i,j,s);}
 function Err(i,j,s){ if(E[i][j]==0)return 0;else if(s>=0)return E[i][j]*(2*s-1); else return E[i][j]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
-function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(Math.floor(v%60))}
+function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(v%60)}
 function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
