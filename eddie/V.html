@@ -165,6 +165,8 @@ function setVar(s){
 			updateI()
 			gl.viewport(0,0,SS,SS)
 		}
+		else if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
+		else if(sArr[0]=="G"){G=sPair[1].split(",");inG()}
 		else if(sArr[0]=="T")updateT(sVal)
 		else if(sArr[0]=="W"){
 			W=sPair[1]
@@ -442,7 +444,7 @@ function loop(){
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(F)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
-		go=0;
+		go=0
 		draw()
 	}
 	 ping= new Date().getTime()-time
@@ -462,9 +464,9 @@ function inG(){gLog.value=G.join(",").replace(/,/g,",\n")}
 function outG(){G=gLog.value.replace(/,\n/g,",").split(",");}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
-function getX(s){return dvx[L[s]]}
-function getY(s){return dvy[L[s]]}
-function getZ(s){return dvz[L[s]]}
+function getX(s){t=dvx[L[s]];return t?t:0}
+function getY(s){t=dvy[L[s]];return t?t:0}
+function getZ(s){t=dvz[L[s]];return t?t:0}
 function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
