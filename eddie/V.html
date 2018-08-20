@@ -18,21 +18,19 @@
 */
 var F="figure*.59w*.1a=core_1*.2499*-1z*0b*.5u*.125v±.5*a+core_0*.2499*0b*.5u*.125v±.5*a+core*.2499*z*0b*.5u*.125v±.5*a"
 var G=["figure.w=Mx"]
-var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dva=[],dvi=[]
+var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"//±∞
-var 让 =["C","CP","CD","CE","T","F","M","W","Font","LS","VS","Vv","SS","IS","G","dT"]
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5, VS="2.0", Vv=0,Vw=0, SS=512,IS=1,Vvm=0, Ia=1
 var Mx=.5,My=.5,touch=0,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
-var Gfrag,Gvert,vibms,go=1,time=0, dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	A=ATD[0];updateD(1,ATD)
-	readTextUrl(ATD[1])
+	A=ATD[0];readTextUrl(ATD[1]);updateD(1,ATD)
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.clearDepth(-1);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.GREATER)
@@ -40,16 +38,21 @@ function init(){
 	}
 }
 function updateT(s){
-	var wsString=W?";W:"+W+";":""
-	if(s)T=s.replace("D_","").split(".")[0]; document.title=T; window.history.pushState(null, "Title", "?"+"D_"+T+".txt"+wsString)
+	//var wsString=W?";W:"+W+";":""
+	//var pfx=s.substr(0,2)=="D_"?"D_":""
+	if(s)T=s.replace("D_","").split(".")[0]; document.title="VD - "+T.replace(/_/g," ");if(!window.location.href.includes(";")) window.history.pushState(null, "Title", "?D_"+T)
 }
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
-	if(arr.length>2){
-		for(var i=2;i<arr.length-1;i++)setVar(arr[i])
-    if(typeof(G)=='string')G=G.split(",")
-		D=[];E=[];inF();inG();F2DE();outVar();
-	}
+	//if(arr.length>2){
+		for(var i=0;i<arr.length;i++){
+		//	if(!arr[i].includes(":")&&arr[i].includes("D_"))updateT([i])
+			if(arr[i].includes(":")&&!arr[i].includes("file:")&&!arr[i].includes("https:"))setVar(arr[i])
+		}
+    //if(typeof(G)=='string')G=G.split(",")
+	//	D=[];E=[];inF();inG();F2DE();
+	outVar();
+	//}
 }
 function readTextFile(){
 	var file=loadD.files[0], reader = new FileReader()
@@ -106,7 +109,7 @@ function updateU(idx){
 	}
 }
 function updateUP(i,font,alpha){
-	var zS=dvz[i]>1.9?2:1/(2-dvz[i])
+	var zS=dvZ[i]>1.9?2:1/(2-dvZ[i])
 	if(U){
 		var goName=(L[D[i][0]+".name"]+"")
 		var goFont=L[D[i][0]+".font"]
@@ -118,7 +121,7 @@ function updateUP(i,font,alpha){
 		U2d.textBaseline = "top"
     	var names=typeA%1>0? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+zS*dvx[i]*(SS/2),(SS/2)-zS*dvy[i]*(SS/2))
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+zS*dvX[i]*(SS/2),(SS/2)-zS*dvY[i]*(SS/2))
 	}
 }
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
@@ -129,6 +132,9 @@ function download(type, text, ext) {
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
+}
+function addF(s){
+	if(!F.includes(s)){F+="+"+s;inF();F2DE()}
 }
 function setVar(s){
 	if(s){
@@ -179,17 +185,11 @@ function setVar(s){
 					if(evt.data.includes(",")){
 						com[this.idx]=evt.data.split(",")
 					}
-				}
-				
+				}	
 			}
 			updateT(T)
 		}
-		else if(sArr.length == 1){
-			var lock=true
-			for(var i=0;i<让 .length;i++)if(让 [i]==sArr[0])lock=false
-			if(!lock)this[sArr[0]]=sVal.includes(",")?sVal.split(","):sVal
-			
-		}
+		else if(sArr.length == 1)this[sArr[0]]=sVal.includes(",")?sVal.split(","):sVal
 	}
 }
 function updateL(){
@@ -209,7 +209,7 @@ function updateL(){
 		}
 		L[nNm] = j
 		D[j][0]=D[j][0].replace(nm,nNm)
-	}
+	 }
 }
 function DE2F(){
 	F=""
@@ -286,17 +286,7 @@ function F2DE(){
 function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
-	if(G && G.length>0 && G!=""){
-		for(var i=0;i<G.length;i++){
-			var GiPair = G[i].split("=");
-			var valuePair=GiPair[1].split("±");
-			var dValue
-			if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
-			else dValue=vdScript(valuePair[0],L[GiPair[0]])
-			var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
-			setVar(GiPair[0]+":"+dValue+eValue);
-		}
-	}
+
 	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pend, Pcount=0
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
@@ -319,7 +309,7 @@ function DE2B(){
 		var nn=0
 		var PArray=D[i][0].split(".")
 
-		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0,dvz[i]=0
+		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0
 		for(var j=0; j<jlen; j++){
 			var s=isFrac?j/jlen:-1
 			var d=DE(i,13,s)
@@ -342,7 +332,7 @@ function DE2B(){
 			var	pii = 2*Math.PI
 			//Speed up with matrix calc
 			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x, 	y1=u*Math.cos(v*pii)+y,			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
-			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),						y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
+			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),				y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
 			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px, 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
 			var	x4=Vv==0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);	y3 =Vv==0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
 			var zScale=z2>=1.9?2:1/(2-z2),	m=j*4
@@ -350,10 +340,12 @@ function DE2B(){
 			var r1=r*zScale*Pr, g1=g*zScale*Pg, b1=b*zScale*Pb
 		
 			dv[Ni].push(x5,y4,z2/10,1); dc[Ni].push(r1,g1,b1,1)
-			dvx[i]+=x4; dvy[i]+=y3; dvz[i]+=z2
+			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
+			dvX[i]+=x4; dvY[i]+=y3; dvZ[i]+=z2
 		}
 		var jlenT=Math.ceil(jlen)
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
+		dvX[i]/=jlenT;dvY[i]/=jlenT;dvZ[i]/=jlenT
 		updateUP(i,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
@@ -365,6 +357,17 @@ function DE2B(){
 	}
 	dvi[Np.length]=Bdv.length
 	算 =Math.round(n)
+	if(G && G.length>0 && G!=""){
+		for(var i=0;i<G.length;i++){
+			var GiPair = G[i].split("=");
+			var valuePair=GiPair[1].split("±");
+			var dValue
+			if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
+			else dValue=vdScript(valuePair[0],L[GiPair[0]])
+			var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
+			setVar(GiPair[0]+":"+dValue+eValue);
+		}
+	}
 	updateU()
 }
 function draw(a) {
@@ -419,9 +422,9 @@ function start(){
 	U.ontouchmove=function(ev){
 	if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0]);go=1}
 	U.onmousemove=function(ev){if(touch)setM(ev);go=1}
-	U.ontouchend=function(ev){MxB=[];MyB=[];touch=0}
-	U.onmouseup=function(ev){MxB=[];MyB=[];touch=0}
-	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>100)keyB.pop()}
+	U.ontouchend=function(ev){touch=0}
+	U.onmouseup=function(ev){touch=0}
+	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>9)keyB.pop()}
 	document.onkeydown=function(ev){key=ev.code}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
@@ -439,8 +442,9 @@ function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	if(go){
-		DE2B(D,E);DE2F()
-		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";dT:"+dT+";C:"+C+"; CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		for(var i=0;i<iT;i++)DE2B()
+		DE2F()
+		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+" ;VS:"+VS+";LS:"+LS+";Vv:"+Vv+";iT:"+iT+";dT:"+dT+";C:"+C+"; CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(F)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
@@ -454,7 +458,7 @@ function loop(){
 function vdScript(s,exc){
 	var ext=""
 	if(s&&(s.split("?").length-1)==(s.split("!").length))ext=":"+(exc?exc:"0")
-	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([XYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
+	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
 	return eval(s2)
 }
 function id(s){return document.getElementById(s)}
@@ -464,9 +468,12 @@ function inG(){gLog.value=G.join(",").replace(/,/g,",\n")}
 function outG(){G=gLog.value.replace(/,\n/g,",").split(",");}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
-function getX(s){t=dvx[L[s]];return t?t:0}
-function getY(s){t=dvy[L[s]];return t?t:0}
-function getZ(s){t=dvz[L[s]];return t?t:0}
+function getx(s){t=dvx[L[s]];return t?t:0}
+function gety(s){t=dvy[L[s]];return t?t:0}
+function getz(s){t=dvz[L[s]];return t?t:0}
+function getX(s){t=dvX[L[s]];return t?t:0}
+function getY(s){t=dvY[L[s]];return t?t:0}
+function getZ(s){t=dvZ[L[s]];return t?t:0}
 function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
