@@ -1,0 +1,1 @@
+star=.2*line*u*v±1*a
