@@ -1,5 +1,5 @@
 <!--http://eddie.cheng.se/V.html -->
-<!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></script><script type="text/javascript">
+<!doctype html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><script type="text/javascript">
 /*
 	Copyright 2018 Eddie Cheng
 
@@ -497,13 +497,14 @@ function insert(s){document.execCommand('insertText',false,'123')}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
-	#imgcanvas,#uicanvas{position:absolute;left:1px;top:1px}
-
+	#imgcanvas,#uicanvas{position:absolute;left:1px;top:5px}
+	#datadiv{position:absolute;left:522px;top:5px}
 </style>
 </head><body onload="start()">
 <canvas id="imgcanvas"></canvas>
 <canvas id="uicanvas"></canvas>
 <canvas id="glcanvas"></canvas></br>
+<div id="datadiv">
 <input id="loadD" type="file" onchange="readTextFile()"></input>
 <input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
 	
@@ -511,7 +512,7 @@ function insert(s){document.execCommand('insertText',false,'123')}
 <input id="loadF" type="file" onchange="readF()"></input>
 <input id="saveF" type="button" onclick="download('F',F,'txt')"></input>
 <input type="button" onclick="fLog.select();copy()" value="📑"></input></br>
-<textarea id="fLog" cols="48" rows="20" onchange="outF()" onfocus="inF()"></textarea>
+<textarea id="fLog" cols="48" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 <p><input id="loadG" type="file" onchange="readG()"></input>
 <input id="saveG" type="button" onclick="download('G',G,'txt')"></input>
 <input type="button" onclick="gLog.select();copy()" value="📑"></input></br>
@@ -521,7 +522,7 @@ function insert(s){document.execCommand('insertText',false,'123')}
 <input id="inf" type="text" value="∞" size=1></input>
 <input type="button" onclick="inf.select();copy()" value="∞"></input></br>
 <br>
-
+</div>
 <div id="imagediv">
 Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></inpu>
 </div>
