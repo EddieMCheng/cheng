@@ -16,13 +16,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="figure*.59w*.1a=core_1*.2499*-1z*0b*.5u*.125v±.5*a+core_0*.2499*0b*.5u*.125v±.5*a+core*.2499*z*0b*.5u*.125v±.5*a"
-var G=["figure.w=Mx"]
+var F="figure*.1a=core_1*.2499*-1z*0b*.5u*.125v±.5*a+core_0*.2499*0b*.5u*.125v±.5*a+core*.2499*z*0b*.5u*.125v±.5*a"
+var G=["figure.x=MxB[0]"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var A,all,out,T="New"//±∞
+var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5, VS="2.0", Vv=0,Vw=0, SS=512,IS=1,Vvm=0, Ia=1
-var Mx=.5,My=.5,touch=0,key="",MxB=[],MyB=[],keyB=[],算 ,抖 =1
+var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=[],算 ,抖 =1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
@@ -365,7 +365,7 @@ function DE2B(){
 			if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
 			else dValue=vdScript(valuePair[0],L[GiPair[0]])
 			var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
-			setVar(GiPair[0]+":"+dValue+eValue);
+			if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue);
 		}
 	}
 	updateU()
@@ -404,28 +404,25 @@ function showPosition(position){
 	var lon = Math.round(100*LON)/100+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 }
-function setM(ev){MxB.unshift(Mx);MyB.unshift(My);Mx=decimal3(ev.clientX/SS);My=decimal3(1-(ev.clientY/SS))}
+function getMx(ev){return 2*decimal3(ev.pageX/SS)-1}
+function getMy(ev){return 1-2*decimal3(ev.pageY/SS)}
+function setM(ev){touch=1;Mx=getMx(ev);My=getMy(ev);setMB(ev)}
+function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));go=1}
+function setKeyB(ev){keyB.unshift(ev.code);if(keyB.length>9)keyB.pop();go=1}
 function start(){
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
 	
 	inF();inG();outVar()
-	U.ontouchstart=function(ev){
-		touch=1
-		setM(ev.touches[0])
-	}
-	U.onmousedown=function(ev){
-		touch=1
-		setM(ev)
-	}
-	U.ontouchmove=function(ev){
-	if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0]);go=1}
-	U.onmousemove=function(ev){if(touch)setM(ev);go=1}
-	U.ontouchend=function(ev){touch=0}
-	U.onmouseup=function(ev){touch=0}
-	document.onkeyup=function(ev){key="";keyB.unshift(ev.code);if(keyB.length>9)keyB.pop()}
-	document.onkeydown=function(ev){key=ev.code}
+	U.ontouchstart=function(ev){setM(ev.touches[0])}
+	U.onmousedown=function(ev){setM(ev.touches[0])}
+	U.ontouchmove=function(ev){if((gLog.value.includes("MxB")||gLog.value.includes("MyB"))&&ev.touches.length==1)ev.preventDefault();setMB(ev.touches[0])}
+	U.onmousemove=function(ev){if(touch)setMB(ev)}
+	U.ontouchend=function(ev){touch=0;go=1}
+	U.onmouseup=function(ev){touch=0;go=1}
+	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev)}
+	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
 	navigator.geolocation.getCurrentPosition(showPosition)	
@@ -496,6 +493,7 @@ function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.ge
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
 function copy(){document.execCommand("copy");}
+function insert(s){document.execCommand('insertText',false,'123')}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
@@ -518,7 +516,10 @@ function copy(){document.execCommand("copy");}
 <input id="saveG" type="button" onclick="download('G',G,'txt')"></input>
 <input type="button" onclick="gLog.select();copy()" value="📑"></input></br>
 <textarea id="gLog" cols="48" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
-
+<input id="plusm" type="text" value="±" size=1></input>
+<input type="button" onclick="plusm.select();copy()" value="±"></input></br>
+<input id="inf" type="text" value="∞" size=1></input>
+<input type="button" onclick="inf.select();copy()" value="∞"></input></br>
 <br>
 
 <div id="imagediv">
