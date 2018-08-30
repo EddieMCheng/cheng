@@ -21,8 +21,8 @@ var G=["figure.x=MxB[0]"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5, VS="2.0", Vv=0,Vw=0, SS=512,IS=1,Vvm=0, Ia=1
-var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=[],算 ,抖 =1
+var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Vvm=0,Ia=0.5
+var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=[],算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
@@ -330,7 +330,6 @@ function DE2B(){
 				var u=DE(i,10,s),		v=DE(i,11,s),		w=DE(i,12,s)				
 			}
 			var	pii = 2*Math.PI
-			//Speed up with matrix calc
 			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x, 	y1=u*Math.cos(v*pii)+y,			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
 			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),				y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
 			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px, 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
@@ -459,10 +458,10 @@ function vdScript(s,exc){
 	return eval(s2)
 }
 function id(s){return document.getElementById(s)}
-function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n").replace("=","\n=");}
-function outF(){F=fLog.value.replace(/\n\+/g,"+").replace(/,\n/g,",").replace("\n=","=");F2DE()}
-function inG(){gLog.value=G.join(",").replace(/,/g,",\n")}
-function outG(){G=gLog.value.replace(/,\n/g,",").split(",");}
+function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace("=","\n=");}
+function outF(){F=fLog.value.replace(/\n/g,"");F2DE()}
+function inG(){gLog.value=G.join(",\n")}
+function outG(){G=gLog.value.replace(/,/g,"").split("\n");}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){t=dvx[L[s]];return t?t:0}
