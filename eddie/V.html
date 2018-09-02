@@ -287,7 +287,7 @@ function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
 
-	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pend, Pcount=0
+	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pend, Pcount=0, PT
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
 		var l=Nl[Ni]
@@ -301,6 +301,8 @@ function DE2B(){
 			Px=DE(i-l,4,S);	Py=DE(i-l,5,S); Pz=DE(i-l,6,S)
 			Pr=DE(i-l,7,S);		Pg=DE(i-l,8,S);	Pb=DE(i-l,9,S)
 			Pu=DE(i-l,10,S);		Pv=DE(i-l,11,S);	Pw=DE(i-l,12,S)
+			if(Pu<0){Pu*=-1;PT=1}
+			else PT=0
 		}
 		var len=DE(i,1)
 		var isFrac=len<1&&len>0
@@ -330,10 +332,10 @@ function DE2B(){
 				var u=DE(i,10,s),		v=DE(i,11,s),		w=DE(i,12,s)				
 			}
 			var	pii = 2*Math.PI
-			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x, 	y1=u*Math.cos(v*pii)+y,			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
+			var x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x, 	y0=u*Math.cos(v*pii)+y,			z0=u*Math.sin(v*pii)*Math.sin(w*pii)+z, y1=PT?z0:y0, z1=PT?y0:z0
 			var x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),				y2=(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
 			var x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px, 	z2=(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
-			var	x4=Vv==0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);	y3 =Vv==0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
+			var	x4=Vv==0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);	y3=Vv==0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
 			var zScale=z2>=1.9?2:1/(2-z2),	m=j*4
 			var x5=x4*zScale, y4 = y3*zScale
 			var r1=r*zScale*Pr, g1=g*zScale*Pg, b1=b*zScale*Pb
