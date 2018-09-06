@@ -114,12 +114,12 @@ function updateUP(i,font,alpha){
 		var goName=(L[D[i][0]+".name"]+"")
 		var goFont=L[D[i][0]+".font"]
 		var goAlign=L[D[i][0]+".align"]
-		var typeA=D[i][15]+D[i-D[i][2]][15]%1
+		var typeA=D[i][3]>1||D[i-D[i][2]][3]>1
 		U2d.textAlign =goAlign?goAlign:"left"
-		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(goName?zS:zS*typeA*alpha*D[i][3])+')'
+		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(zS*typeA*alpha)+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
-    	var names=typeA%1>0? D[i][0].split("."):" "
+    	var names=typeA? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
 		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+zS*dvX[i]*(SS/2),(SS/2)-zS*dvY[i]*(SS/2))
 	}
