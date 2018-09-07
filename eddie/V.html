@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="figure*.1a=core_1*.2499*-1z*0b*.5u*.125v±.5*a+core_0*.2499*0b*.5u*.125v±.5*a+core*.2499*z*0b*.5u*.125v±.5*a"
+var F="figure*2p=core_1*.2499*-1z*0b*.5u*.125v±.5*a+core_0*.2499*0b*.5u*.125v±.5*a+core*.2499*z*0b*.5u*.125v±.5*a"
 var G=["figure.x=MxB[0]"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
@@ -392,8 +392,8 @@ function draw(a) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var Ni=0;Ni<Np.length; Ni++){
 		var i=Np[Np.length-Ni-1]
-		var type=Math.floor(D[i][15]+D[i-D[i][2]][15])
-		gl.drawArrays(type==2?gl.TRIANGLE_FAN:type==1?gl.LINE_STRIP:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
+		var type=D[i][15]+D[i-D[i][2]][15]
+		gl.drawArrays(type>3?gl.TRIANGLE_FAN:type>2?gl.TRIANGLE_STRIP:type>1?gl.TRIANGLES:type>0.5?gl.LINE_STRIP:type>0?gl.LINES:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
 
