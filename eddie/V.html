@@ -416,7 +416,7 @@ function start(){
 	
 	inF();inG();outVar()
 	U.ontouchstart=function(ev){setM(ev.touches[0])}
-	U.onmousedown=function(ev){setM(ev.touches[0])}
+	U.onmousedown=function(ev){setM(ev)}
 	U.ontouchmove=function(ev){if((gLog.value.includes("MxB")||gLog.value.includes("MyB"))&&ev.touches.length==1)ev.preventDefault();setMB(ev.touches[0])}
 	U.onmousemove=function(ev){if(touch)setMB(ev)}
 	U.ontouchend=function(ev){touch=0;go=1}
