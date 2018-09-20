@@ -21,7 +21,7 @@ var G=["Vw=MxB[0]"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Ia=0.5
+var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Ia=1
 var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=[],算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -84,11 +84,12 @@ function readTextUrl(file){
 function updateI(idx){
 	if(I){
 		I2d.scale(IS,IS)
-		I2d.clearRect(0,0,I.width,I.height);
+		I2d.clearRect(0,0,I.width,I.height)
 			if(idx>=0)img = images[idx]
 			if(img){
 			var cutw=img.width>img.height?img.width-img.height:0; var cuth=img.height>img.width?img.height-img.width:0 
 			I2d.drawImage(img,-cuth/2,-cutw/2,img.width+cuth,img.height +cutw,0,0,SS,SS)
+			setVar("Ia:0.5")
 		}
 	}
 }
@@ -159,8 +160,8 @@ function setVar(s){
 		}
 		else if(sArr[0]=="Ia"){
 			Ia=sVal
-			I2d.globalAlpha=Ia
-			updateI()
+			gl.clearColor(0,0,0,Ia)
+			go=1
 		}
 		else if(sArr[0]=="dT")dT=parseFloat(sVal)
 		else if(sArr[0]=="SS"){
@@ -497,17 +498,17 @@ function insert(s){document.execCommand('insertText',false,'123')}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
-	#imgcanvas,#uicanvas{position:absolute;left:1px;top:5px}
+	#imgcanvas{position:absolute;left:1px;top:5px;z-index:-10}
+	#uicanvas{position:absolute;left:1px;top:5px}
 	#datadiv{position:absolute;left:522px;top:5px}
 </style>
 </head><body onload="start()">
 <canvas id="imgcanvas"></canvas>
-<canvas id="uicanvas"></canvas>
-<canvas id="glcanvas"></canvas></br>
+<canvas id="glcanvas"></canvas>
+<canvas id="uicanvas"></canvas></br>
 <div id="datadiv">
 <input id="loadD" type="file" onchange="readTextFile()"></input>
 <input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
-	
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="loadF" type="file" onchange="readF()"></input>
 <input id="saveF" type="button" onclick="download('F',F,'txt')"></input>
