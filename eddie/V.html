@@ -25,7 +25,7 @@ var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5,VS="2.
 var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=[],算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
-var GPS=((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT,LON,ALT
+var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
@@ -36,7 +36,10 @@ function init(){
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 		gl.enable(gl.BLEND);
 		gl.disable(gl.DEPTH_TEST);
-		gl.clearDepth(-1);gl.depthFunc(gl.GREATER)
+		//gl.clearDepth(-1);gl.depthFunc(gl.GREATER)
+		gl.lineWidth(LS)
+		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
+		Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
 		window.requestAnimationFrame(loop)
 	}
 }
@@ -174,6 +177,8 @@ function setVar(s){
 			updateI()
 			gl.viewport(0,0,SS,SS)
 		}
+		else if(sArr[0]=="LS"){LS=sVal;gl.lineWidth(LS)}
+		else if(sArr[0]=="VS"){VS=sVal;Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")}
 		else if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG()}
 		else if(sArr[0]=="T")updateT(sVal)
@@ -375,35 +380,24 @@ function DE2B(){
 function draw(a) {
 	if(!a)a=1
 	var Bv,Bc
-	gl.lineWidth(LS)
-	Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
-	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	var Gprog=gl.createProgram()
-	gl.attachShader(Gprog, Gvert);		gl.attachShader(Gprog, Gfrag)
-	gl.linkProgram(Gprog); gl.useProgram(Gprog)
-	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt)
-	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt)
+	var Gprog=gl.createProgram();gl.attachShader(Gprog, Gvert);gl.attachShader(Gprog, Gfrag);gl.linkProgram(Gprog);gl.useProgram(Gprog)
 
-
-	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW)
-	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW)
+	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt);	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW)
+	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt);	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW)
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0)
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var Ni=0;Ni<Np.length; Ni++){
-		var i=Np[Np.length-Ni-1]
-		var type=D[i][15]+D[i-D[i][2]][15]
+		var i=Np[Np.length-Ni-1],type=D[i][15]+D[i-D[i][2]][15]
 		gl.drawArrays(type>3?gl.TRIANGLE_FAN:type>2?gl.TRIANGLE_STRIP:type>1?gl.TRIANGLES:type>0.5?gl.LINE_STRIP:type>0?gl.LINES:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
 
 function showPosition(position){
-	LAT=(90-position.coords.latitude)/360
-	LON=(360-position.coords.longitude)/360
+	LAT=(90-position.coords.latitude)/360;	LON=(360-position.coords.longitude)/360
 	ALT = position.coords.altitude
-	var lat = Math.round(100*LAT)/100+""
-	var lon = Math.round(100*LON)/100+""
+	var lat = Math.round(100*LAT)/100+"", lon = Math.round(100*LON)/100+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 }
 function getMx(ev){return 2*decimal3(ev.pageX/SS)-1}
@@ -495,7 +489,6 @@ function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.ge
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
 function copy(){document.execCommand("copy");}
-function insert(s){document.execCommand('insertText',false,'123')}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
@@ -513,11 +506,11 @@ function insert(s){document.execCommand('insertText',false,'123')}
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="loadF" type="file" onchange="readF()"></input>
 <input id="saveF" type="button" onclick="download('F',F,'txt')"></input>
-<input type="button" onclick="fLog.select();copy()" value="📑"></input></br>
+<input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
 <textarea id="fLog" cols="48" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 <p><input id="loadG" type="file" onchange="readG()"></input>
 <input id="saveG" type="button" onclick="download('G',G,'txt')"></input>
-<input type="button" onclick="gLog.select();copy()" value="📑"></input></br>
+<input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
 <textarea id="gLog" cols="48" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 <input id="plusm" type="text" value="±" size=1></input>
 <input type="button" onclick="plusm.select();copy()" value="±"></input></br>
