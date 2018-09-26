@@ -347,7 +347,7 @@ function DE2B(){
 			zScale=z3>1?z3:1/(2-z3),	m=j*4
 			var xx=x5*zScale, yy = y3*zScale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb
-			dv[Ni].push(xx,yy,z3/10,1); dc[Ni].push(r1,g1,b1,zScale)
+			dv[Ni].push(xx,yy,1,1); dc[Ni].push(r1,g1,b1,zScale>.01?zScale:.01)
 			dvx[i]+=x3; dvy[i]+=y2; dvz[i]+=z2
 			dvX[i]+=x5; dvY[i]+=y3; dvZ[i]+=z3
 		}
@@ -367,13 +367,15 @@ function DE2B(){
 	算 =Math.round(n)
 	if(G && G.length>0 && G!=""){
 		for(var i=0;i<G.length;i++){
-			var GiPair = G[i].split("=");
-			var valuePair=GiPair[1].split("±");
-			var dValue
-			if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
-			else dValue=vdScript(valuePair[0],L[GiPair[0]])
-			var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
-			if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue);
+			if(G[i].substr(0,2)!="//"&&G[i].includes("=")){
+				var GiPair = G[i].split("=");
+				var valuePair=GiPair[1].split("±");
+				var dValue
+				if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
+				else dValue=vdScript(valuePair[0],L[GiPair[0]])
+				var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
+				if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue);
+			}
 		}
 	}
 	updateU()
