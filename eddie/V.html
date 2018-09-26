@@ -231,9 +231,10 @@ function DE2F(){
 		for(var j=3;j<C.length;j++){
 			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
-				if(j>0)F+="*"
-				if(D[i][j]!=1)	F+=(D[i][j]+"").replace("0.",".")
-				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(E[i][j]+"").replace("0.",".")}
+				F+="*"
+				if((j==4||j==5||j==6||j==10)&&(D[i][j]+"").length>7)F+=D[i][j].toExponential(3).replace("+","")
+				else F+=(D[i][j]+"").replace("0.",".")
+				F+=C[j];if(E[i][j]!=CEj)F+="±"+(E[i][j]+"").replace("0.",".")
 			}
 		}
 		if(D[i][2]==0)F+="="
