@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="figure*2p=core_1*.2499*-1z*0b*.5u*.125v±.5*a+core_0*.2499*0b*.5u*.125v±.5*a+core*.2499*z*0b*.5u*.125v±.5*a"
+var F="figure*2p=square_1*.2499*-1z*0b*.5u*.125v±.5*a+square_0*.2499*0b*.5u*.125v±.5*a+square*.2499*z*0b*.5u*.125v±.5*a"
 var G=["Vw=MxB[0]"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
@@ -72,7 +72,7 @@ function readF(){
 }
 function readG(){
 	var rdr=new FileReader()
-	rdr.onload=function(){G.push(rdr.result);inG()}
+	rdr.onload=function(){G=G.concat(rdr.result.split(","));inG()}
 	rdr.readAsText(loadG.files[0])
 }
 function readTextUrl(file){
