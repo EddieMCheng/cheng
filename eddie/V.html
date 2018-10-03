@@ -17,13 +17,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="figure*2p=square_1*.2499*-1z*0b*.5u*.125v±.5*a+square_0*.2499*0b*.5u*.125v±.5*a+square*.2499*z*0b*.5u*.125v±.5*a"
+var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=MxB[0]"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Va=1
-var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=[],算,抖=1
+var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
@@ -37,29 +37,63 @@ function init(){
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 		gl.enable(gl.BLEND);
 		gl.disable(gl.DEPTH_TEST);
-		//gl.clearDepth(-1);gl.depthFunc(gl.GREATER)
 		gl.lineWidth(LS)
 		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
 		Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
 		window.requestAnimationFrame(loop)
 	}
 }
+function start(){
+	V=document.getElementById("glcanvas")
+	I=document.getElementById('imgcanvas')
+	U=document.getElementById('uicanvas')
+	inF();inG();outVar()
+	U.ontouchstart=function(ev){setM(ev.touches[0])}
+	U.onmousedown=function(ev){setM(ev)}
+	U.ontouchmove=function(ev){if((gLog.value.includes("MxB")||gLog.value.includes("MyB"))&&ev.touches.length==1)ev.preventDefault();setMB(ev.touches[0])}
+	U.onmousemove=function(ev){if(touch)setMB(ev)}
+	U.ontouchend=function(ev){touch=0;go=1}
+	U.onmouseup=function(ev){touch=0;go=1}
+	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev)}
+	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
+	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
+	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
+	navigator.geolocation.getCurrentPosition(showPosition)
+	V.width=SS;V.height=SS
+	I.width=SS;I.height=SS
+	U.width=SS;U.height=SS
+
+	gl=V.getContext("webgl")
+	I2d=I.getContext('2d')
+	U2d=U.getContext('2d')
+	init()
+}
+function loop(){
+	time= new Date().getTime()
+	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
+	if(go){
+		for(var i=0;i<iT;i++)DE2B()
+		DE2F()
+		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";iT:"+iT+";dT:"+dT+";C:"+C+"; CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		saveD.value="D_"+T+" ("+kb(out)+")"
+		saveF.value="F_"+T+" ("+kb(F)+")"
+		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
+		go=0
+		draw()
+	}
+	 ping= new Date().getTime()-time
+	window.requestAnimationFrame(loop);
+}
+
 function updateT(s){
-	//var wsString=W?";W:"+W+";":""
-	//var pfx=s.substr(0,2)=="D_"?"D_":""
 	if(s)T=s.replace("D_","").split(".")[0]; document.title="VD - "+T.replace(/_/g," ");if(!window.location.href.includes(";")) window.history.pushState(null, "Title", "?D_"+T)
 }
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
-	//if(arr.length>2){
 		for(var i=0;i<arr.length;i++){
-		//	if(!arr[i].includes(":")&&arr[i].includes("D_"))updateT([i])
 			if(arr[i].includes(":")&&!arr[i].includes("file:")&&!arr[i].includes("https:"))setVar(arr[i])
 		}
-    //if(typeof(G)=='string')G=G.split(",")
-	//	D=[];E=[];inF();inG();F2DE();
 	outVar();
-	//}
 }
 function readTextFile(){
 	var file=loadD.files[0], reader = new FileReader()
@@ -88,6 +122,8 @@ function readTextUrl(file){
 	}
 	raw.send(null);
 }
+function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};setVar("Va:0.5");images[idx].src=URL.createObjectURL(imgInput.files[0])}
+
 function updateI(idx){
 	if(I){
 		I2d.scale(IS,IS)
@@ -131,9 +167,6 @@ function updateUP(i,font,alpha){
 		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+zS*dvX[i]*(SS/2),(SS/2)-zS*dvY[i]*(SS/2))
 	}
 }
-function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
-function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};setVar("Va:0.5");images[idx].src=URL.createObjectURL(imgInput.files[0])}
-
 function download(type, text, ext) {
 	filename= type+"_"+T+"_"+HE()+GPS+"."+ext
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
@@ -405,49 +438,7 @@ function getMx(ev){return 2*decimal3(ev.pageX/SS)-1}
 function getMy(ev){return 1-2*decimal3(ev.pageY/SS)}
 function setM(ev){touch=1;Mx=getMx(ev);My=getMy(ev);setMB(ev)}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));go=1}
-function setKeyB(ev){keyB.unshift(ev.code);if(keyB.length>9)keyB.pop();go=1}
-function start(){
-	V=document.getElementById("glcanvas")
-	I=document.getElementById('imgcanvas')
-	U=document.getElementById('uicanvas')
-	
-	inF();inG();outVar()
-	U.ontouchstart=function(ev){setM(ev.touches[0])}
-	U.onmousedown=function(ev){setM(ev)}
-	U.ontouchmove=function(ev){if((gLog.value.includes("MxB")||gLog.value.includes("MyB"))&&ev.touches.length==1)ev.preventDefault();setMB(ev.touches[0])}
-	U.onmousemove=function(ev){if(touch)setMB(ev)}
-	U.ontouchend=function(ev){touch=0;go=1}
-	U.onmouseup=function(ev){touch=0;go=1}
-	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev)}
-	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
-	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
-	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
-	navigator.geolocation.getCurrentPosition(showPosition)	
-	V.width=SS;V.height=SS
-	I.width=SS;I.height=SS
-	U.width=SS;U.height=SS
-
-	gl=V.getContext("webgl")
-	I2d=I.getContext('2d')
-	U2d=U.getContext('2d')
-	init()
-}
-function loop(){
-	time= new Date().getTime()
-	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	if(go){
-		for(var i=0;i<iT;i++)DE2B()
-		DE2F()
-		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";iT:"+iT+";dT:"+dT+";C:"+C+"; CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
-		saveD.value="D_"+T+" ("+kb(out)+")"
-		saveF.value="F_"+T+" ("+kb(F)+")"
-		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
-		go=0
-		draw()
-	}
-	 ping= new Date().getTime()-time
-	window.requestAnimationFrame(loop);
-}
+function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);go=1}
 
 function vdScript(s,exc){
 	var ext=""
@@ -489,6 +480,7 @@ function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))
 function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
+function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function copy(){document.execCommand("copy");}
 </script>
 <style>
