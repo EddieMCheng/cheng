@@ -50,11 +50,11 @@ function start(){
 	inF();inG();outVar()
 	U.ontouchstart=function(ev){setM1(ev.touches[0])}
 	U.onmousedown=function(ev){setM1(ev)}
-	U.ontouchmove=function(ev){if((gLog.value.includes("MxB")||gLog.value.includes("MyB"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
+	U.ontouchmove=function(ev){if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
 	U.onmousemove=function(ev){if(touch)setMB(ev)}
 	U.ontouchend=function(ev){setM0(ev.touches[0])}
 	U.onmouseup=function(ev){setM0(ev)}
-	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev)}
+	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);go=1;if(key=="Escape"){outF();inF();outG();inF()}}
 	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
