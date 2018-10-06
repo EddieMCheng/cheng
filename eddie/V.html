@@ -54,7 +54,7 @@ function start(){
 	U.onmousemove=function(ev){if(touch)setMB(ev)}
 	U.ontouchend=function(ev){setM0(ev.touches[0])}
 	U.onmouseup=function(ev){setM0(ev)}
-	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);go=1;if(key=="Escape"){outF();inF();outG();inF()}}
+	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);go=1;if(key=="Escape"){inF();inG()}}
 	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
@@ -337,7 +337,7 @@ function DE2B(){
 			var LEN=DE(i-l,1)
 			var FRAC=LEN<1&&LEN>0
 			var NLEN=FRAC?1/LEN:Math.ceil(LEN)
-			if(Pcount<=0)Pcount=NLEN
+			if(Pcount<=1)Pcount=NLEN
 			else Pcount--
 			var S=FRAC?Pcount/NLEN:-1
 			Px=DE(i-l,4,S);	Py=DE(i-l,5,S); Pz=DE(i-l,6,S)
@@ -449,7 +449,7 @@ function vdScript(s,exc){
 	return eval(s2)
 }
 function id(s){return document.getElementById(s)}
-function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace("=","\n=");}
+function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
 function outF(){F=fLog.value.replace(/\n/g,"");F2DE()}
 function inG(){gLog.value=G.join(",\n")}
 function outG(){G=gLog.value.replace(/,/g,"").split("\n");}
