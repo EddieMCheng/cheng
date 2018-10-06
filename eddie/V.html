@@ -18,12 +18,12 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
-var G=["Vw=MxB[0]"]
+var G=["Vw=Mx"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Va=1
-var Mx=.5,My=.5,touch=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
+var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
@@ -48,12 +48,12 @@ function start(){
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
 	inF();inG();outVar()
-	U.ontouchstart=function(ev){setM(ev.touches[0])}
-	U.onmousedown=function(ev){setM(ev)}
-	U.ontouchmove=function(ev){if((gLog.value.includes("MxB")||gLog.value.includes("MyB"))&&ev.touches.length==1)ev.preventDefault();setMB(ev.touches[0])}
+	U.ontouchstart=function(ev){setM1(ev.touches[0])}
+	U.onmousedown=function(ev){setM1(ev)}
+	U.ontouchmove=function(ev){if((gLog.value.includes("MxB")||gLog.value.includes("MyB"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
 	U.onmousemove=function(ev){if(touch)setMB(ev)}
-	U.ontouchend=function(ev){touch=0;go=1}
-	U.onmouseup=function(ev){touch=0;go=1}
+	U.ontouchend=function(ev){setM0(ev.touches[0])}
+	U.onmouseup=function(ev){setM0(ev)}
 	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev)}
 	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
@@ -436,7 +436,9 @@ function showPosition(position){
 }
 function getMx(ev){return 2*decimal3(ev.pageX/SS)-1}
 function getMy(ev){return 1-2*decimal3(ev.pageY/SS)}
-function setM(ev){touch=1;Mx=getMx(ev);My=getMy(ev);setMB(ev)}
+function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;setMB(ev);touch=1}
+function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0}
+function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);go=1}
 
