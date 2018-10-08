@@ -22,7 +22,7 @@ var G=["Vw=Mx"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="10px Noto Sans",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Va=1
+var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Va=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -54,7 +54,7 @@ function start(){
 	U.onmousemove=function(ev){if(touch)setMB(ev)}
 	U.ontouchend=function(ev){setM0(ev.touches[0])}
 	U.onmouseup=function(ev){setM0(ev)}
-	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);go=1;if(key=="Escape"){inF();inG()}}
+	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);go=1;if(ev.code=="Escape"){inF();inG()}else if(ev.code=="Enter"&&ev.ctrlKey){outF();outG()}}
 	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
@@ -208,6 +208,7 @@ function setVar(s){
 			V.width=SS;V.height=SS
 			I.width=SS;I.height=SS
 			U.width=SS;U.height=SS
+			datadiv.style.left=(parseInt(SS)+10)+"px"
 			updateI()
 			gl.viewport(0,0,SS,SS)
 		}
@@ -489,7 +490,7 @@ function copy(){document.execCommand("copy");}
 	html,body{margin:1px;padding:0}
 	#imgcanvas{position:absolute;left:1px;top:5px;z-index:-10}
 	#uicanvas{position:absolute;left:1px;top:5px}
-	#datadiv{position:absolute;left:522px;top:5px}
+	#datadiv{position:absolute;left:522px;top:5px;width:600px}
 </style>
 </head><body onload="start()">
 <canvas id="imgcanvas"></canvas>
@@ -502,11 +503,11 @@ function copy(){document.execCommand("copy");}
 <input id="loadF" type="file" onchange="readF()"></input>
 <input id="saveF" type="button" onclick="download('F',F,'txt')"></input>
 <input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
-<textarea id="fLog" cols="48" rows="10" onchange="outF()" onfocus="inF()"></textarea>
+<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 <p><input id="loadG" type="file" onchange="readG()"></input>
 <input id="saveG" type="button" onclick="download('G',G,'txt')"></input>
 <input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
-<textarea id="gLog" cols="48" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
+<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 <input id="plusm" type="text" value="±" size=1></input>
 <input type="button" onclick="plusm.select();copy()" value="±"></input></br>
 <input id="inf" type="text" value="∞" size=1></input>
