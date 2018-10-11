@@ -22,7 +22,7 @@ var G=["Vw=Mx"]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Va=1
+var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",Vv=0,Vw=0,SS=512,IS=1,Va=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -152,19 +152,19 @@ function updateU(idx){
 	}
 }
 function updateUP(i,font,alpha){
-	var zS=dvZ[i]>1?dvZ[i]:1/(2-dvZ[i])
+//	var zS=Z[i]>1?Z[i]:1/(2-Z[i])
 	if(U){
 		var goName=(L[D[i][0]+".name"]+"")
 		var goFont=L[D[i][0]+".font"]
 		var goAlign=L[D[i][0]+".align"]
 		var typeA=D[i][3]>1||D[i-D[i][2]][3]>1
 		U2d.textAlign =goAlign?goAlign:"left"
-		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(zS*typeA*alpha)+')'
+		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(Z[i]*typeA*alpha)+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
     	var names=typeA? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+zS*dvX[i]*(SS/2),(SS/2)-zS*dvY[i]*(SS/2))
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+X[i]*(SS/2),(SS/2)-Y[i]*(SS/2))
 	}
 }
 function download(type, text, ext) {
@@ -352,7 +352,7 @@ function DE2B(){
 		var nn=0
 		var PArray=D[i][0].split(".")
 
-		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0
+		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		for(var j=0; j<jlen; j++){
 			var s=isFrac?j/jlen:-1
 			var d=DE(i,13,s)
@@ -382,12 +382,14 @@ function DE2B(){
 			var xx=x5*zScale, yy = y3*zScale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb
 			dv[Ni].push(xx,yy,1,1); dc[Ni].push(r1,g1,b1,zScale)
-			dvx[i]+=x3; dvy[i]+=y2; dvz[i]+=z2
-			dvX[i]+=x5; dvY[i]+=y3; dvZ[i]+=z3
+			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
+			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
+			X[i]+=xx; Y[i]+=yy; Z[i]+=zScale
 		}
 		var jlenT=Math.ceil(jlen)
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
 		dvX[i]/=jlenT;dvY[i]/=jlenT;dvZ[i]/=jlenT
+		X[i]/=jlenT;Y[i]/=jlenT;Z[i]/=jlenT
 		updateUP(i,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
@@ -410,7 +412,7 @@ function DE2B(){
 			if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue);
 		}
 	}
-	updateU()
+	//updateU()
 }
 function draw(a) {
 	if(!a)a=1
