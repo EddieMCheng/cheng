@@ -448,7 +448,7 @@ function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);go=1}
 function vdScript(s,exc){
 	var ext=""
 	if(s&&(s.split("?").length-1)==(s.split("!").length))ext=":"+(exc?exc:"0")
-	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%")+ext:0
+	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%").replace(/\)\(/g,",")+ext:0
 	return eval(s2)
 }
 function id(s){return document.getElementById(s)}
