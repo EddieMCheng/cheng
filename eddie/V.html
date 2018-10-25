@@ -262,13 +262,13 @@ function DE2F(){
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
 		F+=D[i][0]
-		if(D[i][1]>0&&D[i][1]!=CD[1])F+="*"+(D[i][1]+"").replace("0.",".")
+		if(D[i][1]>0&&D[i][1]!=CD[1])F+="*"+(D[i][1]+"")
 		for(var j=3;j<C.length;j++){
 			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
 				if(j>0)F+="*"
-				if(D[i][j]!=1)	F+=(D[i][j]+"").replace("0.",".")
-				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(E[i][j]+"").replace("0.",".")}
+				if(D[i][j]!=1)	F+=(D[i][j]+"")
+				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(E[i][j]+"")}
 			}
 		}
 		if(D[i][2]==0)F+="="
@@ -278,7 +278,6 @@ function DE2F(){
 function F2DE(){
 	F=decodeURI(F)
 	var commas=F.split(",")
-	console.log(commas)
 	N=-1
 	Np=[],D=[],E=[],Nl=[]
 	for(var I=0; I<commas.length; I++){
@@ -291,14 +290,13 @@ function F2DE(){
 			D[N]=[], E[N]=[],	D[N][0]="", D[N][1]=i==0?CP[1]:CD[1];	D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
-				var props=multis[j].replace("-.","-0.").split("±")
+				var props=multis[j].split("±")
 				var prop=props[0]
 				var number=Number(prop)
 				if(!isNaN(number)){D[N][1]*=number}
 				else{
 					var propValue=parseFloat(prop)
 					var valueStrLen
-
 					if(prop[0]==".")		valueStrLen=propValue.toString().length-1
 					else if(propValue==0)	valueStrLen=1
 					else if(!propValue){	valueStrLen=0;		propValue=1			}
@@ -309,9 +307,20 @@ function F2DE(){
 					else {
 						propIndex=1
  		 			}
+ 		 			
 					if(propIndex==1&&propName!=C[3]){
-						if(D[N][0])D[N][0]+="."
-						D[N][0] += propName
+						if(propName.endsWith("...")&&N>0){
+	 		 				propName=propName.replace("...","")
+	 		 				for(n=N-1;n>0;n--){
+	 		 					if(D[n][0].beginsWith(propName)&&D[n][2]!=0){
+	 		 						alert(propName+"-->"+D[n][0])
+	 		 					}
+	 		 				}
+	 		 			}
+	 		 			else{
+							if(D[N][0])D[N][0]+="."
+							D[N][0] += propName
+						}
 					}
 					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
 					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):D[N][2]==0?0:CE[propIndex]
