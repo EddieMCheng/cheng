@@ -94,6 +94,8 @@ function updateD(Tidx,arr){
 			if(arr[i].includes(":")&&!arr[i].includes("file:")&&!arr[i].includes("https:"))setVar(arr[i])
 		}
 	outVar();
+	inF();
+	inG();
 }
 function readTextFile(){
 	var file=loadD.files[0], reader = new FileReader()
