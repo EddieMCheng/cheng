@@ -31,7 +31,7 @@ var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	A=ATD[0];readTextUrl(ATD[1]);updateD(1,ATD)
+	A=ATD[0];readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(1,ATD)
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
