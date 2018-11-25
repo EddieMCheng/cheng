@@ -137,22 +137,6 @@ function updateI(idx){
 		}
 	}
 }
-function updateU(idx){
-	if(U){
-		U2d.fillStyle="#FFFFFF"; U2d.textBaseline = "top"; U2d.textAlign = "left"; U2d.font=Font
-		U2d.fillText(T,10,10)
-
-		U2d.textAlign = "right"
-		U2d.fillText(Font,SS-10,10)
-
-		U2d.textAlign = "left";	U2d.textBaseline = "bottom"
-		U2d.fillText(N+"",10,SS-10)
-
-		U2d.fillStyle="#FFFFFF"
-		U2d.textAlign = "right"
-		U2d.fillText(算 ,SS-10,SS-10)
-	}
-}
 function updateUP(i,font,alpha){
 	if(U){
 		var goName=(L[D[i][0]+".name"]+"")
@@ -422,7 +406,6 @@ function DE2B(){
 			if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue);
 		}
 	}
-	//updateU()
 }
 function draw(a) {
 	if(!a)a=1
