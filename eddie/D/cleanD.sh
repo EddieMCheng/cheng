@@ -1,0 +1,1 @@
+find . -name '*.txt' -exec bash -c 'mv $0 ${0/D_/}' {} \;

@@ -1,0 +1,1 @@
+find . -name $1'_*.txt' -exec bash -c 'mv $0 $1/${0/$1_/}' {} $1 \;

@@ -51,7 +51,7 @@ function start(){
 	U.ontouchstart=function(ev){setM1(ev.touches[0])}
 	U.onmousedown=function(ev){setM1(ev)}
 	U.ontouchmove=function(ev){if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
-	U.onmousemove=function(ev){if(touch)setMB(ev)}
+	U.onmousemove=function(ev){if(touch)setM(ev)}
 	U.ontouchend=function(ev){setM0(ev.touches[0])}
 	U.onmouseup=function(ev){setM0(ev)}
 	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);go=1;if(ev.code=="Escape"){inF();inG()}else if(ev.code=="Enter"&&ev.ctrlKey){outF();outG()}}
@@ -158,7 +158,7 @@ function updateUP(i,font,alpha){
 		var goName=(L[D[i][0]+".name"]+"")
 		var goFont=L[D[i][0]+".font"]
 		var goAlign=L[D[i][0]+".align"]
-		var typeA=Math.abs(D[i][3])>1||Math.abs(D[i-D[i][2]][3])>1
+		var typeA=Math.abs(D[i][3])>=2||Math.abs(D[i-D[i][2]][3])>=2
 		U2d.textAlign =goAlign?goAlign:"left"
 		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(Z[i]*typeA*alpha)+')'
 		U2d.font=goFont?goFont:font
