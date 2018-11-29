@@ -237,6 +237,10 @@ function updateL(){
 		}
 		L[nNm] = j
 		D[j][0]=D[j][0].replace(nm,nNm)
+		for(jj=D.length-1;jj>=0;jj--){
+					if(jj!=j)D[jj][0]=D[jj][0].replace("."+nm,"."+nNm)			
+		}
+
 	 }
 }
 function DE2F(){
