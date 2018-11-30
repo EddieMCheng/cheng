@@ -237,10 +237,7 @@ function updateL(){
 		}
 		L[nNm] = j
 		D[j][0]=D[j][0].replace(nm,nNm)
-		for(jj=D.length-1;jj>=0;jj--){
-					if(jj!=j)D[jj][0]=D[jj][0].replace("."+nm,"."+nNm)			
-		}
-
+		D[j-1][0]=D[j-1][0].replace("."+nm,"."+nNm)
 	 }
 }
 function DE2F(){
@@ -340,18 +337,21 @@ function DE2B(){
 			else Pcount--
 			var S=FRAC?Pcount/NLEN:-1
 			Px=DE(i-l,4,S);	Py=DE(i-l,5,S); Pz=DE(i-l,6,S)
-			Pr=DE(i-l,7,S);		Pg=DE(i-l,8,S);	Pb=DE(i-l,9,S)
-			Pu=DE(i-l,10,S);		Pv=DE(i-l,11,S);	Pw=DE(i-l,12,S)
+			Pr=DE(i-l,7,S);	Pg=DE(i-l,8,S);	Pb=DE(i-l,9,S)
+			Pu=DE(i-l,10,S);Pv=DE(i-l,11,S);Pw=DE(i-l,12,S
+			)
 		}
-		var len=DE(i,1)
-		var isFrac=len<1&&len>0
-		var jlen=isFrac?1/len:Math.ceil(len)
+		
+		var len=DE(i,1)	
+		var type = D[i][15]+D[i-D[i][2]][15]
+		var isFrac=(len<1&&len>0)||(type>0&&len==1)
+		var jlen=isFrac?1/len:Math.ceil(len)-1
 		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?p:-p
 		var nn=0
 		var PArray=D[i][0].split(".")
 
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
-		for(var j=0; j<jlen; j++){
+		for(var j=0; j<=jlen; j++){
 			var s=isFrac?j/jlen:-1
 			var d=DE(i,13,s)
 			if(PArray.length>1){
