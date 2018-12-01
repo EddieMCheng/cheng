@@ -345,13 +345,13 @@ function DE2B(){
 		var len=DE(i,1)	
 		var type = D[i][15]+D[i-D[i][2]][15]
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
-		var jlen=isFrac?1/len:Math.ceil(len)-1
+		var jlen=isFrac?1/(len-1e-4):Math.ceil(len)
 		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?p:-p
 		var nn=0
 		var PArray=D[i][0].split(".")
 
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
-		for(var j=0; j<=jlen; j++){
+		for(var j=0; j<jlen; j++){
 			var s=isFrac?j/jlen:-1
 			var d=DE(i,13,s)
 			if(PArray.length>1){
