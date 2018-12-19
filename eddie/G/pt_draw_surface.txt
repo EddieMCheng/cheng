@@ -1,0 +1,1 @@
+VP=0.2,Va=0,pt_0.u=1,pt_0.v=touch<1?D(pt.v),pt_0.w=touch<1?D(pt.w),pt.u=1,pt.v=touch?D(pt_0.v)-(My-My_1)/20,pt.w=touch?D(pt_0.w)-(Mx-Mx_1)/20,pt.s='pt+pt',pt_0.p=0,pt_1.p=1,pt_1.a=1,pt_1.s='pt_1.pt',pt_2.s='pt_2.pt_1'

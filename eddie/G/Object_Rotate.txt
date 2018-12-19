@@ -1,0 +1,1 @@
+nav.v=touch<1?Vv,Vv=touch&Mx_1>0?D(nav.v)+(-My+My_1)/5!Vv,nav.w=touch<1?Vw,Vw=touch&Mx_1>0?D(nav.w)+(-Mx+Mx_1)/5!Vw,rot.v=touch<1?D(Obj.v),Obj.v=touch&Mx_1<0?D(rot.v)+(-My+My_1)/5,rot.w=touch<1?D(Obj.w),Obj.w=touch&Mx_1<0?D(rot.w)+(-Mx+Mx_1)/5,VP=0.2

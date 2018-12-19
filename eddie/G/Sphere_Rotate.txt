@@ -1,0 +1,1 @@
+rot.v=touch<1?Vv,Vv=touch?D(rot.v)+(-My+My_1)/5!Vv,rot.w=touch<1?D(Sphere.w),Sphere.w=touch?D(rot.w)+(-Mx+Mx_1)/5,VP=0.2,Va=0.4
