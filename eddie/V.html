@@ -104,12 +104,12 @@ function readTextFile(){
 }
 function readF(){
 	var rdr=new FileReader()
-	rdr.onload=function(){F=F+","+rdr.result;inF();F2DE();}
+	rdr.onload=function(){F=F+","+rdr.result.replace(/\r\n/g,"");inF();F2DE();}
 	rdr.readAsText(loadF.files[0])
 }
 function readG(){
 	var rdr=new FileReader()
-	rdr.onload=function(){G=G.concat(rdr.result.split(","));inG()}
+	rdr.onload=function(){G=rdr.result.split(",");inG()}
 	rdr.readAsText(loadG.files[0])
 }
 function readTextUrl(file){
@@ -347,12 +347,12 @@ function DE2B(){
 		var type = D[i][15]+D[i-D[i][2]][15]
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
 		var jlen=isFrac?1/(len-1e-4):Math.ceil(len)
-		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?p:-p
+		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?-p:p
 		var nn=0
 		var PArray=D[i][0].split(".")
 
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
-		for(var j=0; j<jlen; j++){
+		for(var j=0; j<jlen*(pdep%1.0001); j++){
 			var s=isFrac?j/jlen:-1
 			var d=DE(i,13,s)
 			if(PArray.length>1){
@@ -379,11 +379,11 @@ function DE2B(){
 			x5=Vw==0||p<0?x4:x4*Math.cos(-Vw*pii)+z2*Math.sin(-Vw*pii), 				z3=Vw==0||p<0?z2:z2*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
 			zScale=z3>1?z3*VP+1-VP:1/(2-(z3*VP+1-VP)),	m=j*4
 			var xx=x5*zScale, yy = y3*zScale
-			var r1=r*Pr, g1=g*Pg, b1=b*Pb
-			dv[Ni].push(xx,yy,1,1); dc[Ni].push(r1,g1,b1,z3*VF>1?1:1/(2-z3*VF))
+			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z3*VF>1?1:1/(2-z3*VF)
+			dv[Ni].push(xx,yy,1,1); dc[Ni].push(r1,g1,b1,a1)	
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
-			X[i]+=xx; Y[i]+=yy; Z[i]+=zScale
+			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
 		}
 		var jlenT=Math.ceil(jlen)
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
