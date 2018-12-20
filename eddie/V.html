@@ -54,8 +54,8 @@ function start(){
 	U.onmousemove=function(ev){if(touch)setM(ev)}
 	U.ontouchend=function(ev){setM0(ev.touches[0])}
 	U.onmouseup=function(ev){setM0(ev)}
-	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);go=1;if(ev.code=="Escape"){inF();inG()}else if(ev.code=="Enter"&&ev.ctrlKey){outF();outG();outVar()}}
-	document.onkeyup=function(ev){key=ev.code+"_0";go=1}
+	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);if(ev.code=="Escape"){inF();inG()}else if(ev.code=="Enter"&&ev.ctrlKey){outF();outG();outVar()}}
+	document.onkeyup=function(ev){key=ev.code+"_0"}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
 	navigator.geolocation.getCurrentPosition(showPosition)
@@ -441,8 +441,8 @@ function getMy(ev){return 1-2*decimal3(ev.pageY/SS)}
 function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;setMB(ev);touch=1}
 function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
-function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));go=1}
-function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);go=1}
+function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(!dT)go=1}
+function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(!dT)go=1}
 
 function vdScript(s,exc){
 	var ext=""
