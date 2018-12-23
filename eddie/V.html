@@ -188,7 +188,6 @@ function setVar(s){
 			gl.clearColor(0,0,0,Va)
 			go=1
 		}
-		else if(sArr[0]=="dT")dT=parseFloat(sVal)
 		else if(sArr[0]=="SS"){
 			SS=sVal
 			V.width=SS;V.height=SS
@@ -208,7 +207,7 @@ function setVar(s){
 			var dataArray=W.split(",")
 			for(var i=0;i<dataArray.length;i++){
 				com[i] = []
-				websock[i] = new WebSocket('ws://'+dataArray[i]+':81');
+				websock[i] = new WebSocket('ws://'+dataArray[i]);
 				websock[i].idx=i;
 				websock[i].onmessage = function(evt) {
 					if(evt.data.includes(",")){
