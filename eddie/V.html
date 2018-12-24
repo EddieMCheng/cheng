@@ -31,7 +31,7 @@ var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	A=ATD[0];readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(1,ATD)
+	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(1,ATD)}
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -223,6 +223,7 @@ function setVar(s){
 function updateL(){
 	L=[]
 	for(var i=0; i<C.length; i++){L[C[i]]=i}
+	L["#N"]=D.length-1
 	for(var j=D.length-1;j>=0;j--){
 		var par=j-D[j][2]
 		var nm=D[j][0].split(".")[0];
@@ -235,7 +236,8 @@ function updateL(){
 			nNm=nmEndStr?nmArr+"_"+nmEndStr:nmArr+"_"+dp
 			dp++
 		}
-		L[nNm] = j
+		L[nNm]=j
+		L["#"+j]=j
 		D[j][0]=D[j][0].replace(nm,nNm)
 		D[j-1][0]=D[j-1][0].replace("."+nm,"."+nNm)
 	 }
@@ -391,8 +393,6 @@ function DE2B(){
 		updateUP(i,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
-			//var skip=pdep<1&&pdep>=0?Math.ceil(pdep*dv[Ni].length):dv[Ni].length
-			//Bdv = Bdv.concat(dv[Ni].slice(0,skip));Bdc = Bdc.concat(dc[Ni].slice(0,skip))
 			Bdv = Bdv.concat(dv[Ni]);Bdc = Bdc.concat(dc[Ni])
 		
 		}
