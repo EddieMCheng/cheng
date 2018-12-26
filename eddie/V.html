@@ -74,7 +74,7 @@ function loop(){
 	if(go){
 		for(var i=0;i<iT;i++)DE2B()
 		DE2F()
-		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";iT:"+iT+";dT:"+dT+";C:"+C+"; CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";iT:"+iT+";dT:"+dT+";C:"+C+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(F)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
@@ -124,8 +124,7 @@ function readTextUrl(file){
 	}
 	raw.send(null);
 }
-function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};setVar("Va:0.5");images[idx].src=URL.createObjectURL(imgInput.files[0])}
-
+function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};if(Va==1)setVar("Va:0.5");images[idx].src=URL.createObjectURL(imgInput.files[0])}
 function updateI(idx){
 	if(I){
 		I2d.scale(IS,IS)
@@ -440,8 +439,8 @@ function getMy(ev){return 1-2*decimal3(ev.pageY/SS)}
 function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;setMB(ev);touch=1}
 function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
-function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(!dT)go=1}
-function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(!dT)go=1}
+function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
+function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(dT==0)go=1}
 
 function vdScript(s,exc){
 	var ext=""
