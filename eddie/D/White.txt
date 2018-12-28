@@ -1,0 +1,17 @@
+White;
+3KICMHuE4.09.95;
+SS:512;
+Font:12px;
+VS:2.0;
+LS:1.5;
+Va:0;
+Vv:0;
+Vw:0.246;
+iT:1;
+dT:0;
+C:slipxyzrgbuvwdta;
+CD:p,1,0,1,0,0,0,0,0,0,0,0,0,0.5,0,0;
+CE:±,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0;
+G:Vw=Mx;
+F:Box*0.25*w±0.5=lin*0.25*z*1.414u*0.375v±0.5*a;
+file:///sdcard/se/cheng/eddie/V.html
