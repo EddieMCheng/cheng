@@ -76,7 +76,7 @@ function loop(){
 		DE2F()
 		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";iT:"+iT+";dT:"+dT+";C:"+C+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
-		saveF.value="F_"+T+" ("+kb(F)+")"
+		saveF.value="F_"+T+" ("+kb(fLog.value)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
 		go=0
 		draw()
@@ -99,17 +99,17 @@ function updateD(Tidx,arr){
 }
 function readTextFile(){
 	var file=loadD.files[0], reader = new FileReader()
-	reader.onload=function(e){updateD(0,reader.result.split(";"))}
+	reader.onload=function(e){updateD(0,reader.result.replace(/\n/g,"").split(";"))}
 	reader.readAsText(file);
 }
 function readF(){
 	var rdr=new FileReader()
-	rdr.onload=function(){F=F+","+rdr.result.replace(/\r\n/g,"");inF();F2DE();}
+	rdr.onload=function(){fLog.value+=",\n\n"+rdr.result;outF()}//F+","+rdr.result.replace(/\r\n/g,"");inF();F2DE();}
 	rdr.readAsText(loadF.files[0])
 }
 function readG(){
 	var rdr=new FileReader()
-	rdr.onload=function(){G=rdr.result.split(",");inG()}
+	rdr.onload=function(){gLog.value=rdr.result;outG()}
 	rdr.readAsText(loadG.files[0])
 }
 function readTextUrl(file){
@@ -153,7 +153,7 @@ function updateUP(i,font,alpha){
 }
 function download(type, text, ext) {
 	filename= type+"_"+T+"_"+HE()+GPS+"."+ext
-	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text); pom.setAttribute('download', filename);
+	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text.replace(/;/g,";\n" )); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
@@ -451,8 +451,8 @@ function vdScript(s,exc){
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
 function outF(){F=fLog.value.replace(/\n/g,"");F2DE()}
-function inG(){gLog.value=G.join(",\n")}
-function outG(){G=gLog.value.replace(/,/g,"").split("\n");}
+function inG(){gLog.value=G.join(",\n\n")}
+function outG(){G=gLog.value.replace(/\n/g,"").split(",");}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){t=dvx[L[s]];return t?t:0}
@@ -500,11 +500,11 @@ function copy(){document.execCommand("copy");}
 <input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="loadF" type="file" onchange="readF()"></input>
-<input id="saveF" type="button" onclick="download('F',F,'txt')"></input>
+<input id="saveF" type="button" onclick="download('F',fLog.value,'txt')"></input>
 <input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
 <textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 <p><input id="loadG" type="file" onchange="readG()"></input>
-<input id="saveG" type="button" onclick="download('G',G,'txt')"></input>
+<input id="saveG" type="button" onclick="download('G',gLog.value,'txt')"></input>
 <input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
 <textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 <input value="update" type="button" onclick="inF();inG()"></input>
