@@ -31,7 +31,7 @@ var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
 	var ATD=window.location.href.replace("?",";").split(";");
-	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(1,ATD)}
+	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(1,ATD)}else updateT(T)
 	if(gl){
 		gl.clearColor(0,0,0,1)
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -54,7 +54,12 @@ function start(){
 	U.onmousemove=function(ev){if(touch)setM(ev)}
 	U.ontouchend=function(ev){setM0(ev.touches[0])}
 	U.onmouseup=function(ev){setM0(ev)}
-	document.onkeydown=function(ev){key=ev.code+"_1";setKeyB(ev);if(ev.code=="Escape"){inF();inG()}else if(ev.code=="Enter"&&ev.ctrlKey){outF();outG();outVar()}}
+	document.onkeydown=function(ev){
+		key=ev.code+"_1";setKeyB(ev)
+		if(ev.code=="Escape"){inF();inG()}
+		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outVar();outF()}
+		else if(ev.code=="KeyS"&&ev.ctrlKey){urlTFG()}
+	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
@@ -84,14 +89,15 @@ function loop(){
 	 ping= new Date().getTime()-time
 	window.requestAnimationFrame(loop);
 }
-
+function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G)}
 function updateT(s){
 	if(s)T=s.replace("D_","").split(".")[0]; document.title="VD - "+T.replace(/_/g," ");if(!window.location.href.includes(";")) window.history.pushState(null, "Title", "?D_"+T)
 }
+
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 		for(var i=0;i<arr.length;i++){
-			if(arr[i].includes(":")&&!arr[i].includes("file:")&&!arr[i].includes("https:"))setVar(arr[i])
+			if(arr[i].includes(":")&&!arr[i].includes("//"))setVar(arr[i])
 		}
 	outVar();
 	inF();
@@ -104,7 +110,7 @@ function readTextFile(){
 }
 function readF(){
 	var rdr=new FileReader()
-	rdr.onload=function(){fLog.value+=",\n\n"+rdr.result;outF()}//F+","+rdr.result.replace(/\r\n/g,"");inF();F2DE();}
+	rdr.onload=function(){fLog.value+=",\n\n"+rdr.result;outF()}	
 	rdr.readAsText(loadF.files[0])
 }
 function readG(){
@@ -238,7 +244,7 @@ function updateL(){
 		L[nNm]=j
 		L["#"+j]=j
 		D[j][0]=D[j][0].replace(nm,nNm)
-		D[j-1][0]=D[j-1][0].replace("."+nm,"."+nNm)
+		if(D[j-1])D[j-1][0]=D[j-1][0].replace("."+nm,"."+nNm)
 	 }
 }
 function DE2F(){
@@ -343,10 +349,10 @@ function DE2B(){
 			)
 		}
 		
-		var len=DE(i,1)	
+		var len=DE(i,1)
 		var type = D[i][15]+D[i-D[i][2]][15]
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
-		var jlen=isFrac?1/(len-1e-4):Math.ceil(len)
+		var jlen=isFrac?1/(len-1e-9):Math.ceil(len)
 		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?-p:p
 		var nn=0
 		var PArray=D[i][0].split(".")
@@ -450,9 +456,9 @@ function vdScript(s,exc){
 }
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
-function outF(){F=fLog.value.replace(/\n/g,"");F2DE()}
+function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=gLog.value.replace(/\n/g,"").split(",");}
+function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/\n/g,"").split(",");}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){t=dvx[L[s]];return t?t:0}
@@ -497,7 +503,8 @@ function copy(){document.execCommand("copy");}
 <canvas id="uicanvas"></canvas></br>
 <div id="datadiv">
 <input id="loadD" type="file" onchange="readTextFile()"></input>
-<input id="saveD" type="button" value="D" onclick="download('D',out,'txt')"></input>
+<input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
+<input type="button" value="URL" onclick="urlTFG()"></input>
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="loadF" type="file" onchange="readF()"></input>
 <input id="saveF" type="button" onclick="download('F',fLog.value,'txt')"></input>
@@ -508,11 +515,7 @@ function copy(){document.execCommand("copy");}
 <input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
 <textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 <input value="update" type="button" onclick="inF();inG()"></input>
-<input value="apply" type="button" onclick="outF();outG();outVar()"></input>
-<input id="plusm" type="text" value="±" size=1></input>
-<input type="button" onclick="plusm.select();copy()" value="±"></input>
-<input id="inf" type="text" value="∞" size=1></input>
-<input type="button" onclick="inf.select();copy()" value="∞"></input></br>
+<input value="apply" type="button" onclick="outG();outVar();outF()"></input>
 <br>
 </div>
 <div id="imagediv">
