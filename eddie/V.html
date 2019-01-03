@@ -91,9 +91,9 @@ function loop(){
 }
 function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G)}
 function updateT(s){
-	if(s)T=s.replace("D_","").split(".")[0]; document.title="VD - "+T.replace(/_/g," ");if(!window.location.href.includes(";")) window.history.pushState(null, "Title", "?D_"+T)
+	if(s)T=s.replace("D_","").split(".")[0];document.title="VD - "+T.replace(/_/g," ")
+	if(!window.location.href.includes(";"))window.history.pushState(null, "Title", "?D_"+T)
 }
-
 function updateD(Tidx,arr){
 	if(Tidx>=0)updateT(arr[Tidx])
 		for(var i=0;i<arr.length;i++){
@@ -122,9 +122,8 @@ function readTextUrl(file){
 	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
 	raw.onreadystatechange = function (){
 		if(file && raw.readyState==4&&(raw.status==200||raw.status==0)){
-			if(raw.responseText){updateD(0,raw.responseText.split(";"))}
+			if(raw.responseText){updateD(0,raw.responseText.replace(/\n/g,"").split(";"))}
 			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
-			document.title=T
 		}
 		else if(raw.status==404 && file.includes("_"))readTextUrl(file.replace("_","/"))
 	}
