@@ -30,7 +30,7 @@ var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var websock=[],W="",dat=[],thisIdx=0;
 updateL();F2DE();DE2B()
 function init(){
-	var ATD=window.location.href.replace("?",";").split(";");
+	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(1,ATD)}else updateT(T)
 	if(gl){
 		gl.clearColor(0,0,0,1)
@@ -268,7 +268,6 @@ function DE2F(){
 	}
 }
 function F2DE(){
-	F=decodeURI(F)
 	var commas=F.split(",")
 	N=-1
 	Np=[],D=[],E=[],Nl=[]
