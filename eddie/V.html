@@ -61,6 +61,7 @@ function start(){
 		else if(ev.code=="KeyS"&&ev.ctrlKey){urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
+	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+lin);return true}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
 	navigator.geolocation.getCurrentPosition(showPosition)
@@ -411,7 +412,7 @@ function DE2B(){
 			if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
 			else dValue=vdScript(valuePair[0],L[GiPair[0]])
 			var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
-			if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue);
+			if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue)
 		}
 	}
 }
@@ -419,7 +420,10 @@ function draw(a) {
 	if(!a)a=1
 	var Bv,Bc
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	var Gprog=gl.createProgram();gl.attachShader(Gprog, Gvert);gl.attachShader(Gprog, Gfrag);gl.linkProgram(Gprog);gl.useProgram(Gprog)
+	var Gprog=gl.createProgram();
+	gl.attachShader(Gprog, Gvert);
+	gl.attachShader(Gprog, Gfrag);
+	gl.linkProgram(Gprog);gl.useProgram(Gprog)
 
 	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt);	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW)
 	BcAtt=gl.getAttribLocation(Gprog, "aVrgb");	gl.enableVertexAttribArray(BcAtt);	Bc=gl.createBuffer();	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdc), gl.DYNAMIC_DRAW)
