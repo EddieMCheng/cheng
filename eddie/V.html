@@ -55,7 +55,7 @@ function start(){
 	document.onkeydown=function(ev){
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){inF();inG()}
-		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outVar();outF()}
+		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outVal();outF()}
 		else if(ev.code=="KeyS"&&ev.ctrlKey){urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
@@ -526,7 +526,7 @@ function copy(){document.execCommand("copy");}
 <input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
 <textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 <input value="update" type="button" onclick="inF();inG()"></input>
-<input value="apply" type="button" onclick="outG();outVar();outF()"></input>
+<input value="apply" type="button" onclick="outG();outVal();outF()"></input>
 <br>
 </div>
 <div id="imagediv">
