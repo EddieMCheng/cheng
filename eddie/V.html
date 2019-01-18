@@ -27,7 +27,7 @@ var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5)
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
-var websock=[],W="",dat=[],thisIdx=0;
+var websock=[],W="",Wd=[],Wi="",Wp=81;
 updateL();F2DE();DE2B()
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
@@ -209,14 +209,17 @@ function setVar(s){
 			W=sPair[1]
 			var dataArray=W.split(",")
 			for(var i=0;i<dataArray.length;i++){
-				com[i] = []
-				websock[i] = new WebSocket('ws://'+dataArray[i]);
-				websock[i].idx=i;
-				websock[i].onmessage = function(evt) {
-					if(evt.data.includes(",")){
-						com[this.idx]=evt.data.split(",")
-					}
-				}	
+				if(websock[i])websock[i].close();
+				if(dataArray[i]!=""){
+					Wd[i] = []
+					websock[i] = new WebSocket('ws://'+dataArray[i]+":"+Wp);
+					websock[i].idx=i;
+					websock[i].onmessage = function(evt) {
+						if(evt.data.includes(",")){
+							Wd[this.idx]=evt.data.split(",")
+						}
+					}	
+				}
 			}
 			updateT(T)
 		}
@@ -462,7 +465,7 @@ function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(dT==0)go=1}
 function vdScript(s,exc){
 	var ext=""
 	if(s&&(s.split("?").length-1)==(s.split("!").length))ext=":"+(exc?exc:"0")
-	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENSW])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%").replace(/\)\(/g,",")+ext:0
+	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%").replace(/\)\(/g,",")+ext:0
 	return eval(s2)
 }
 function id(s){return document.getElementById(s)}
@@ -482,11 +485,8 @@ function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pa
 function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
 function getS(s){return L[s]?L[s]+"":""}
-function getW(s){
-	var sArr=s.split(".")
-	var i=parseInt(sArr[0])
-	var j=parseInt(sArr[1])
-	return !com[i]?0:com[i][j]?com[i][j]:0
+function getW(i,j){
+	return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0
 }
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
