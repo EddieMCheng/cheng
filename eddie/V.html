@@ -18,17 +18,17 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
-var G=["Vw=Mx"]
+var G=["Vw=-Mx","Vv=-My"],GB=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
-var Gfrag,Gvert,vibms,go=1,time=0,iT=1,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
 var websock=[],W="",Wd=[],Wi="",Wp=81;
-updateL();F2DE();DE2B()
+updateL();F2DE();DE2B();Geval()
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(1,ATD)}else updateT(T)
@@ -59,7 +59,7 @@ function start(){
 		else if(ev.code=="KeyS"&&ev.ctrlKey){urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
-	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+lin);return true}
+	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);return true}
 	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
 	navigator.geolocation.getCurrentPosition(showPosition)
@@ -76,16 +76,16 @@ function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	if(go){
-		for(var i=0;i<iT;i++)DE2B()
+		DE2B()
 		DE2F()
-		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";iT:"+iT+";dT:"+dT+";C:"+C+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		out=T+";"+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";dT:"+dT+";C:"+C+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(fLog.value)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
 		go=0
 		draw()
 	}
-	 ping= new Date().getTime()-time
+	ping=new Date().getTime()-time
 	window.requestAnimationFrame(loop);
 }
 function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G)}
@@ -203,7 +203,7 @@ function setVar(s){
 		else if(sArr[0]=="LS"){LS=sVal;gl.lineWidth(LS)}
 		else if(sArr[0]=="VS"){VS=sVal;Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")}
 		else if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
-		else if(sArr[0]=="G"){G=sPair[1].split(",");inG()}
+		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
 		else if(sArr[0]=="W"){
 			W=sPair[1]
@@ -297,10 +297,7 @@ function F2DE(){
 					var propName=prop.substr(valueStrLen,prop.length-valueStrLen)
 					var propIndex
 					if(C.includes(propName)){propIndex=L[propName]}
-					else {
-						propIndex=1
- 		 			}
- 		 			
+					else{propIndex=1}
 					if(propIndex==1&&propName!=C[3]){
 						if(propName.endsWith("...")&&N>0){
 	 		 				propName=propName.replace("...","")
@@ -327,6 +324,25 @@ function F2DE(){
 
 	}
 	updateL();go=1;
+}
+function Geval(){
+	if(G&&G!=""){
+		GV=[]
+		for(var i=0;i<G.length;i++){
+			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i]
+			var GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
+			var idPair=Gi0?Gi0.split("."):"",id0=idPair[0]?idPair[0]:null,id1=idPair[idPair.length-1]?idPair[idPair.length-1]:null
+			var vPair=Gi1?Gi1.split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
+			var d=vl0&&question(vl0)?vl0:""
+			if(Gi0&&Gi0[Gi0.length-2]=="."){
+				var m=L[id0], n=L[id1]
+				if(vl0&&m!=undefined)GV.push("D["+m+"]["+n+"]="+vdScript(vl0+(d!=""?"!D["+m+"]["+n+"]":"")+""))
+				if(vl1&&m!=undefined)GV.push("E["+m+"]["+n+"]="+vdScript(vl0+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+			}
+			else if(id1=="name"||id1=="font"||id1=="align")GV.push("L['"+Gi0+"']="+vdScript(vl0+d))
+			else if(Gi0)GV.push(Gi0+"="+vdScript(vl0+d))
+		}
+	}
 }
 function DE2B(){
 	Bdv=[];Bdc=[];n=0
@@ -399,23 +415,12 @@ function DE2B(){
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
 			Bdv = Bdv.concat(dv[Ni]);Bdc = Bdc.concat(dc[Ni])
-		
 		}
 		n+=jlen+nn
 	} 
 	dvi[Np.length]=Bdv.length
 	算 =Math.round(n)
-	if(G && G.length>0 && G!=""){
-		for(var i=0;i<G.length;i++){
-			var GiPair = G[i].split("=");
-			var valuePair=GiPair[1].split("±");
-			var dValue
-			if(GiPair[0][GiPair[0].length-2]==".")dValue=vdScript(valuePair[0],getD(GiPair[0]))
-			else dValue=vdScript(valuePair[0],L[GiPair[0]])
-			var eValue=valuePair.length==1?"":"±"+vdScript(valuePair[1],getE(GiPair[0]))
-			if(GiPair[0])setVar(GiPair[0]+":"+dValue+eValue)
-		}
-	}
+	for(var i=0;i<GV.length;i++){try{eval(GV[i])}catch(e){alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e);G[i]="//"+G[i]}}
 }
 function draw(a) {
 	if(!a)a=1
@@ -461,18 +466,12 @@ function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(dT==0)go=1}
-
-function vdScript(s,exc){
-	var ext=""
-	if(s&&(s.split("?").length-1)==(s.split("!").length))ext=":"+(exc?exc:"0")
-	var s2=s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%").replace(/\)\(/g,",")+ext:0
-	return eval(s2)
-}
+function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%").replace(/≝/g,"Math.").replace(/\)\(/g,","):0}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
 function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/\n/g,"").split(",");}
+function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").split(",");Geval()}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){t=dvx[L[s]];return t?t:0}
@@ -481,13 +480,11 @@ function getz(s){t=dvz[L[s]];return t?t:0}
 function getX(s){t=dvX[L[s]];return t?t:0}
 function getY(s){t=dvY[L[s]];return t?t:0}
 function getZ(s){t=dvZ[L[s]];return t?t:0}
-function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
-function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
+function getD(s,i){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[1]]]:0}
+function getE(s,i){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
 function getS(s){return L[s]?L[s]+"":""}
-function getW(i,j){
-	return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0
-}
+function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
@@ -500,6 +497,7 @@ function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.ge
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
+function question(s){return s.split("?").length>s.split("!").length}
 function copy(){document.execCommand("copy");}
 </script>
 <style>
