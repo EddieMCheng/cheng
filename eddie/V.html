@@ -109,7 +109,7 @@ function readTextFile(){
 }
 function readF(){
 	var rdr=new FileReader()
-	rdr.onload=function(){fLog.value+=",\n\n"+rdr.result;outF()}	
+	rdr.onload=function(){fLog.value+=",\n\n"+rdr.result;outF()}
 	rdr.readAsText(loadF.files[0])
 }
 function readG(){
@@ -172,7 +172,7 @@ function setVar(s){
 		if(sArr.length>1 && L[sArr[0]]!=undefined){
 			var sName=sArr[0]
 			var sType=sArr[sArr.length-1]
-			if(sType == "name" || sType == "font" || sType=="align")L[sPair[0]]=sPair[1]
+			if(sType == "name"||sType=="font"||sType=="align")L[sPair[0]]=sPair[1]
 			else if(sType=="s")D[L[sName]][0]=sPair[1]
 			else if(sType.length==1 && sType.search(/[a-z]/g)==0){
 				var sDE=sVal.split("±")
@@ -218,7 +218,7 @@ function setVar(s){
 						if(evt.data.includes(",")){
 							Wd[this.idx]=evt.data.split(",")
 						}
-					}	
+					}
 				}
 			}
 			updateT(T)
@@ -391,7 +391,7 @@ function DE2B(){
 			else{
 				var x=DE(i,4,s),		y=DE(i,5,s),		z=DE(i,6,s)
 				var r=DE(i,7,s),		g=DE(i,8,s),		b=DE(i,9,s)
-				var u=DE(i,10,s),		v=DE(i,11,s),		w=DE(i,12,s)				
+				var u=DE(i,10,s),		v=DE(i,11,s),		w=DE(i,12,s)
 			}
 			var	pii = 2*Math.PI,x1,x2,x3,x4,x5,y1,y2,y3,z1,z2,z3
 			x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x, 				y1=u*Math.cos(v*pii)+y,	z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
@@ -419,27 +419,27 @@ function DE2B(){
 		n+=jlen+nn
 	} 
 	dvi[Np.length]=Bdv.length
-	算 =Math.round(n)
+	算=Math.round(n)
 	for(var i=0;i<GV.length;i++){try{eval(GV[i])}catch(e){alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e);G[i]="//"+G[i]}}
 }
 function draw(a) {
 	if(!a)a=1
 	var Bv,Bc
 	if(Bb==1){
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+		gl.blendFunc(gl.SRC_ALPHA,gl.ONE)
 		gl.enable(gl.BLEND);
-		gl.disable(gl.DEPTH_TEST);
+		gl.disable(gl.DEPTH_TEST)
 	}
 	else{
 		gl.clearDepth(-1)
 		gl.disable(gl.BLEND)
 		gl.enable(gl.DEPTH_TEST)
-		gl.depthFunc(gl.GREATER)	
+		gl.depthFunc(gl.GREATER)
 	}
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	var Gprog=gl.createProgram();
-	gl.attachShader(Gprog, Gvert);
-	gl.attachShader(Gprog, Gfrag);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	var Gprog=gl.createProgram()
+	gl.attachShader(Gprog, Gvert)
+	gl.attachShader(Gprog, Gfrag)
 	gl.linkProgram(Gprog);gl.useProgram(Gprog)
 
 	BvAtt=gl.getAttribLocation(Gprog, "aVxyz");	gl.enableVertexAttribArray(BvAtt);	Bv=gl.createBuffer(); 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Bdv), gl.DYNAMIC_DRAW)
@@ -454,7 +454,7 @@ function draw(a) {
 }
 
 function showPosition(position){
-	LAT=(90-position.coords.latitude)/360;	LON=(360-position.coords.longitude)/360
+	LAT=(90-position.coords.latitude)/360;LON=(360-position.coords.longitude)/360
 	ALT = position.coords.altitude
 	var lat = Math.round(100*LAT)/100+"", lon = Math.round(100*LON)/100+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
@@ -480,8 +480,8 @@ function getz(s){t=dvz[L[s]];return t?t:0}
 function getX(s){t=dvX[L[s]];return t?t:0}
 function getY(s){t=dvY[L[s]];return t?t:0}
 function getZ(s){t=dvZ[L[s]];return t?t:0}
-function getD(s,i){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[1]]]:0}
-function getE(s,i){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[1]]]:0}
+function getD(s,i){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
+function getE(s,i){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
 function getS(s){return L[s]?L[s]+"":""}
 function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
@@ -498,7 +498,7 @@ function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function question(s){return s.split("?").length>s.split("!").length}
-function copy(){document.execCommand("copy");}
+function copy(){document.execCommand("copy")}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
