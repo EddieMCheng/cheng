@@ -330,17 +330,22 @@ function Geval(){
 		GV=[]
 		for(var i=0;i<G.length;i++){
 			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i]
-			var GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
-			var idPair=Gi0?Gi0.split("."):"",id0=idPair[0]?idPair[0]:null,id1=idPair[idPair.length-1]?idPair[idPair.length-1]:null
-			var vPair=Gi1?Gi1.split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
-			var d=vl0&&question(vl0)?vl0:""
-			if(Gi0&&Gi0[Gi0.length-2]=="."){
-				var m=L[id0], n=L[id1]
-				if(vl0&&m!=undefined)GV.push("D["+m+"]["+n+"]="+vdScript(vl0+(d!=""?"!D["+m+"]["+n+"]":"")+""))
-				if(vl1&&m!=undefined)GV.push("E["+m+"]["+n+"]="+vdScript(vl0+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+			if(Gi!=""){
+				var GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
+				var idPair=Gi0?Gi0.split("."):"",id0=idPair[0]?idPair[0]:null,id1=idPair[idPair.length-1]?idPair[idPair.length-1]:null
+				var Bi=Gi1.indexOf("["),Bj=Gi1.indexOf("]")
+				var Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
+				var vPair=Gi1?Gi1.replace("["+Bval+"]","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
+				var d=vl0&&question(vl0)?vl0:""			
+				if(Gi0&&Gi0[Gi0.length-2]=="."){
+					var m=L[id0], n=L[id1]
+					if(Bval!=""){if(!GB[m])GB[m]=[];GB[m][n]=vdScript(Bval)}
+					if(vl0&&m!=undefined)GV.push("D["+m+"]["+n+"]="+vdScript(vl0+(d!=""?"!D["+m+"]["+n+"]":"")+""))
+					if(vl1&&m!=undefined)GV.push("E["+m+"]["+n+"]="+vdScript(vl0+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+				}
+				else if(id1=="name"||id1=="font"||id1=="align")GV.push("L['"+Gi0+"']="+vdScript(vl0+d))
+				else if(Gi0)GV.push(Gi0+"="+vdScript(vl0+d))
 			}
-			else if(id1=="name"||id1=="font"||id1=="align")GV.push("L['"+Gi0+"']="+vdScript(vl0+d))
-			else if(Gi0)GV.push(Gi0+"="+vdScript(vl0+d))
 		}
 	}
 }
@@ -389,7 +394,7 @@ function DE2B(){
 				}
 			}
 			else{
-				var x=DE(i,4,s),		y=DE(i,5,s),		z=DE(i,6,s)
+				var x=DEG(i,4,s,j),		y=DEG(i,5,s,j),		z=DEG(i,6,s,j)
 				var r=DE(i,7,s),		g=DE(i,8,s),		b=DE(i,9,s)
 				var u=DE(i,10,s),		v=DE(i,11,s),		w=DE(i,12,s)
 			}
@@ -427,7 +432,7 @@ function draw(a) {
 	var Bv,Bc
 	if(Bb==1){
 		gl.blendFunc(gl.SRC_ALPHA,gl.ONE)
-		gl.enable(gl.BLEND);
+		gl.enable(gl.BLEND)
 		gl.disable(gl.DEPTH_TEST)
 	}
 	else{
@@ -489,8 +494,9 @@ function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DE(i,j,s){return D[i][j]+Err(i,j,s);}
-function Err(i,j,s){ if(E[i][j]==0)return 0;else if(s>=0)return E[i][j]*(2*s-1); else return E[i][j]*(Math.random()-Math.random())}
+function DEG(m,n,s,i){try{return DE(m,n,s)+(GB[m][n]?eval(GB[m][n]):0)}catch(e){return DE(m,n,s);alert(e)}}
+function DE(m,n,s){return D[m][n]+Err(m,n,s);}
+function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
 function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(v%60)}
 function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
