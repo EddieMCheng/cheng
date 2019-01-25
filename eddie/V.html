@@ -18,7 +18,7 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
-var G=["Vw=-Mx","Vv=-My"],GB=[], GV=[]
+var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New"
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
@@ -339,7 +339,7 @@ function Geval(){
 				var d=vl0&&question(vl0)?vl0:""			
 				if(Gi0&&Gi0[Gi0.length-2]=="."){
 					var m=L[id0], n=L[id1]
-					if(Bval!=""){if(!GB[m])GB[m]=[];GB[m][n]=vdScript(Bval)}
+					if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
 					if(vl0&&m!=undefined)GV.push("D["+m+"]["+n+"]="+vdScript(vl0+(d!=""?"!D["+m+"]["+n+"]":"")+""))
 					if(vl1&&m!=undefined)GV.push("E["+m+"]["+n+"]="+vdScript(vl0+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
 				}
@@ -471,12 +471,12 @@ function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(dT==0)go=1}
-function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%").replace(/≝/g,"Math.").replace(/\)\(/g,","):0}
+function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/≡/g,"==").replace(/≠/g,"!=").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([DENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/∞/g,"%").replace(/≝/g,"Math.").replace(/\)\(/g,","):0}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
 function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").split(",");Geval()}
+function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").replace(/==/g,"≡").replace(/!=/g,"≠").replace(/>=/g,"≥").replace(/<=/g,"≤").split(",");Geval()}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){t=dvx[L[s]];return t?t:0}
@@ -494,7 +494,7 @@ function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DEG(m,n,s,i){var v;try{v=GB[m][n]?eval(GB[m][n]):0}catch(e){v=0}; return DE(m,n,s)+(v?v:0)}
+function DEG(m,n,s,i){var v;try{v=GB[m][n]?eval(GB[m][n]):0;GBd[m][n][i]=v}catch(e){v=0}; return DE(m,n,s)+(v?v:0)}
 function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
