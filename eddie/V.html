@@ -494,7 +494,7 @@ function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DEG(m,n,s,i){var v;try{v=GB[m][n]?eval(GB[m][n]):0;GBd[m][n][i]=v}catch(e){v=0}; return DE(m,n,s)+(v?v:0)}
+function DEG(m,n,s,i){var d=0, v=0;try{d=GBd[m][n][i];v=GB[m][n]?eval(GB[m][n]):0;GBd[m][n][i]=v}catch(e){v=0}; return DE(m,n,s)+(v?v:0)}
 function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
