@@ -20,7 +20,7 @@
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var A,all,out,T="New"
+var A,all,out,T="New", alerts=0
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
@@ -425,7 +425,16 @@ function DE2B(){
 	} 
 	dvi[Np.length]=Bdv.length
 	算=Math.round(n)
-	for(var i=0;i<GV.length;i++){try{eval(GV[i])}catch(e){alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e);G[i]="//"+G[i]}}
+	for(var i=0;i<GV.length;i++){
+		try{eval(GV[i])}
+		catch(e){
+			if(alerts>4){
+				alerts++
+				alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
+			}
+			else if(alerts==5)alert("more than 5 errors...")
+		}
+	}
 }
 function draw(a) {
 	if(!a)a=1
