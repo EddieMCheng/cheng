@@ -353,7 +353,7 @@ function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
 
-	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pd,Pend, Pcount=0
+	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pd,Pend, Pi=0
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
 		var l=Nl[Ni]
@@ -361,13 +361,13 @@ function DE2B(){
 			var LEN=DE(i-l,1)
 			var FRAC=LEN<1&&LEN>0
 			var NLEN=FRAC?1/LEN:Math.ceil(LEN)
-			if(Pcount<=1)Pcount=NLEN
-			else Pcount--
-			var S=FRAC?Pcount/NLEN:-1
-			Px=DE(i-l,4,S);	Py=DE(i-l,5,S); Pz=DE(i-l,6,S)
-			Pr=DE(i-l,7,S);	Pg=DE(i-l,8,S);	Pb=DE(i-l,9,S)
-			Pu=DE(i-l,10,S);Pv=DE(i-l,11,S);Pw=DE(i-l,12,S)
-			Pd=DE(i-l,13,S)
+			if(Pi<=1)Pi=NLEN
+			else Pi--
+			var S=FRAC?Pi/NLEN:-1
+			Px=DEG(i-l,4,S,Pi);	Py=DEG(i-l,5,S,Pi); Pz=DEG(i-l,6,S,Pi)
+			Pr=DEG(i-l,7,S,Pi);	Pg=DEG(i-l,8,S,Pi);	Pb=DEG(i-l,9,S,Pi)
+			Pu=DEG(i-l,10,S,Pi);Pv=DEG(i-l,11,S,Pi);Pw=DEG(i-l,12,S,Pi)
+			Pd=DEG(i-l,13,S,Pi)
 		}
 		
 		var len=DE(i,1)
@@ -381,7 +381,7 @@ function DE2B(){
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		for(var j=0; j<jlen*(pdep%1.0001); j++){
 			var s=isFrac?j/jlen:-1
-			var d=DE(i,13,s)+Pd
+			var d=DEG(i,13,s,j)+Pd
 			if(PArray.length>1){
 				var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
 				var i0 = L[PArray[ii]]
