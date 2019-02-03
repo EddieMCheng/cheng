@@ -341,7 +341,7 @@ function Geval(){
 					var m=L[id0], n=L[id1]
 					if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
 					if(vl0&&m!=undefined)GV.push("D["+m+"]["+n+"]="+vdScript(vl0+(d!=""?"!D["+m+"]["+n+"]":"")+""))
-					if(vl1&&m!=undefined)GV.push("E["+m+"]["+n+"]="+vdScript(vl0+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+					if(vl1&&m!=undefined)GV.push("E["+m+"]["+n+"]="+vdScript(vl1+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
 				}
 				else if(id1=="name"||id1=="font"||id1=="align")GV.push("L['"+Gi0+"']="+vdScript(vl0+d))
 				else if(Gi0)GV.push(Gi0+"="+vdScript(vl0+d))
