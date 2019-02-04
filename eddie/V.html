@@ -480,7 +480,7 @@ function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(dT==0)go=1}
-function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/≡/g,"==").replace(/≠/g,"!=").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/\)\(/g,",").replace(/∞/g,"%").replace(/≝/g,"Math."):0}
+function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/≡/g,"==").replace(/≠/g,"!=").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([BDEINS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/\)\(/g,",").replace(/∞/g,"%").replace(/≝/g,"Math."):0}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
 function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE()}
@@ -500,11 +500,15 @@ function getE(s){let pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pa
 function getN(s){return L[s]?parseFloat(L[s]):0}
 function getS(s){return L[s]?L[s]+"":""}
 function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
+function getI(x,y,c){return I2d.getImageData(x,y,1,1).data[c]/255}
+function Ir(x,y){return getI(x,y,0)}
+function Ig(x,y){return getI(x,y,1)}
+function Ib(x,y){return getI(x,y,2)}
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DEG(m,n,s,i){let v=0;if(GB[m]&&GB[m][n]){try{v=eval(GB[m][n]);GBd[m][n][i]=v}catch(e){}}; return DE(m,n,s)+v}
+function DEG(m,n,s,i){let v=0,d=DE(m,n,s);if(GB[m]&&GB[m][n]){try{v=eval(GB[m][n]);GBd[m][n][i]=d+v}catch(e){}}; return d+v}
 function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
