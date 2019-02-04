@@ -488,15 +488,15 @@ function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").replace(/==/g,"≡").replace(/!=/g,"≠").replace(/>=/g,"≥").replace(/<=/g,"≤").split(",");Geval()}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
-function getx(s){t=dvx[L[s]];return t?t:0}
-function gety(s){t=dvy[L[s]];return t?t:0}
-function getz(s){t=dvz[L[s]];return t?t:0}
-function getX(s){t=dvX[L[s]];return t?t:0}
-function getY(s){t=dvY[L[s]];return t?t:0}
-function getZ(s){t=dvZ[L[s]];return t?t:0}
-function getB(s,i){var pair=s.split(".");return L[pair[0]]?GBd[L[pair[0]]][L[pair[pair.length-1]]][i]:0}
-function getD(s){var pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
-function getE(s){var pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
+function getx(s){let t=dvx[L[s]];return t?t:0}
+function gety(s){let t=dvy[L[s]];return t?t:0}
+function getz(s){let t=dvz[L[s]];return t?t:0}
+function getX(s){let t=dvX[L[s]];return t?t:0}
+function getY(s){let t=dvY[L[s]];return t?t:0}
+function getZ(s){let t=dvZ[L[s]];return t?t:0}
+function getB(s,i){let pair=s.split(".");return L[pair[0]]?GBd[L[pair[0]]][L[pair[pair.length-1]]][i]:0}
+function getD(s){let pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
+function getE(s){let pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
 function getS(s){return L[s]?L[s]+"":""}
 function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
@@ -509,7 +509,7 @@ function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
 function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(v%60)}
-function HE(){var date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
+function HE(){let date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
