@@ -20,7 +20,7 @@
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var A,all,out,T="New", alerts=0
+var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
@@ -137,7 +137,7 @@ function updateI(idx){
 			if(img){
 			var cutw=img.width>img.height?img.width-img.height:0; var cuth=img.height>img.width?img.height-img.width:0 
 			I2d.drawImage(img,-cuth/2,-cutw/2,img.width+cuth,img.height +cutw,0,0,SS,SS)
-		}
+		}	
 	}
 }
 function updateUP(i,font,alpha){
@@ -272,7 +272,7 @@ function DE2F(){
 function F2DE(){
 	var commas=F.split(",")
 	N=-1
-	Np=[],D=[],E=[],Nl=[]
+	Np=[],D=[],E=[],Nl=[],Bau=0
 	for(var I=0; I<commas.length; I++){
 		var adds=commas[I].replace("=","+").split("+")
 		var Np_=[],Nl_=[]
@@ -353,7 +353,7 @@ function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	if(U)U2d.clearRect(0,0,U.width,U.height);
 
-	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pd,Pend, Pi=0
+	var Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pd,Pend, Pi=0, arr=[]
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
 		var l=Nl[Ni]
@@ -377,7 +377,7 @@ function DE2B(){
 		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?-p:p
 		var nn=0
 		var PArray=D[i][0].split(".")
-
+		let te=E[i][14], tl=te*au.sampleRate, lx=0,ly=0;
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		for(var j=0; j<jlen*(pdep%1.0001); j++){
 			var s=isFrac?j/jlen:-1
@@ -407,10 +407,19 @@ function DE2B(){
 			zScale=z3>1?z3*VP+1-VP:1/(2-(z3*VP+1-VP)),	m=j*4
 			var xx=x5*zScale, yy = y3*zScale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z3*VF>1?1:1/(2-z3*VF)
-			dv[Ni].push(xx,yy,z3/99,1); dc[Ni].push(r1,g1,b1,a1)	
+			dv[Ni].push(xx,yy,z3/100,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
+			if(te && !Bau){
+				sect=tl/(Math.ceil(jlen)+1)
+				if(j==0){lx=x1;ly=0}//for(let jj=0;jj<sect;jj++){arr[jj]=y1/1000*(jj/sect)*Math.sin(x1*pii*jj/au.sampleRate)}
+				let k=0
+				for(let jj=sect*(j);jj<sect*(j+1);jj++){let pr=k/sect;arr[jj]=(ly*(1-pr)+y1*pr)/1000*Math.sin((lx*(1-pr)+x1*pr)*pii*jj/au.sampleRate);k++}
+				lx=x1;ly=y1
+				if(j==Math.ceil(jlen)-1){for(let jj=tl-sect;jj<tl;jj++){arr[jj]=y1/1000*((tl-jj)/sect)*Math.sin(x1*pii*jj/au.sampleRate)}}
+			}
+
 		}
 		var jlenT=Math.ceil(jlen)
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
@@ -425,6 +434,7 @@ function DE2B(){
 	} 
 	dvi[Np.length]=Bdv.length
 	算=Math.round(n)
+					
 	for(var i=0;i<GV.length;i++){
 		try{eval(GV[i])}
 		catch(e){
@@ -435,6 +445,11 @@ function DE2B(){
 			else if(alerts==5)alert("more than 5 errors...")
 		}
 	}
+	if(!Bau){
+		var buff = new Float32Array(arr)
+		Bau = au.createBuffer(1, buff.length, au.sampleRate)
+		Bau.copyToChannel(buff, 0)
+      }
 }
 function draw(a) {
 	if(!a)a=1
@@ -519,6 +534,12 @@ function decimal3(v){return Math.round(v*1000)/1000}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function question(s){return s.split("?").length>s.split("!").length}
 function copy(){document.execCommand("copy")}
+function playSound(){
+	sound = au.createBufferSource()
+	sound.buffer = Bau
+	sound.connect(au.destination);
+	sound.start()
+}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
@@ -533,6 +554,7 @@ function copy(){document.execCommand("copy")}
 <div id="datadiv">
 <input id="loadD" type="file" onchange="readTextFile()"></input>
 <input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
+<input id="playS" type="button" value="play" onclick="playSound()"></input>
 <input type="button" value="URL" onclick="urlTFG()"></input>
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="loadF" type="file" onchange="readF()"></input>
