@@ -42,6 +42,7 @@ function init(){
 	}
 }
 function start(){
+	document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 	V=document.getElementById("glcanvas")
 	I=document.getElementById('imgcanvas')
 	U=document.getElementById('uicanvas')
@@ -261,8 +262,8 @@ function DE2F(){
 			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
 				if(j>0)F+="*"
-				if(D[i][j]!=1)	F+=(D[i][j]+"")
-				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(E[i][j]+"")}
+				if(D[i][j]!=1)	F+=(decimal4(D[i][j])+"")
+				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(decimal4(E[i][j])+"")}
 			}
 		}
 		if(D[i][2]==0)F+="="
@@ -323,7 +324,7 @@ function F2DE(){
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 
 	}
-	updateL();go=1;
+	updateL();Geval();go=1;
 }
 function Geval(){
 	if(G&&G!=""){
@@ -411,9 +412,9 @@ function DE2B(){
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
-			if(te && !Bau){
-				sect=tl/(Math.ceil(jlen)+1)
-				if(j==0){lx=x1;ly=0}//for(let jj=0;jj<sect;jj++){arr[jj]=y1/1000*(jj/sect)*Math.sin(x1*pii*jj/au.sampleRate)}
+			if(te && !Bau){ 
+				sect=tl/10;
+				for(let jj=0;jj<sect;jj++){arr[jj]=y1/1000*(jj/sect)*Math.sin(x1*pii*jj/au.sampleRate)}
 				let k=0
 				for(let jj=sect*(j);jj<sect*(j+1);jj++){let pr=k/sect;arr[jj]=(ly*(1-pr)+y1*pr)/1000*Math.sin((lx*(1-pr)+x1*pr)*pii*jj/au.sampleRate);k++}
 				lx=x1;ly=y1
@@ -445,7 +446,7 @@ function DE2B(){
 			else if(alerts==5)alert("more than 5 errors...")
 		}
 	}
-	if(!Bau){
+	if(!Bau && arr>0){
 		var buff = new Float32Array(arr)
 		Bau = au.createBuffer(1, buff.length, au.sampleRate)
 		Bau.copyToChannel(buff, 0)
@@ -454,7 +455,7 @@ function DE2B(){
 function draw(a) {
 	if(!a)a=1
 	var Bv,Bc
-	if(Bb==1){
+	if(Bb>=1){
 		gl.blendFunc(gl.SRC_ALPHA,gl.ONE)
 		gl.enable(gl.BLEND)
 		gl.disable(gl.DEPTH_TEST)
@@ -509,7 +510,7 @@ function getz(s){let t=dvz[L[s]];return t?t:0}
 function getX(s){let t=dvX[L[s]];return t?t:0}
 function getY(s){let t=dvY[L[s]];return t?t:0}
 function getZ(s){let t=dvZ[L[s]];return t?t:0}
-function getB(s,i){let pair=s.split(".");return L[pair[0]]?GBd[L[pair[0]]][L[pair[pair.length-1]]][i]:0}
+function getB(s,i){let pair=s.split("."),v=GBd[L[pair[0]]][L[pair[pair.length-1]]][i]; return v?v:0}
 function getD(s){let pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getE(s){let pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
 function getN(s){return L[s]?parseFloat(L[s]):0}
@@ -523,7 +524,7 @@ function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DEG(m,n,s,i){let v=0,d=DE(m,n,s);if(GB[m]&&GB[m][n]){try{v=eval(GB[m][n]);GBd[m][n][i]=d+v}catch(e){}}; return d+v}
+function DEG(p,q,s,i){let v=0,m,n,o,d=DE(p,q,s);if(GB[p]&&GB[p][q]){try{m=i>1?GBd[p][q][i-2]:0,n=i>0?GBd[p][q][i-1]:d;o=GBd[p][q][i];v=eval(GB[p][q]);GBd[p][q][i]=v}catch(e){}}; return d+v}
 function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(Math.random()-Math.random())}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
@@ -531,6 +532,9 @@ function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))
 function HE(){let date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
 function vib(ms){if(抖 )navigator.vibrate(ms)}
 function decimal3(v){return Math.round(v*1000)/1000}
+function decimal4(v){return Math.round(v*10000)/10000}
+function hyp(a,b){return Math.sqrt(a*a+b*b)}
+function hyp3(a,b,c){return Math.sqrt(a*a+b*b+c*c)}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function question(s){return s.split("?").length>s.split("!").length}
 function copy(){document.execCommand("copy")}
