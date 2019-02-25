@@ -1,0 +1,16 @@
+Simulator_EMForce;
+3KJ2JJlM1.25.96;
+SS:512;
+Font:12px;
+VS:2.0;
+LS:1.5;
+Va:1;
+Vv:0;
+Vw:0.25;
+dT:0.02;
+C:slipxyzrgbuvwdta;
+CD:p,1,0,1,0,0,0,1,1,1,0,0,0,0.5,0,0;
+CE:±,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0;
+G:Vw=0.25,Vv=0,pt.x=0[n+(n-m)+(D(Sun.x)-n)/hyp3(D(Sun.z)-B(pt.z)(i))(D(Sun.y)-B(pt.y)(i))(D(Sun.x)-n)/100],pt.y=My/5[n+(n-m)+(D(Sun.y)-n)/hyp3(D(Sun.z)-B(pt.z)(i))(D(Sun.y)-n)(D(Sun.x)-B(pt.x)(i))/100],pt.z=-Mx/20[n+(n-m)+(D(Sun.z)-n)/hyp3(D(Sun.z)-n)(D(Sun.y)-B(pt.y)(i))(D(Sun.x)-B(pt.x)(i))/100],ball.x=B(pt.x)(≝round((time-D(ball.t))/25)∞200),ball.y=B(pt.y)(≝round((time-D(ball.t))/25)∞200),ball.z=B(pt.z)(≝round((time-D(ball.t))/25)∞200),ball.g=1-touch,pt.g=0[touch*(1-i/200)],pt.r=0[touch*(i/200)],ball.t=touch?time∞5000,dT=0.02;
+F:System=pt*200*0.018799999999999994y*-0.011899999999999999z*0r*0g*0b,ball*0.1*0.5494344619323162y*-0.17007759299197694z*0b*w±0.5*691t=earth*0.1*0.02u*v±0.5,Sun*0.1*-1z*0r*0g*w±0.5*4862t=surface*0.1*0.05u*v±0.5;
+http://0.0.0.0:8080/se/cheng/eddie/V.html

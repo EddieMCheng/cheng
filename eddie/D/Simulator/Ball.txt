@@ -1,0 +1,16 @@
+Simulator_Ball;
+3KJ2JJlw7.25.96;
+SS:512;
+Font:12px;
+VS:2.0;
+LS:1.5;
+Va:1;
+Vv:0;
+Vw:0;
+dT:0.02;
+C:slipxyzrgbuvwdta;
+CD:p,1,0,1,0,0,0,1,1,1,0,0,0,0.5,0,0;
+CE:±,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0;
+G:Vw=0,Vv=0,pt.z=-My/10[≝abs(n)>1?n-n+m!n+(n-m)*0.985],pt.y=0.01[≝abs(n)>1?n-(n-m)*0.85!n+(n-m)-0.01],pt.x=Mx/10[≝abs(n)>1?n-(n-m)!n+(n-m)*0.985],ball.x=0[B(pt.x)(≝round((time-D(ball.t))/25)∞200)],ball.y=0[B(pt.y)(≝round((time-D(ball.t))/25)∞200)],ball.z=0[B(pt.z)(≝round((time-D(ball.t))/25)∞200)],pt.g=touch,ball.t=touch?time∞5000,dT=0.02;
+F:Box*0.25*w±0.5=lin*0.25*z*1.414u*0.375v±0.5*a,System=pt*200*-0.06420000000000001x*0.01y*0.1z*0r*0g*0b,ball*0.1*0r*0b*w±0.5*2525t=side*0.1*0.02u*v±0.5;
+http://0.0.0.0:8080/se/cheng/eddie/V.html
