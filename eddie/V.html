@@ -110,7 +110,7 @@ function readTextFile(){
 }
 function readF(){
 	var rdr=new FileReader()
-	rdr.onload=function(){fLog.value+=",\n\n"+rdr.result;outF()}
+	rdr.onload=function(){fLog.value=rdr.result+",\n\n"+fLog.value;outF()}
 	rdr.readAsText(loadF.files[0])
 }
 function readG(){
@@ -231,7 +231,7 @@ function updateL(){
 	L=[]
 	for(var i=0; i<C.length; i++){L[C[i]]=i}
 	L["#N"]=D.length-1
-	for(var j=D.length-1;j>=0;j--){
+	for(var j=0;j<D.length;j++){
 		var par=j-D[j][2]
 		var nm=D[j][0].split(".")[0];
 		var nNm = nm
@@ -246,7 +246,6 @@ function updateL(){
 		L[nNm]=j
 		L["#"+j]=j
 		D[j][0]=D[j][0].replace(nm,nNm)
-		if(D[j-1])D[j-1][0]=D[j-1][0].replace("."+nm,"."+nNm)
 	 }
 }
 function DE2F(){
