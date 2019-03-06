@@ -1,1 +1,1 @@
-Spring=.001*lin*y±.3*u*.4v*w±50
+F:Spring=.001*lin*y±.3*u*.4v*w±50

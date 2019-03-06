@@ -1,1 +1,1 @@
-clock*a=.9*min*.5u±.5*v+.9*hrs*.3u±.3
+F:clock*a=.9*min*.5u±.5*v+.9*hrs*.3u±.3

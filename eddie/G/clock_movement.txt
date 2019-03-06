@@ -1,1 +1,1 @@
-sec.v=time/1000/60∞1,min.v=time/1000/60/60∞1,hrs.v=(time/1000/60/60-timeZone)/12∞1
+G:sec.v=time/1000/60∞1,min.v=time/1000/60/60∞1,hrs.v=(time/1000/60/60-timeZone)/12∞1

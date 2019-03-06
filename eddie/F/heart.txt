@@ -1,1 +1,1 @@
-shape=curve*.01*.5u±.5*.3v±.2*w±25
+F:shape=curve*.01*.5u±.5*.3v±.2*w±25

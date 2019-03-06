@@ -1,4 +1,4 @@
-Dodacahedron_1*0.5*0b*0.5u*0.25v*0w±0.5
+F:Dodacahedron_1*0.5*0b*0.5u*0.25v*0w±0.5
 =ln_1*0.2*1.3z*u*0v±0.5*a,
 
 Dodacahedron_0*0.2*-0.79z*0g*0.5u*0v±0.5
