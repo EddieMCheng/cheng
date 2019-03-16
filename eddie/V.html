@@ -20,7 +20,7 @@
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau
+var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau, video, cam=0
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vx=0,Vy=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
@@ -33,8 +33,7 @@ function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
 	if(gl){
-		gl.clearColor(0,0,0,1)
-		
+		gl.clearColor(0,0,0,Va)		
 		gl.lineWidth(LS)
 		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
 		Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
@@ -57,7 +56,7 @@ function start(){
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){inF();inG()}
 		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outVal();outF()}
-		else if(ev.code=="KeyS"&&ev.ctrlKey){urlTFG()}
+		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
 	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);return true}
@@ -71,6 +70,9 @@ function start(){
 	gl=V.getContext("webgl")
 	I2d=I.getContext('2d')
 	U2d=U.getContext('2d')
+
+	video = document.querySelector('video')
+	
 	init()
 }
 function loop(){
@@ -89,7 +91,7 @@ function loop(){
 	ping=new Date().getTime()-time
 	window.requestAnimationFrame(loop);
 }
-function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G)}
+function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G+(Va<1?";Va="+Va:""))}
 function updateT(s){
 	if(s)T=s.replace("D_","").split(".")[0];document.title="VD - "+T.replace(/_/g," ")
 	if(!window.location.href.includes(";"))window.history.pushState(null, "Title", "?D_"+T)
@@ -143,6 +145,17 @@ function updateI(idx){
 			I2d.drawImage(img,-cuth/2,-cutw/2,img.width+cuth,img.height +cutw,0,0,SS,SS)
 		}	
 	}
+}
+function initCam(){
+	if(navigator.mediaDevices.getUserMedia) {       
+	    navigator.mediaDevices.getUserMedia({video:{width:SS,height:SS,advanced:[{facingMode:"environment"}]}})
+	  .then(function(stream){
+	    video.srcObject = stream
+	    cam=1;if(Va==1)setVar("Va:0.5");if(dT==0)dT=0.04
+	  }).catch(function(error){alert(error)})}
+}
+function updateCam(){
+	I2d.drawImage(video,0,0)
 }
 function updateUP(i,font,alpha){
 	if(U){
@@ -455,6 +468,7 @@ function DE2B(){
       }
 }
 function draw(a) {
+	if(cam)updateCam()
 	if(!a)a=1
 	var Bv,Bc
 	if(Bb>=1){
@@ -484,17 +498,16 @@ function draw(a) {
 		gl.drawArrays(type>3?gl.TRIANGLE_FAN:type>2?gl.TRIANGLE_STRIP:type>1?gl.TRIANGLES:type>0.5?gl.LINE_STRIP:type>0?gl.LINES:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
-
 function showPosition(position){
 	LAT=(90-position.coords.latitude)/360;LON=(360-position.coords.longitude)/360
 	ALT = position.coords.altitude
 	var lat = Math.round(100*LAT)/100+"", lon = Math.round(100*LON)/100+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 }
-function getMx(ev){return 2*decimal3(ev.pageX/SS)-1}
-function getMy(ev){return 1-2*decimal3(ev.pageY/SS)}
+function getMx(ev){return 2*decimal4(ev.pageX/SS)-1}
+function getMy(ev){return 1-2*decimal4(ev.pageY/SS)}
 function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;setMB(ev);touch=1}
-function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0}
+function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(dT==0)go=1}
@@ -536,6 +549,9 @@ function vib(ms){if(抖 )navigator.vibrate(ms)}
 function round(v,d){return Math.round(v*Math.pow(10,d))/Math.pow(10,d)}
 function decimal3(v){return round(v,3)}
 function decimal4(v){return round(v,4)}
+function cos(v){return Math.cos(v*2*PI)}
+function sin(v){return Math.sin(v*2*PI)}
+function tan(v){return Math.tan(v*2*PI)}
 function hyp(a,b){return Math.sqrt(a*a+b*b)}
 function hyp3(a,b,c){return Math.sqrt(a*a+b*b+c*c)}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
@@ -575,6 +591,8 @@ function playSound(){
 <br>
 </div>
 <div id="imagediv">
-Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></inpu>
+Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
+<input type="button" onclick="initCam()" value="Camera"></input>
+<video autoplay hidden></video>
 </div>
 </body></html>
