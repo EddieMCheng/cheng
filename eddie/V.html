@@ -22,9 +22,9 @@ var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau, video, cam=0
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vx=0,Vy=0,SS=512,IS=1,Va=1, Bb=1
+var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
-var Rx=0,Ry=0,Rz=0,ax=0,ay=0,az=0
+var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
 var websock=[],W="",Wd=[],Wi="",Wp=81;
@@ -60,7 +60,8 @@ function start(){
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
 	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);return true}
-	window.ondeviceorientation=function(ev){Rz=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
+	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
+	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
 	navigator.geolocation.getCurrentPosition(showPosition)
 	V.width=SS;V.height=SS
@@ -577,7 +578,7 @@ function playSound(){
 <div id="datadiv">
 <input type="file" onchange="loadFiles(this.files)" multiple=""></input>
 <input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
-<input id="playS" type="button" value="play" onclick="playSound()"></input>
+<input id="playS" type="button" value="play" onclick="playSound()" hidden></input>
 <input type="button" value="URL" onclick="urlTFG()"></input>
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
