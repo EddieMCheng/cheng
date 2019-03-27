@@ -25,7 +25,7 @@ var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0
-var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
 var websock=[],W="",Wd=[],Wi="",Wp=81;
 updateL();F2DE();DE2B();Geval()
@@ -82,6 +82,10 @@ function loop(){
 	if(go){
 		DE2B()
 		DE2F()
+		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")&&time-sTime>1000){
+			sTime=time
+			navigator.geolocation.getCurrentPosition(showPosition)
+		}
 		out="D_"+T+"."+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";dT:"+dT+";C:"+C+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(fLog.value)+")"
@@ -376,11 +380,12 @@ function DE2B(){
 		var l=Nl[Ni]
 		if(D[i][2]==l){
 			var LEN=DE(i-l,1)
+			var FR=LEN<0
 			var FRAC=LEN<1&&LEN>0
-			var NLEN=FRAC?1/LEN:Math.ceil(LEN)
+			var NLEN=FR?-LEN:FRAC?1/LEN:Math.ceil(LEN)
 			if(Pi<=1)Pi=NLEN
 			else Pi--
-			var S=FRAC?Pi/NLEN:-1
+			var S=FR||FRAC?Pi/NLEN:-1
 			Px=DEG(i-l,4,S,Pi);	Py=DEG(i-l,5,S,Pi); Pz=DEG(i-l,6,S,Pi)
 			Pr=DEG(i-l,7,S,Pi);	Pg=DEG(i-l,8,S,Pi);	Pb=DEG(i-l,9,S,Pi)
 			Pu=DEG(i-l,10,S,Pi);Pv=DEG(i-l,11,S,Pi);Pw=DEG(i-l,12,S,Pi)
@@ -389,15 +394,16 @@ function DE2B(){
 		
 		var len=DE(i,1)
 		var type = D[i][15]+D[i-D[i][2]][15]
+		var fr=len<0
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
-		var jlen=isFrac?1/(len-1e-9):Math.ceil(len)
+		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
 		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?-p:p
 		var nn=0
 		var PArray=D[i][0].split(".")
 		let te=E[i][14], tl=te*au.sampleRate, lx=0,ly=0;
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
-		for(var j=0; j<jlen*(pdep%1.0001); j++){
-			var s=isFrac?j/jlen:-1
+		for(var j=0; j<jlen*pdep; j++){
+			var s=fr||isFrac?j/jlen:-1
 			var d=DEG(i,13,s,j)+Pd
 			if(PArray.length>1){
 				var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
@@ -420,11 +426,11 @@ function DE2B(){
 			x2=Pv==0?x1:x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),				y2=Pv==0?y1*Pu+Py:(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
 			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px,z2=Pw==0?z1*Pu+Pz:(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
 			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);				y3=Vv==0||p<0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
-			x5=Vw==0||p<0?x4:x4*Math.cos(-Vw*pii)+z2*Math.sin(-Vw*pii), 				z3=Vw==0||p<0?z2:z2*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
+			x5=Vw==0||p<0?x4:x4*Math.cos(-Vw*pii)+z2*Math.sin(-Vw*pii), 				z3=Vw==0||p<0?z2+Vz:z2*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)+Vz
 			zScale=z3>1?z3*VP+1-VP:1/(2-(z3*VP+1-VP)),	m=j*4
 			var xx=(x5+Vx)*zScale, yy=(y3+Vy)*zScale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z3*VF>1?1:1/(2-z3*VF)
-			dv[Ni].push(xx,yy,z3/100,1); dc[Ni].push(r1,g1,b1,a1)
+			dv[Ni].push(xx,yy,0.999+z3/1000,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
@@ -441,7 +447,7 @@ function DE2B(){
 		var jlenT=Math.ceil(jlen)
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
 		dvX[i]/=jlenT;dvY[i]/=jlenT;dvZ[i]/=jlenT
-		X[i]/=jlenT;Y[i]/=jlenT;Z[i]/=jlenT
+		X[i]/=jlenT+1;Y[i]/=jlenT+1;Z[i]/=jlenT+1
 		updateUP(i,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
