@@ -80,17 +80,21 @@ function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	if(go){
-		DE2B()
-		DE2F()
-		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")&&time-sTime>1000){
+		if(&&time-sTime>1000){
 			sTime=time
-			navigator.geolocation.getCurrentPosition(showPosition)
+			DE2F()
+			if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){
+	
+				navigator.geolocation.getCurrentPosition(showPosition)
+			}
+			out="D_"+T+"."+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";VF:"+VF+";Bb:"+Bb+";dT:"+dT+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+			saveD.value="D_"+T+" ("+kb(out)+")"
+			saveF.value="F_"+T+" ("+kb(fLog.value)+")"
+			saveG.value="G_"+T+" ("+kb(gLog.value)+")"
+
 		}
-		out="D_"+T+"."+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";Vv:"+Vv+";Vw:"+Vw+";dT:"+dT+";C:"+C+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
-		saveD.value="D_"+T+" ("+kb(out)+")"
-		saveF.value="F_"+T+" ("+kb(fLog.value)+")"
-		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
 		go=0
+		DE2B()
 		draw()
 	}
 	ping=new Date().getTime()-time
@@ -447,7 +451,7 @@ function DE2B(){
 		var jlenT=Math.ceil(jlen)
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
 		dvX[i]/=jlenT;dvY[i]/=jlenT;dvZ[i]/=jlenT
-		X[i]/=jlenT+1;Y[i]/=jlenT+1;Z[i]/=jlenT+1
+		X[i]/=jlenT+1 ;Y[i]/=jlenT+1;Z[i]/=jlenT+1
 		updateUP(i,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
