@@ -1,1 +1,15 @@
-D_Compass;3KJ22Fsp6.09.95;SS:512;Font:12px;VS:2.0;LS:1.5;Va:1;Vv:0;Vw:0;iT:1;dT:0.02;C:slipxyzrgbuvwdta; CD:p,1,0,1,0,0,0,1,1,1,0,0,0,0.5,0,0;CE:±,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0;G:Compass.v=Rz;F:Compass*0.993v=north*0.4*y*0.2g*0.2b*u*0.12v±0.6*4a+south*0.4*-1y*0.2r*0.2g*u*0.62v±0.6*4a;https://www.cheng.se/eddie/V.html
+D_Compass.3KJ3NI2qH.25.96;
+SS:512;
+Font:12px;
+VS:2.0;
+LS:1.5;
+Va:1;
+Vv:0.11764541867848899;
+Vw:0.23664896621117662;
+dT:0.02;
+C:slipxyzrgbuvwdta;
+CD:p,1,0,1,0,0,0,1,1,1,0,0,0,0.5,0,0;
+CE:±,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0;
+G:Vw=0.25+Rx,Vv=0.25-Ry,Compass.w=Rz;
+F:Compass*0.2u*0.1145w*4a=north*0.4*-1x*-0.125z*0g*0b*u*0.25v*0.64w±0.6+south*0.4*x*0.125z*0r*0g*u*0.25v*0.14w±0.6,Heading*0.125*w±0.5=ring*0.1*0.5u*0.25v*w±0.2+dot*0.47u±0.03*0.25v*a;
+http://0.0.0.0:8080/se/cheng/eddie/V.html
