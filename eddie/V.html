@@ -54,8 +54,8 @@ function start(){
 	U.onmouseup=function(ev){setM0(ev)}
 	document.onkeydown=function(ev){
 		key=ev.code+"_1";setKeyB(ev)
-		if(ev.code=="Escape"){inF();inG()}
-		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outVal();outF()}
+		if(ev.code=="Escape"){inF();inG();go=1}
+		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outVal();outF();go=1}
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
@@ -80,7 +80,7 @@ function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	if(go){
-		if(&&time-sTime>1000){
+		if(time-sTime>1000){
 			sTime=time
 			DE2F()
 			if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){
@@ -356,20 +356,30 @@ function Geval(){
 		for(var i=0;i<G.length;i++){
 			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i]
 			if(Gi!=""){
-				var GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
-				var idArr=Gi0?Gi0.split("."):"",id0=idArr[0]?idArr[0]:null,id1=idArr[idArr.length-1]?idArr[idArr.length-1]:null
-				var Bi=Gi1.indexOf("["),Bj=Gi1.indexOf("]")
-				var Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
-				var vPair=Gi1?Gi1.replace("["+Bval+"]","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
-				var d=vl0&&question(vl0)?vl0:""			
-				if(Gi0&&Gi0[Gi0.length-2]=="."){
-					var m=L[id0], n=L[id1]
-					if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
-					if(vl0&&m!=undefined)GV.push("D["+m+"]["+n+"]="+vdScript(vl0+(d!=""?"!D["+m+"]["+n+"]":"")+""))
-					if(vl1&&m!=undefined)GV.push("E["+m+"]["+n+"]="+vdScript(vl1+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+				let GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
+				let idArr=Gi0?Gi0.split("."):"",id0=idArr[0]?idArr[0]:null,id1=idArr[idArr.length-1]
+				let Bi=Gi1.indexOf("["),Bj=Gi1.indexOf("]")
+				let Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
+				let vPair=Gi1?Gi1.replace("["+Bval+"]","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
+				let d=vl0&&question(vl0)?vl0:""
+				let fromTo=id0.split("→"),from=fromTo[0],to=fromTo[1]
+				let pArr=id1.split("")
+				if(Gi0.includes(".")&&Gi0.substr(0,5)!="this."){
+					if(L[from]&&vl0){
+						for(var m=L[from];m<=(L[to]?L[to]:L[from]);m++){
+							let s=D[m][0],vl0r=vl0.replace(/←/g,s);
+							if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));fail=0}
+							else if(Gi0.includes(".")&&m){
+								var n=L[id1]
+								if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
+								if(vl0&&m)GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""))
+								if(vl1&&m)GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+								fail=0
+							}
+						}
+					}
 				}
-				else if(id1=="name"||id1=="font"||id1=="align")GV.push("L['"+Gi0+"']="+vdScript(vl0+d))
-				else if(Gi0)GV.push(Gi0+"="+vdScript(vl0+d))
+				else GV.push(Gi0+"="+vdScript(vl0+d))
 			}
 		}
 	}
@@ -395,7 +405,7 @@ function DE2B(){
 			Pu=DEG(i-l,10,S,Pi);Pv=DEG(i-l,11,S,Pi);Pw=DEG(i-l,12,S,Pi)
 			Pd=DEG(i-l,13,S,Pi)
 		}
-		
+
 		var len=DE(i,1)
 		var type = D[i][15]+D[i-D[i][2]][15]
 		var fr=len<0
@@ -461,15 +471,15 @@ function DE2B(){
 	} 
 	dvi[Np.length]=Bdv.length
 	算=Math.round(n)
-					
+
 	for(var i=0;i<GV.length;i++){
 		try{eval(GV[i])}
 		catch(e){
-			if(alerts>4){
+			if(alerts<=3){
 				alerts++
 				alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
 			}
-			else if(alerts==5)alert("more than 5 errors...")
+			else if(alerts==4)alert("more than 3 errors...")
 		}
 	}
 	if(!Bau && arr>0){
@@ -521,13 +531,13 @@ function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;setMB(ev);touch
 function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
-function setKeyB(ev){keyB.pop();keyB.unshift(ev.code);if(dT==0)go=1}
+function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
 function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/≡/g,"==").replace(/≠/g,"!=").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([BDEINS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/\)\(/g,",").replace(/∞/g,"%").replace(/≝/g,"Math."):0}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
 function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").replace(/==/g,"≡").replace(/!=/g,"≠").replace(/>=/g,"≥").replace(/<=/g,"≤").split(",");Geval()}
+function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").replace(/==/g,"≡").replace(/!=/g,"≠").replace(/>=/g,"≥").replace(/<=/g,"≤").replace(/-->/g,"→").replace(/<--/g,"←").split(",");Geval()}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){let t=dvx[L[s]];return t?t:0}
@@ -592,7 +602,7 @@ function playSound(){
 <input type="button" value="URL" onclick="urlTFG()"></input>
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
-<input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
+<input type="b	utton" onclick="fLog.select();copy()" value="copy"></input></br>
 <textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 <input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
 <input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
