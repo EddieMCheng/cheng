@@ -24,7 +24,7 @@ var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau, video, cam=0
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
-var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0
+var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
 var websock=[],W="",Wd=[],Wi="",Wp=81;
@@ -59,10 +59,10 @@ function start(){
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
-	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);return true}
+	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
 	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
 	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
-	window.ondevicemotion=function(ev){var eva=ev.accelerationIncludingGravity;ax=eva.x;ay=eva.y;az=eva.z}
+	window.ondevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
 	navigator.geolocation.getCurrentPosition(showPosition)
 	V.width=SS;V.height=SS
 	I.width=SS;I.height=SS
@@ -475,10 +475,8 @@ function DE2B(){
 	for(var i=0;i<GV.length;i++){
 		try{eval(GV[i])}
 		catch(e){
-			if(alerts<=3){
-				alerts++
-				alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
-			}
+			alerts++
+			if(alerts<4)alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
 			else if(alerts==4)alert("more than 3 errors...")
 		}
 	}
