@@ -202,8 +202,8 @@ function setVar(s){
 			else if(sType=="s")D[L[sName]][0]=sPair[1]
 			else if(sType.length==1 && sType.search(/[a-z]/g)==0){
 				var sDE=sVal.split("±")
-				D[L[sName]][L[sType]]=decimal3(parseFloat(sDE[0]))
-				if(sDE.length==2)E[L[sName]][L[sType]]=decimal3(parseFloat(sDE[1]))
+				D[L[sName]][L[sType]]=decimal4(parseFloat(sDE[0]))
+				if(sDE.length==2)E[L[sName]][L[sType]]=decimal4(parseFloat(sDE[1]))
 			}
 			else{L[sPair[0]]=sVal}
 		}
@@ -286,8 +286,8 @@ function DE2F(){
 			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
 				if(j>0)F+="*"
-				if(D[i][j]!=1)	F+=(decimal4(D[i][j])+"")
-				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(decimal4(E[i][j])+"")}
+				if(D[i][j]!=1)	F+=(round(D[i][j],9)+"")
+				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],9)+"")}
 			}
 		}
 		if(D[i][2]==0)F+="="
@@ -324,18 +324,9 @@ function F2DE(){
 					if(C.includes(propName)){propIndex=L[propName]}
 					else{propIndex=1}
 					if(propIndex==1&&propName!=C[3]){
-						if(propName.endsWith("...")&&N>0){
-	 		 				propName=propName.replace("...","")
-	 		 				for(n=N-1;n>0;n--){
-	 		 					if(D[n][0].beginsWith(propName)&&D[n][2]!=0){
-	 		 						alert(propName+"-->"+D[n][0])
-	 		 					}
-	 		 				}
-	 		 			}
-	 		 			else{
-							if(D[N][0])D[N][0]+="."
-							D[N][0] += propName
-						}
+						if(D[N][0])D[N][0]+="."
+						D[N][0] += propName
+						
 					}
 					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
 					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):D[N][2]==0?0:CE[propIndex]
@@ -366,15 +357,18 @@ function Geval(){
 				let pArr=id1.split("")
 				if(Gi0.includes(".")&&Gi0.substr(0,5)!="this."){
 					if(L[from]&&vl0){
+						let isPar=D[L[from]][2]==0
 						for(var m=L[from];m<=(L[to]?L[to]:L[from]);m++){
-							let s=D[m][0],vl0r=vl0.replace(/←/g,s);
-							if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));fail=0}
-							else if(Gi0.includes(".")&&m){
-								var n=L[id1]
-								if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
-								if(vl0&&m)GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""))
-								if(vl1&&m)GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
-								fail=0
+							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
+								let s=D[m][0],vl0r=vl0.replace(/←/g,s);
+								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));fail=0}
+								else if(Gi0.includes(".")&&m){
+									var n=L[id1]
+									if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
+									if(vl0&&m)GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""))
+									if(vl1&&m)GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+									fail=0
+								}
 							}
 						}
 					}
@@ -522,6 +516,7 @@ function showPosition(position){
 	ALT = position.coords.altitude
 	var lat = Math.round(100*LAT)/100+"", lon = Math.round(100*LON)/100+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
+	
 }
 function getMx(ev){return 2*decimal4(ev.pageX/SS)-1}
 function getMy(ev){return 1-2*decimal4(ev.pageY/SS)}
