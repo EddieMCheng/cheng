@@ -26,7 +26,7 @@ var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,V
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
-var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT
+var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var websock=[],W="",Wd=[],Wi="",Wp=81;
 updateL();F2DE();DE2B();Geval()
 function init(){
@@ -513,7 +513,7 @@ function draw(a) {
 }
 function showPosition(position){
 	LAT=(90-position.coords.latitude)/360;LON=(360-position.coords.longitude)/360
-	ALT = position.coords.altitude
+	ALT = position.coords.altitude; ACC=position.coords.accuracy
 	var lat = Math.round(100*LAT)/100+"", lon = Math.round(100*LON)/100+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 	
