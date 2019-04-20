@@ -27,7 +27,8 @@ var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5)
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
-var websock=[],W="",Wd=[],Wi="",Wp=81;
+var websock=[],W="",Wd=[],Wi="",Wp=81
+var autosave=0
 updateL();F2DE();DE2B();Geval()
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
@@ -528,9 +529,9 @@ function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
 function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/≡/g,"==").replace(/≠/g,"!=").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([BDEINS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/\)\(/g,",").replace(/∞/g,"%").replace(/≝/g,"Math."):0}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
-function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE()}
+function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").replace(/==/g,"≡").replace(/!=/g,"≠").replace(/>=/g,"≥").replace(/<=/g,"≤").replace(/-->/g,"→").replace(/<--/g,"←").split(",");Geval()}
+function outG(){G=gLog.value.replace(/\+-/g,"±").replace(/%/,"∞").replace(/Math\./g,"≝").replace(/\n/g,"").replace(/==/g,"≡").replace(/!=/g,"≠").replace(/>=/g,"≥").replace(/<=/g,"≤").replace(/-->/g,"→").replace(/<--/g,"←").split(",");Geval();if(autosave)urlTFG()}
 function outVar(){valtxt.value=this[vartxt.value]}
 function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){let t=dvx[L[s]];return t?t:0}
@@ -595,7 +596,7 @@ function playSound(){
 <input type="button" value="URL" onclick="urlTFG()"></input>
 <p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 <input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
-<input type="b	utton" onclick="fLog.select();copy()" value="copy"></input></br>
+<input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
 <textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 <input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
 <input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
