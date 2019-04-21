@@ -406,7 +406,7 @@ function DE2B(){
 		var fr=len<0
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
-		var p=DE(i,3)*DE(i-D[i][2],3), pdep=p<0?-p:p
+		var p=DE(i,3)*DE(i-D[i][2],3), pdep=Math.abs(p)>1?1:Math.abs(p)
 		var nn=0
 		var PArray=D[i][0].split(".")
 		let te=E[i][14], tl=te*au.sampleRate, lx=0,ly=0;
@@ -439,7 +439,7 @@ function DE2B(){
 			zScale=z3>1?z3*VP+1-VP:1/(2-(z3*VP+1-VP)),	m=j*4
 			var xx=(x5+Vx)*zScale, yy=(y3+Vy)*zScale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z3*VF>1?1:1/(2-z3*VF)
-			dv[Ni].push(xx,yy,0.999+z3/1000,1); dc[Ni].push(r1,g1,b1,a1)
+			dv[Ni].push(xx,yy,0.999999+z3/1000000,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
@@ -456,7 +456,7 @@ function DE2B(){
 		var jlenT=Math.ceil(jlen)
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
 		dvX[i]/=jlenT;dvY[i]/=jlenT;dvZ[i]/=jlenT
-		X[i]/=jlenT+1 ;Y[i]/=jlenT+1;Z[i]/=jlenT+1
+		X[i]/=jlenT ;Y[i]/=jlenT;Z[i]/=jlenT
 		updateUP(i,Font,1)
 		if(dv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
