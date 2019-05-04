@@ -22,7 +22,7 @@ var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau, video, cam=0
 var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
+var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -43,16 +43,17 @@ function init(){
 }
 function start(){
 	document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
-	V=document.getElementById("glcanvas")
-	I=document.getElementById('imgcanvas')
-	U=document.getElementById('uicanvas')
+	let doc=document
+	V=doc.getElementById("glcanvas")
+	I=doc.getElementById('imgcanvas')
+	U=doc.getElementById('uicanvas')
 	inF();inG();outVar()
-	U.ontouchstart=function(ev){setM1(ev.touches[0])}
-	U.onmousedown=function(ev){setM1(ev)}
-	U.ontouchmove=function(ev){if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
-	U.onmousemove=function(ev){if(touch)setM(ev)}
-	U.ontouchend=function(ev){setM0(ev.touches[0])}
-	U.onmouseup=function(ev){setM0(ev)}
+	uidiv.ontouchstart=function(ev){setM1(ev.touches[0])}
+	uidiv.onmousedown=function(ev){setM1(ev)}
+	uidiv.ontouchmove=function(ev){if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
+	uidiv.onmousemove=function(ev){if(touch)setM(ev)}
+	uidiv.ontouchend=function(ev){setM0(ev.touches[0])}
+	uidiv.onmouseup=function(ev){setM0(ev)}
 	document.onkeydown=function(ev){
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){inF();inG();go=1}
@@ -203,8 +204,8 @@ function setVar(s){
 			else if(sType=="s")D[L[sName]][0]=sPair[1]
 			else if(sType.length==1 && sType.search(/[a-z]/g)==0){
 				var sDE=sVal.split("±")
-				D[L[sName]][L[sType]]=decimal4(parseFloat(sDE[0]))
-				if(sDE.length==2)E[L[sName]][L[sType]]=decimal4(parseFloat(sDE[1]))
+				D[L[sName]][L[sType]]=parseFloat(sDE[0])
+				if(sDE.length==2)E[L[sName]][L[sType]]=parseFloat(sDE[1])
 			}
 			else{L[sPair[0]]=sVal}
 		}
@@ -223,6 +224,8 @@ function setVar(s){
 			V.width=SS;V.height=SS
 			I.width=SS;I.height=SS
 			U.width=SS;U.height=SS
+			uidiv.style.width=parseInt(SS)+"px"
+			uidiv.style.height=parseInt(SS)+"px"
 			datadiv.style.left=(parseInt(SS)+10)+"px"
 			updateI()
 			gl.viewport(0,0,SS,SS)
@@ -430,16 +433,17 @@ function DE2B(){
 				var r=DEG(i,7,s,j),		g=DEG(i,8,s,j),		b=DEG(i,9,s,j)
 				var u=DEG(i,10,s,j),	v=DEG(i,11,s,j),	w=DEG(i,12,s,j)
 			}
-			var	pii = 2*Math.PI,x1,x2,x3,x4,x5,y1,y2,y3,z1,z2,z3
+			var	pii = 2*Math.PI,x1,x2,x3,x4,x5,y1,y2,y3,y4,z1,z2,z3,z4
 			x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x, 				y1=u*Math.cos(v*pii)+y,	z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
 			x2=Pv==0?x1:x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),				y2=Pv==0?y1*Pu+Py:(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
 			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px,z2=Pw==0?z1*Pu+Pz:(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
-			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);				y3=Vv==0||p<0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
-			x5=Vw==0||p<0?x4:x4*Math.cos(-Vw*pii)+z2*Math.sin(-Vw*pii), 				z3=Vw==0||p<0?z2+Vz:z2*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)+Vz
-			zScale=z3>1?z3*VP+1-VP:1/(2-(z3*VP+1-VP)),	m=j*4
-			var xx=(x5+Vx)*zScale, yy=(y3+Vy)*zScale
-			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z3*VF>1?1:1/(2-z3*VF)
-			dv[Ni].push(xx,yy,0.999999+z3/1000000,1); dc[Ni].push(r1,g1,b1,a1)
+			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);				y3=Vv==0||p<0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)	
+			x5=Vw==0||p<0?x4:x4*Math.cos(-Vw*pii)+z2*Math.sin(-Vw*pii), 				z3=Vw==0||p<0?z2+Vz:z2*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
+			y4=Vo==0||p<0?y3:y3*Math.cos(-Vo*pii)+z3*Math.sin(-Vo*pii),				z4=Vo==0||p<0?z3:z3*Math.cos(Vo*pii)+y3*Math.sin(Vo*pii)+Vz
+			zScale=z4>1?z4*VP+1-VP:1/(2-(z4*VP+1-VP)),	m=j*4
+			var xx=(x5+Vx)*zScale, yy=(y4+Vy)*zScale
+			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z4*VF>1?1:1/(2-z4*VF)
+			dv[Ni].push(xx,yy,0.999999+z4/1000000,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
@@ -526,7 +530,7 @@ function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
-function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/≡/g,"==").replace(/≠/g,"!=").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/([xyzXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([BDEINS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/\)\(/g,",").replace(/∞/g,"%").replace(/≝/g,"Math."):0}
+function vdScript(s){return s?s.replace(/!/g,":").replace(/></g,"==").replace(/<>/g,"!=").replace(/<</g,"<=").replace(/>>/g,">=").replace(/≡/g,"==").replace(/≠/g,"!=").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/([xyzNSXYZ])\((\w+)\)/g,"get$1\('$2'\)").replace(/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)").replace(/\)\(/g,",").replace(/∞/g,"%").replace(/≝/g,"Math."):0}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=F.replace(/\+/g,"\n+").replace(/,/g,",\n\n").replace(/=/g,"\n=");}
 function outF(){F=fLog.value.replace(/\n/g,"").replace(/\+-/g,"±");F2DE();if(autosave)urlTFG()}
@@ -586,9 +590,10 @@ function playSound(){
 	#datadiv{position:absolute;left:522px;top:5px;width:600px}
 </style>
 </head><body onload="start()">
+<div id="uidiv">
 <canvas id="imgcanvas"></canvas>
 <canvas id="glcanvas"></canvas>
-<canvas id="uicanvas"></canvas></br>
+<canvas id="uicanvas"></canvas></div></br>
 <div id="datadiv">
 <input type="file" onchange="loadFiles(this.files)" multiple=""></input>
 <input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
@@ -604,10 +609,11 @@ function playSound(){
 <input value="update" type="button" onclick="inF();inG()"></input>
 <input value="apply" type="button" onclick="outG();outVal();outF()"></input>
 <br>
-</div>
+ </div>
 <div id="imagediv">
 Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
 <input type="button" onclick="initCam()" value="Camera"></input>
+<input type="button" onclick="uidiv.webkitRequestFullscreen()" value="fullscreen"></input>
 <video autoplay hidden></video>
 </div>
 </body></html>
