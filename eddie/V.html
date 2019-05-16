@@ -21,7 +21,7 @@ var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau, video, cam=0
-var C="slipxyzrgbuvwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
+var C="slipxyzrgbuvwdtao";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
@@ -401,7 +401,7 @@ function DE2B(){
 			Px=DEG(i-l,4,S,Pi);	Py=DEG(i-l,5,S,Pi); Pz=DEG(i-l,6,S,Pi)
 			Pr=DEG(i-l,7,S,Pi);	Pg=DEG(i-l,8,S,Pi);	Pb=DEG(i-l,9,S,Pi)
 			Pu=DEG(i-l,10,S,Pi);Pv=DEG(i-l,11,S,Pi);Pw=DEG(i-l,12,S,Pi)
-			Pd=DEG(i-l,13,S,Pi)
+			Pd=DEG(i-l,13,S,Pi),Po=DEG(i-l,16,S,Pi)
 		}
 
 		var len=DE(i,1)
@@ -425,7 +425,7 @@ function DE2B(){
 					var d2 = (PArray.length-1)*d-ii
 					var x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s),	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s),	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
 					var r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s),	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s),	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
-					var u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s),	v=(1-d2)*DE(i0,11,s)+d2*DE(i1,11,s),	w=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s)				
+					var u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s),	v=(1-d2)*DE(i0,11,s)+d2*DE(i1,11,s),	w=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s)
 				}
 			}
 			else{
@@ -434,18 +434,28 @@ function DE2B(){
 				var u=DEG(i,10,s,j),	v=DEG(i,11,s,j),	w=DEG(i,12,s,j)
 			}
 			var	pii = 2*Math.PI,x1,x2,x3,x4,x5,y1,y2,y3,y4,z1,z2,z3,z4
-			x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x, 				y1=u*Math.cos(v*pii)+y,	z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
-			x2=Pv==0?x1:x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii),				y2=Pv==0?y1*Pu+Py:(y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii))*Pu+Py
-			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px,z2=Pw==0?z1*Pu+Pz:(z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii))*Pu+Pz
-			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y2*Math.sin(Vv*pii);				y3=Vv==0||p<0?y2:y2*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)	
-			x5=Vw==0||p<0?x4:x4*Math.cos(-Vw*pii)+z2*Math.sin(-Vw*pii), 				z3=Vw==0||p<0?z2+Vz:z2*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
-			y4=Vo==0||p<0?y3:y3*Math.cos(-Vo*pii)+z3*Math.sin(-Vo*pii),				z4=Vo==0||p<0?z3:z3*Math.cos(Vo*pii)+y3*Math.sin(Vo*pii)+Vz
-			zScale=z4>1?z4*VP+1-VP:1/(2-(z4*VP+1-VP)),	m=j*4
-			var xx=(x5+Vx)*zScale, yy=(y4+Vy)*zScale
-			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z4*VF>1?1:1/(2-z4*VF)
-			dv[Ni].push(xx,yy,0.999999+z4/1000000,1); dc[Ni].push(r1,g1,b1,a1)
+			x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x
+			y1=u*Math.cos(v*pii)+y
+			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
+			x2=Pv==0?x1:x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii)
+			y2=Pv==0?y1:y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii)
+			z2=Pw==0?z1:z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
+			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
+			y3=Po==0?y2*Pu+Py:(y2*Math.cos(-Vo*pii)+z2*Math.sin(-Po*pii))*Pu+Py
+			z3=Po==0?z2*Pu+Pz:(z2*Math.cos(Vo*pii)+y2*Math.sin(Po*pii))*Pu+Pz
+			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
+			y4=Vv==0||p<0?y3:y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
+			z4=Vw==0||p<0?z3:z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
+			x5=Vw==0||p<0?x4:x4*Math.cos(-Vw*pii)+z3*Math.sin(-Vw*pii)
+			y5=Vo==0||p<0?y4:y4*Math.cos(-Vo*pii)+z4*Math.sin(-Vo*pii)
+			z5=Vo==0||p<0?z4+Vz:z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
+			m=j*4
+			let angle=p<0?1:Math.acos(-z5/Math.sqrt(x5*x5+y5*y5+z5*z5)), scale=p<0?1:angle/Math.sqrt(x5*x5+y5*y5)*VP
+			var xx=x5*scale, yy=y5*scale
+			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>1?1:1/(1-Math.abs(z5)*VF)
+			dv[Ni].push(xx,yy,1,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
-			dvX[i]+=x3; dvY[i]+=y2; dvZ[i]+=z2
+			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
 			if(te && !Bau){ 
 				sect=tl/10;
