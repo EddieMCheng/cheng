@@ -434,11 +434,11 @@ function DE2B(){
 				var u=DEG(i,10,s,j),	v=DEG(i,11,s,j),	w=DEG(i,12,s,j)
 			}
 			var	pii = 2*Math.PI,x1,x2,x3,x4,x5,y1,y2,y3,y4,z1,z2,z3,z4
-			x1=u*Math.sin(v*pii)*Math.cos(w*pii)+x
-			y1=u*Math.cos(v*pii)+y
-			z1=u*Math.sin(v*pii)*Math.sin(w*pii)+z
-			x2=Pv==0?x1:x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii)
-			y2=Pv==0?y1:y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii)
+			x1=u==0?0:u*Math.sin((v+Pv)*pii)*Math.cos(w*pii)
+			y1=u==0?0:u*Math.cos((v+Pv)*pii)
+			z1=u==0?0:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
+			x2=Pv==0?x1+x:x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
+			y2=Pv==0?y1+y:y*Math.cos(Pv*pii)-x*Math.sin(Pv*pii)+y1
 			z2=Pw==0?z1:z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
 			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
 			y3=Po==0?y2*Pu+Py:(y2*Math.cos(-Vo*pii)+z2*Math.sin(-Po*pii))*Pu+Py
@@ -452,7 +452,7 @@ function DE2B(){
 			m=j*4
 			let angle=p<0?1:Math.acos(-z5/Math.sqrt(x5*x5+y5*y5+z5*z5)), scale=p<0?1:angle/Math.sqrt(x5*x5+y5*y5)*VP
 			var xx=x5*scale, yy=y5*scale
-			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>1?1:1/(1-Math.abs(z5)*VF)
+			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>-1?1:1/(-z5*VF)
 			dv[Ni].push(xx,yy,1,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
