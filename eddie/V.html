@@ -21,7 +21,7 @@ var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New", alerts=0, au=new AudioContext(), sound, Bau, video, cam=0
-var C="slipxyzrgbuvwdtao";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,.5,0,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0,0]
+var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
@@ -401,22 +401,22 @@ function DE2B(){
 			Px=DEG(i-l,4,S,Pi);	Py=DEG(i-l,5,S,Pi); Pz=DEG(i-l,6,S,Pi)
 			Pr=DEG(i-l,7,S,Pi);	Pg=DEG(i-l,8,S,Pi);	Pb=DEG(i-l,9,S,Pi)
 			Pu=DEG(i-l,10,S,Pi);Pv=DEG(i-l,11,S,Pi);Pw=DEG(i-l,12,S,Pi)
-			Pd=DEG(i-l,13,S,Pi),Po=DEG(i-l,16,S,Pi)
+			Po=DEG(i-l,13,S,Pi);Pd=DEG(i-l,14,S,Pi)
 		}
 
 		var len=DE(i,1)
-		var type = D[i][15]+D[i-D[i][2]][15]
+		var type = D[i][16]+D[i-D[i][2]][16]
 		var fr=len<0
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
 		var p=DE(i,3)*DE(i-D[i][2],3), pdep=Math.abs(p)>1?1:Math.abs(p)
 		var nn=0
 		var PArray=D[i][0].split(".")
-		let te=E[i][14], tl=te*au.sampleRate, lx=0,ly=0;
+		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0;
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		for(var j=0; j<jlen*pdep; j++){
 			var s=fr||isFrac?j/jlen:-1
-			var d=DEG(i,13,s,j)+Pd
+			var d=DEG(i,14,s,j)+Pd
 			if(PArray.length>1){
 				var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
 				var i0 = L[PArray[ii]]
@@ -436,13 +436,13 @@ function DE2B(){
 			var	pii = 2*Math.PI,x1,x2,x3,x4,x5,y1,y2,y3,y4,z1,z2,z3,z4
 			x1=u==0?0:u*Math.sin((v+Pv)*pii)*Math.cos(w*pii)
 			y1=u==0?0:u*Math.cos((v+Pv)*pii)
-			z1=u==0?0:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
+			z1=u==0?z:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
 			x2=Pv==0?x1+x:x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
 			y2=Pv==0?y1+y:y*Math.cos(Pv*pii)-x*Math.sin(Pv*pii)+y1
 			z2=Pw==0?z1:z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
 			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
-			y3=Po==0?y2*Pu+Py:(y2*Math.cos(-Vo*pii)+z2*Math.sin(-Po*pii))*Pu+Py
-			z3=Po==0?z2*Pu+Pz:(z2*Math.cos(Vo*pii)+y2*Math.sin(Po*pii))*Pu+Pz
+			y3=Po==0?y2*Pu+Py:(y2*Math.cos(-Po*pii)+z2*Math.sin(-Po*pii))*Pu+Py
+			z3=Po==0?z2*Pu+Pz:(z2*Math.cos(Po*pii)+y2*Math.sin(Po*pii))*Pu+Pz
 			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
 			y4=Vv==0||p<0?y3:y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
 			z4=Vw==0||p<0?z3:z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
@@ -522,7 +522,7 @@ function draw(a) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0)
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var Ni=0;Ni<Np.length; Ni++){
-		var i=Np[Np.length-Ni-1],type=D[i][15]+D[i-D[i][2]][15]
+		var i=Np[Np.length-Ni-1],type=D[i][16]+D[i-D[i][2]][16]
 		gl.drawArrays(type>3?gl.TRIANGLE_FAN:type>2?gl.TRIANGLE_STRIP:type>1?gl.TRIANGLES:type>0.5?gl.LINE_STRIP:type>0?gl.LINES:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
