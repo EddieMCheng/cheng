@@ -425,18 +425,21 @@ function DE2B(){
 					var d2 = (PArray.length-1)*d-ii
 					var x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s),	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s),	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
 					var r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s),	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s),	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
-					var u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s),	v=(1-d2)*DE(i0,11,s)+d2*DE(i1,11,s),	w=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s)
+					var u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s),	v=(1-d2)*DE(i0,11,s)+d2*DE(i1,11,s),	w=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s),o=(1-d2)*DE(i0,13,s)+d2*DE(i1,13,s)
 				}
 			}
 			else{
 				var x=DEG(i,4,s,j),		y=DEG(i,5,s,j),		z=DEG(i,6,s,j)
 				var r=DEG(i,7,s,j),		g=DEG(i,8,s,j),		b=DEG(i,9,s,j)
-				var u=DEG(i,10,s,j),	v=DEG(i,11,s,j),	w=DEG(i,12,s,j)
+				var u=DEG(i,10,s,j),	v=DEG(i,11,s,j),	w=DEG(i,12,s,j),	o=DEG(i,13,s,j)
 			}
-			var	pii = 2*Math.PI,x1,x2,x3,x4,x5,y1,y2,y3,y4,z1,z2,z3,z4
-			x1=u==0?0:u*Math.sin((v+Pv)*pii)*Math.cos(w*pii)
-			y1=u==0?0:u*Math.cos((v+Pv)*pii)
-			z1=u==0?z:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
+			var	pii = 2*Math.PI,x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5
+			x0=u==0?0:u*Math.sin((v+Pv)*pii)
+			y0=u==0&&v==0&&Pv==0?0:u*Math.cos((v+Pv)*pii)
+			z0=u==0?z:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
+			x1=u==0||w==0?x0:x0*Math.cos(w*pii)
+			y1=o==0?y0:(y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii))
+			z1=o==0?z0:(z0*Math.cos(o*pii)+y0*Math.sin(o*pii))
 			x2=Pv==0?x1+x:x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
 			y2=Pv==0?y1+y:y*Math.cos(Pv*pii)-x*Math.sin(Pv*pii)+y1
 			z2=Pw==0?z1:z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
