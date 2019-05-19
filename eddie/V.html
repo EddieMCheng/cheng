@@ -582,6 +582,7 @@ function vib(ms){if(抖)navigator.vibrate(ms)}
 function round(v,d){return Math.round(v*Math.pow(10,d))/Math.pow(10,d)}
 function decimal3(v){return round(v,3)}
 function decimal4(v){return round(v,4)}
+function lim(s,s0,s1,t0,t1){return (s>s1?s1:s<s0?s0:s)*(t1-t0)/(s1-s0)}
 function cos(v){return Math.cos(v*2*PI)}
 function sin(v){return Math.sin(v*2*PI)}
 function tan(v){return Math.tan(v*2*PI)}
