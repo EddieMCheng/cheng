@@ -414,7 +414,7 @@ function DE2B(){
 		var PArray=D[i][0].split(".")
 		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0;
 		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
-		for(var j=0; j<jlen*pdep; j++){
+		for(var j=0; j<(pdep==0?1:jlen*pdep); j++){
 			var s=fr||isFrac?j/jlen:-1
 			var d=DEG(i,14,s,j)+Pd
 			if(PArray.length>1){
@@ -436,8 +436,8 @@ function DE2B(){
 			var	pii = 2*Math.PI,x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5
 			x0=u==0?0:u*Math.sin((v+Pv)*pii)
 			y0=u==0&&v==0&&Pv==0?0:u*Math.cos((v+Pv)*pii)
-			z0=u==0?z:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
-			x1=u==0||w==0?x0:x0*Math.cos(w*pii)
+			z0=y0==0&&w==0?z:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
+			x1=u==0&&w==0?x0:x0*Math.cos(w*pii)
 			y1=o==0?y0:(y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii))
 			z1=o==0?z0:(z0*Math.cos(o*pii)+y0*Math.sin(o*pii))
 			x2=Pv==0?x1+x:x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
@@ -566,7 +566,7 @@ function getS(s){return L[s]?L[s]+"":""}
 function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
 function getI(x,y,c){return I2d.getImageData(x,y,1,1).data[c]/255}
 function getM(s){return getHyp(X[L[s]]-Mx,Y[L[s]]-My)}
-function getO(s){return getHyp3(dvX[L[s]],dvY[L[s]],dvZ[L[s]])}
+function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
 function getSpace(s,t){return getHyp3(dvX[L[s]]-dvX[L[t]],dvY[L[s]]-dvY[L[t]],dvZ[L[s]]-dvZ[L[t]])}
 function Ir(x,y){return getI(x,y,0)}
 function Ig(x,y){return getI(x,y,1)}
@@ -585,7 +585,7 @@ function vib(ms){if(抖)navigator.vibrate(ms)}
 function round(v,d){return Math.round(v*Math.pow(10,d))/Math.pow(10,d)}
 function decimal3(v){return round(v,3)}
 function decimal4(v){return round(v,4)}
-function lim(s,s0,s1,t0,t1){return (s>s1?s1:s<s0?s0:s)*(t1-t0)/(s1-s0)}
+function lim(s,s0,s1,t0,t1){return ((s>s1?s1:s<s0?s0:s)-s0)*(t1-t0)/(s1-s0)+t0}
 function cos(v){return Math.cos(v*2*PI)}
 function sin(v){return Math.sin(v*2*PI)}
 function tan(v){return Math.tan(v*2*PI)}
