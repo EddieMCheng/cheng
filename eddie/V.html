@@ -27,7 +27,7 @@ var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5)
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
-var websock=[],W="",Wd=[],Wi="",Wp=81
+var websock=[],W="",Wd=[],Wi=0,Wp=81
 var autosave=0
 updateL();F2DE();DE2B();Geval()
 function init(){
@@ -93,7 +93,19 @@ function loop(){
 			saveD.value="D_"+T+" ("+kb(out)+")"
 			saveF.value="F_"+T+" ("+kb(fLog.value)+")"
 			saveG.value="G_"+T+" ("+kb(gLog.value)+")"
-
+			if(W){
+				var dArr=W.split("&")
+				for(var i=0;i<dArr.length;i++){
+					if(websock[i]&&dArr[i]!=websock[i].ip)websock[i].close()
+					if(dArr[i]!=""&&!websock[i]||websock[i].readyState==3){
+						websock[i]=new WebSocket('ws://'+dArr[i]+":"+Wp)
+						websock[i].idx=i;
+						websock[i].ip=dArr[i];
+						websock[i].onmessage = function(ev){Wd[this.idx]=ev.data.split(",")}
+						websock[i].onopen=function(ev){alert("connected:"+this.ip)}
+					}
+				}
+			}
 		}
 		go=0
 		DE2B()
@@ -235,24 +247,6 @@ function setVar(s){
 		else if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(sArr[0]=="W"){
-			W=sPair[1]
-			var dataArray=W.split(",")
-			for(var i=0;i<dataArray.length;i++){
-				if(websock[i])websock[i].close();
-				if(dataArray[i]!=""){
-					Wd[i] = []
-					websock[i] = new WebSocket('ws://'+dataArray[i]+":"+Wp);
-					websock[i].idx=i;
-					websock[i].onmessage = function(evt) {
-						if(evt.data.includes(",")){
-							Wd[this.idx]=evt.data.split(",")
-						}
-					}
-				}
-			}
-			updateT(T)
-		}
 		else if(sArr.length == 1)this[sArr[0]]=sVal.includes(",")?sVal.split(","):sVal
 	}
 }
