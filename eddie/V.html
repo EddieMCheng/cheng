@@ -25,9 +25,9 @@ var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=0.4,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=0,SS=512,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
-var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
-var websock=[],W="",Wd=[],Wi=0,Wp=81
+var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var autosave=0
 updateL();F2DE();DE2B();Geval()
 function init(){
@@ -81,32 +81,38 @@ function start(){
 function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	if(go){
-		if(time-sTime>1000){
-			sTime=time
-			DE2F()
-			if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){
-	
-				navigator.geolocation.getCurrentPosition(showPosition)
-			}
-			out="D_"+T+"."+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";VF:"+VF+";Bb:"+Bb+";dT:"+dT+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
-			saveD.value="D_"+T+" ("+kb(out)+")"
-			saveF.value="F_"+T+" ("+kb(fLog.value)+")"
-			saveG.value="G_"+T+" ("+kb(gLog.value)+")"
-			if(W){
-				var dArr=W.split("&")
-				for(var i=0;i<dArr.length;i++){
-					if(websock[i]&&dArr[i]!=websock[i].ip)websock[i].close()
-					if(dArr[i]!=""&&!websock[i]||websock[i].readyState==3){
-						websock[i]=new WebSocket('ws://'+dArr[i]+":"+Wp)
-						websock[i].idx=i;
-						websock[i].ip=dArr[i];
-						websock[i].onmessage = function(ev){Wd[this.idx]=ev.data.split(",")}
-						websock[i].onopen=function(ev){alert("connected:"+this.ip)}
-					}
+
+	if(time-sTime>1000){
+		sTime=time
+		DE2F()
+		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
+		out="D_"+T+"."+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";VF:"+VF+";Bb:"+Bb+";dT:"+dT+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		saveD.value="D_"+T+" ("+kb(out)+")"
+		saveF.value="F_"+T+" ("+kb(fLog.value)+")"
+		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
+		if(WP){
+			var dArr=WP.split(" ");Wl=dArr.length
+			for(let i=0;i<Wl;i++){
+				if(WS[i]&&dArr[i]!=WS[i].ip)WS[i].close()
+				if(WS[i])console.log(i+":"+WS[i].readyState)
+				if(dArr[i]!=""&&!WS[i]||WS[i].readyState==3){
+					WS[i]=new WebSocket('ws://'+dArr[i]+":"+Wp)
+					WS[i].idx=i;
+					WS[i].ip=dArr[i];
+					WS[i].onmessage = function(ev){Wd[this.idx]=ev.data.split(",")}
 				}
 			}
 		}
+	}
+	if(W&&W.length>0&&(!L["W"]||L["W"]!=W||time-busTime>1000)){
+		busTime=time
+		L["W"]=W;
+		let bus=time+","+T+","+W.split(" ").join(",")+",";
+		for(let i=0;i<Wl;i++){
+			if(WS[i]&&WS[i].readyState==1)WS[i].send(bus);
+		}
+	}
+	if(go){
 		go=0
 		DE2B()
 		draw()
