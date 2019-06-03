@@ -22,7 +22,7 @@ var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,IS=1,Va=1, Bb=1
+var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -34,6 +34,14 @@ function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
 	if(gl){
+		V.width=SW;V.height=SH
+		I.width=SW;I.height=SH
+		U.width=SW;U.height=SH
+		uidiv.style.width=parseInt(SW)+"px"
+		uidiv.style.height=parseInt(SH)+"px"
+		datadiv.style.left=(parseInt(SW)+10)+"px"
+		updateI()
+		gl.viewport(0,0,SW,SH)
 		gl.clearColor(0,0,0,Va)		
 		gl.lineWidth(LS)
 		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
@@ -66,9 +74,9 @@ function start(){
 	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
 	window.ondevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
 	navigator.geolocation.getCurrentPosition(showPosition)
-	V.width=SS;V.height=SS
-	I.width=SS;I.height=SS
-	U.width=SS;U.height=SS
+	V.width=SW;V.height=SH
+	I.width=SW;I.height=SH
+	U.width=SW;U.height=SH
 
 	gl=V.getContext("webgl")
 	I2d=I.getContext('2d')
@@ -170,14 +178,13 @@ function updateI(idx){
 		I2d.clearRect(0,0,I.width,I.height)
 			if(idx>=0)img = images[idx]
 			if(img){
-			var cutw=img.width>img.height?img.width-img.height:0; var cuth=img.height>img.width?img.height-img.width:0 
-			I2d.drawImage(img,-cuth/2,-cutw/2,img.width+cuth,img.height +cutw,0,0,SS,SS)
+			I2d.drawImage(img,0,0)
 		}	
 	}
 }
 function initCam(){
 	if(navigator.mediaDevices.getUserMedia) {       
-	    navigator.mediaDevices.getUserMedia({video:{width:SS,height:SS,advanced:[{facingMode:"environment"}]}})
+	    navigator.mediaDevices.getUserMedia({video:{width:SW,height:SH,advanced:[{facingMode:"environment"}]}})
 	  .then(function(stream){
 	    video.srcObject = stream
 	    cam=1;if(Va==1)setVar("Va:0.5");if(dT==0)dT=0.04
@@ -198,7 +205,7 @@ function updateUP(i,font,alpha){
 		U2d.textBaseline = "top"
     	var names=typeA? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SS/2)+X[i]*(SS/2),(SS/2)-Y[i]*(SS/2))
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SW/2)+X[i]*(SW/2),(SH/2)-Y[i]*(SH/2))
 	}
 }
 function download(type, text, ext) {
@@ -239,14 +246,14 @@ function setVar(s){
 		}
 		else if(sArr[0]=="SS"){
 			SS=sVal
-			V.width=SS;V.height=SS
-			I.width=SS;I.height=SS
-			U.width=SS;U.height=SS
-			uidiv.style.width=parseInt(SS)+"px"
-			uidiv.style.height=parseInt(SS)+"px"
-			datadiv.style.left=(parseInt(SS)+10)+"px"
+			V.width=SW;V.height=SH
+			I.width=SW;I.height=SH
+			U.width=SW;U.height=SH
+			uidiv.style.width=parseInt(SW)+"px"
+			uidiv.style.height=parseInt(SH)+"px"
+			datadiv.style.left=(parseInt(SW)+10)+"px"
 			updateI()
-			gl.viewport(0,0,SS,SS)
+			gl.viewport(0,0,SW,SH)
 		}
 		else if(sArr[0]=="LS"){LS=sVal;gl.lineWidth(LS)}
 		else if(sArr[0]=="VS"){VS=sVal;Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")}
@@ -456,7 +463,7 @@ function DE2B(){
 			let angle=p<0?1:Math.acos(-z5/getHyp3(x5,y5,z5)), scale=p>0?angle/getHyp(x5,y5)*VP:z5>1?2*z5*VP:2*VP/(2-z5)
 			var xx=x5*scale, yy=y5*scale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>-1?1:1/(-z5*VF)
-			dv[Ni].push(xx,yy,1,1); dc[Ni].push(r1,g1,b1,a1)
+			dv[Ni].push(xx*SH/SW,yy,1,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
@@ -537,8 +544,8 @@ function showPosition(position){
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 	
 }
-function getMx(ev){return 2*decimal4(ev.pageX/SS)-1}
-function getMy(ev){return 1-2*decimal4(ev.pageY/SS)}
+function getMx(ev){return 2*decimal4(ev.pageX/SW)-1}
+function getMy(ev){return 1-2*decimal4(ev.pageY/SH)}
 function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;setMB(ev);touch=1}
 function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
@@ -604,35 +611,37 @@ function playSound(){
 </script>
 <style>
 	html,body{margin:1px;padding:0}
-	#imgcanvas{position:absolute;left:1px;top:5px;z-index:-10}
-	#uicanvas{position:absolute;left:1px;top:5px}
-	#datadiv{position:absolute;left:522px;top:5px;width:600px}
+	#imgcanvas{position:absolute;left:0px;top:0px;bottom:0px;right:0px;z-index:-10}
+	#uicanvas{position:absolute;left:0px;top:0px;bottom:0px;right:0px}
+	#glcanvas{position:absolute;left:0px;top:0px;bottom:0px;right:0px}
+	#datadiv{left:0px;width:550px}
 </style>
 </head><body onload="start()">
 <div id="uidiv">
-<canvas id="imgcanvas"></canvas>
-<canvas id="glcanvas"></canvas>
-<canvas id="uicanvas"></canvas></div></br>
+	<canvas id="imgcanvas"></canvas>
+	<canvas id="glcanvas"></canvas>
+	<canvas id="uicanvas"></canvas>
+</div></br>
 <div id="datadiv">
-<input type="file" onchange="loadFiles(this.files)" multiple=""></input>
-<input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
-<input id="playS" type="button" value="play" onclick="playSound()" hidden></input>
-<input type="button" value="URL" onclick="urlTFG()"></input>
-<p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
-<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
-<input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
-<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
-<input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
-<input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
-<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
-<input value="update" type="button" onclick="inF();inG()"></input>
-<input value="apply" type="button" onclick="outG();outVal();outF()"></input>
+	<input type="file" onchange="loadFiles(this.files)" multiple=""></input>
+	<input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
+	<input id="playS" type="button" value="play" onclick="playSound()" hidden></input>
+	<input type="button" value="URL" onclick="urlTFG()"></input>
+	<p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
+	<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
+	<input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
+	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
+	<input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
+	<input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
+	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
+	<input value="update" type="button" onclick="inF();inG()"></input>
+	<input value="apply" type="button" onclick="outG();outVal();outF()"></input>
 <br>
  </div>
 <div id="imagediv">
-Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
-<input type="button" onclick="initCam()" value="Camera"></input>
-<input type="button" onclick="uidiv.webkitRequestFullscreen()" value="fullscreen"></input>
-<video autoplay hidden></video>
+	Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
+	<input type="button" onclick="initCam()" value="Camera"></input>
+	<input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
+	<video autoplay hidden></video>
 </div>
 </body></html>
