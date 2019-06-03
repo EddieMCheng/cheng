@@ -18,7 +18,7 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
-var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[]
+var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
@@ -55,7 +55,7 @@ function start(){
 	V=doc.getElementById("glcanvas")
 	I=doc.getElementById('imgcanvas')
 	U=doc.getElementById('uicanvas')
-	inF();inG();outVar()
+	inF();inG()
 	uidiv.ontouchstart=function(ev){setM1(ev.touches[0])}
 	uidiv.onmousedown=function(ev){setM1(ev)}
 	uidiv.ontouchmove=function(ev){if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
@@ -65,7 +65,7 @@ function start(){
 	document.onkeydown=function(ev){
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){inF();inG();go=1}
-		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outVal();outF();go=1}
+		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outF();go=1}
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
@@ -138,7 +138,6 @@ function updateD(arr){
 		if(arr[i].includes(":"))setVar(arr[i])
 		else if(arr[i].includes("_"))updateT(arr[i])
 	}
-	outVar();
 	inF();
 	inG();
 }
@@ -171,7 +170,7 @@ function readTextUrl(file){
 	}
 	raw.send(null);
 }
-function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};if(Va==1)setVar("Va:0.5");images[idx].src=URL.createObjectURL(imgInput.files[0])}
+function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
 function updateI(idx){
 	if(I){
 		I2d.scale(IS,IS)
@@ -187,7 +186,7 @@ function initCam(){
 	    navigator.mediaDevices.getUserMedia({video:{width:SW,height:SH,advanced:[{facingMode:"environment"}]}})
 	  .then(function(stream){
 	    video.srcObject = stream
-	    cam=1;if(Va==1)setVar("Va:0.5");if(dT==0)dT=0.04
+	    cam=1;if(dT==0)dT=0.04
 	  }).catch(function(error){alert(error)})}
 }
 function updateCam(){
@@ -222,45 +221,29 @@ function setVar(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
 		var sArr=sPair[0].split(".")
-		if(sArr.length>1 && L[sArr[0]]!=undefined){
-			var sName=sArr[0]
-			var sType=sArr[sArr.length-1]
-			if(sType == "name"||sType=="font"||sType=="align")L[sPair[0]]=sPair[1]
-			else if(sType=="s")D[L[sName]][0]=sPair[1]
-			else if(sType.length==1 && sType.search(/[a-z]/g)==0){
-				var sDE=sVal.split("±")
-				D[L[sName]][L[sType]]=parseFloat(sDE[0])
-				if(sDE.length==2)E[L[sName]][L[sType]]=parseFloat(sDE[1])
-			}
-			else{L[sPair[0]]=sVal}
-		}
-		else if(sArr[0]=="echo")alert(this[sVal])
-		else if(sArr[0]=="IS"){
-			IS=sVal
-			updateI()
-		}
-		else if(sArr[0]=="Va"){
-			Va=sVal
-			gl.clearColor(0,0,0,Va)
-			go=1
-		}
-		else if(sArr[0]=="SS"){
-			SS=sVal
-			V.width=SW;V.height=SH
-			I.width=SW;I.height=SH
-			U.width=SW;U.height=SH
-			uidiv.style.width=parseInt(SW)+"px"
-			uidiv.style.height=parseInt(SH)+"px"
-			datadiv.style.left=(parseInt(SW)+10)+"px"
-			updateI()
-			gl.viewport(0,0,SW,SH)
-		}
-		else if(sArr[0]=="LS"){LS=sVal;gl.lineWidth(LS)}
-		else if(sArr[0]=="VS"){VS=sVal;Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")}
-		else if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
+		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(sArr.length == 1)this[sArr[0]]=sVal.includes(",")?sVal.split(","):sVal
+		else if(L[sArr[0]]!=this[sArr[0]]){
+			if(sVal)this[sArr[0]]=sVal
+			L[sArr[0]]=this[sArr[0]];
+			switch(sArr[0]){
+				case "SW":
+				case "SH":
+							V.width=SW;V.height=SH
+							I.width=SW;I.height=SH
+							U.width=SW;U.height=SH
+							uidiv.style.width=parseInt(SW)+"px"
+							uidiv.style.height=parseInt(SH)+"px"
+							gl.viewport(0,0,SW,SH)
+				case "IS":	updateI();break
+				case "Va":	gl.clearColor(0,0,0,Va);break
+				case "LS":	gl.lineWidth(LS);break
+				case "VS":	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
+							break
+				case "F":	
+			}
+		}
 	}
 }
 function updateL(){
@@ -354,7 +337,7 @@ function F2DE(){
 }
 function Geval(){
 	if(G&&G!=""){
-		GV=[],GB=[],GBd=[]
+		GV=[],Gp=[],GB=[],GBd=[]
 		for(var i=0;i<G.length;i++){
 			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i]
 			if(Gi!=""){
@@ -372,19 +355,19 @@ function Geval(){
 						for(var m=L[from];m<=(L[to]?L[to]:L[from]);m++){
 							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
 								let s=D[m][0],vl0r=vl0.replace(/←/g,s);
-								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));fail=0}
+								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));Gp.push(0);fail=0}
 								else if(Gi0.includes(".")&&m){
 									var n=L[id1]
 									if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
-									if(vl0&&m)GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""))
-									if(vl1&&m)GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""))
+									if(vl0&&m){GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""));Gp.push(0)}
+									if(vl1&&m){GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""));Gp.push(0)}
 									fail=0
 								}
 							}
 						}
 					}
 				}
-				else GV.push(Gi0+"="+vdScript(vl0+d))
+				else{GV.push(Gi0+"="+vdScript(vl0+d));Gp.push(Gi0)} 
 			}
 		}
 	}
@@ -492,7 +475,7 @@ function DE2B(){
 	算=Math.round(n)
 	let alertsExists=false
 	for(var i=0;i<GV.length;i++){
-		try{eval(GV[i])}
+		try{eval(GV[i]);setVar(Gp[i])}
 		catch(e){
 			alertsExists=true
 			if(alertUserOnError)alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
@@ -557,8 +540,6 @@ function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,",\n\n",/=/g,"\n=")}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/,\n/g,",",/\n/g,",",/\+-/g,"±");F2DE();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
-function outVar(){valtxt.value=this[vartxt.value]}
-function outVal(){setVar(vartxt.value+":"+valtxt.value);outVar()}
 function getx(s){let t=dvx[L[s]];return t?t:0}
 function gety(s){let t=dvy[L[s]];return t?t:0}
 function getz(s){let t=dvz[L[s]];return t?t:0}
@@ -627,7 +608,6 @@ function playSound(){
 	<input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
 	<input id="playS" type="button" value="play" onclick="playSound()" hidden></input>
 	<input type="button" value="URL" onclick="urlTFG()"></input>
-	<p><input id="vartxt" onchange="outVar()" type="text" value="T">:<input id="valtxt" onchange="outVal()" type="text"></p>
 	<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
 	<input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
 	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
@@ -635,7 +615,7 @@ function playSound(){
 	<input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
 	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 	<input value="update" type="button" onclick="inF();inG()"></input>
-	<input value="apply" type="button" onclick="outG();outVal();outF()"></input>
+	<input value="apply" type="button" onclick="outG();outF();go=1"></input>
 <br>
  </div>
 <div id="imagediv">
