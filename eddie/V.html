@@ -20,9 +20,9 @@
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0
+var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Va=1, Bb=1
+var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -42,7 +42,7 @@ function init(){
 		datadiv.style.left=(parseInt(SW)+10)+"px"
 		updateI()
 		gl.viewport(0,0,SW,SH)
-		gl.clearColor(0,0,0,Va)		
+		gl.clearColor(Vr,Vg,Vb,Va)		
 		gl.lineWidth(LS)
 		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
 		Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
@@ -189,6 +189,30 @@ function initCam(){
 	    cam=1;if(dT==0)dT=0.04
 	  }).catch(function(error){alert(error)})}
 }
+function initMic(){
+	if(navigator.mediaDevices.getUserMedia) {       
+	    navigator.mediaDevices.getUserMedia({audio:true})
+	  .then(function(stream){
+		var audioCtx = new AudioContext();
+		var source = audioCtx.createMediaStreamSource(stream);
+		var processor =audioCtx.createScriptProcessor(1024);
+		processor.onaudioprocess = function(ev){
+			var buf=ev.inputBuffer.getChannelData(0);
+		//	alert(buf)
+			var sample = 0
+			for(var i=0;i<buf.length;i++){
+				//sample+=Math.abs(buf[i])
+				sample=Math.max(sample,buf[i])
+			}
+			//mic=sample/buf.length
+			mic=sample
+		}
+		processor.connect(audioCtx.destination)
+		source.connect(processor)
+		
+	  }).catch(function(error){alert(error)})}
+}
+
 function updateCam(){
 	I2d.drawImage(video,0,0)
 }
@@ -237,7 +261,10 @@ function setVar(s){
 							uidiv.style.height=parseInt(SH)+"px"
 							gl.viewport(0,0,SW,SH)
 				case "IS":	updateI();break
-				case "Va":	gl.clearColor(0,0,0,Va);break
+				case "Vr":
+				case "Vg":
+				case "Vb":
+				case "Va":	gl.clearColor(Vr,Vg,Vb,Va);break
 				case "LS":	gl.lineWidth(LS);break
 				case "VS":	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
 							break
@@ -446,7 +473,7 @@ function DE2B(){
 			let angle=p<0?1:Math.acos(-z5/getHyp3(x5,y5,z5)), scale=p>0?angle/getHyp(x5,y5)*VP:z5>1?2*z5*VP:2*VP/(2-z5)
 			var xx=x5*scale, yy=y5*scale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>-1?1:1/(-z5*VF)
-			dv[Ni].push(xx*SH/SW,yy,1,1); dc[Ni].push(r1,g1,b1,a1)
+			dv[Ni].push(xx*SH/SW,yy,z5*1e-6,1); dc[Ni].push(r1,g1,b1,a1)
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
@@ -621,6 +648,7 @@ function playSound(){
 <div id="imagediv">
 	Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
 	<input type="button" onclick="initCam()" value="Camera"></input>
+	<input type="button" onclick="initMic()" value="Microphone"></input>
 	<input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
 	<video autoplay hidden></video>
 </div>
