@@ -228,7 +228,7 @@ function updateUP(i,font,alpha){
 		U2d.textBaseline = "top"
     	var names=typeA? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SW/2)+X[i]*(SW/2),(SH/2)-Y[i]*(SH/2))
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
 	}
 }
 function download(type, text, ext) {
