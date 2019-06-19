@@ -609,7 +609,6 @@ function getHyp3(a,b,c){return Math.sqrt(a*a+b*b+c*c)}
 function replacer(){let s=arguments[0];for(let i=1;i<arguments.length;i+=2){s=s.replace(arguments[i],arguments[i+1])};return s}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function question(s){return s.split("?").length>s.split("!").length}
-function copy(){document.execCommand("copy")}
 function playSound(){
 	sound = au.createBufferSource()
 	sound.buffer = Bau
@@ -636,10 +635,8 @@ function playSound(){
 	<input id="playS" type="button" value="play" onclick="playSound()" hidden></input>
 	<input type="button" value="URL" onclick="urlTFG()"></input>
 	<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
-	<input type="button" onclick="fLog.select();copy()" value="copy"></input></br>
 	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 	<input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
-	<input type="button" onclick="gLog.select();copy()" value="copy"></input></br>
 	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
 	<input value="update" type="button" onclick="inF();inG()"></input>
 	<input value="apply" type="button" onclick="outG();outF();go=1"></input>
