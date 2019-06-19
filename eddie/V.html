@@ -29,10 +29,10 @@ var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,ti
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var autosave=0
-updateL();F2DE();DE2B();Geval()
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
+	updateL();Geval();F2DE();DE2B();outG();outF()
 	if(gl){
 		V.width=SW;V.height=SH
 		I.width=SW;I.height=SH
@@ -374,14 +374,14 @@ function Geval(){
 				let Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
 				let vPair=Gi1?Gi1.replace("["+Bval+"]","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
 				let d=vl0&&question(vl0)?vl0:""
-				let fromTo=id0.split("→"),from=fromTo[0],to=fromTo[1]
+				let fromTo=id0.split("→"),from=fromTo?fromTo[0].split(".")[0]:0,to=fromTo[1]?fromTo[1].split(".")[0]:0
 				let pArr=id1.split("")
 				if(Gi0.includes(".")&&Gi0.substr(0,5)!="this."){
 					if(L[from]&&vl0){
 						let isPar=D[L[from]][2]==0
 						for(var m=L[from];m<=(L[to]?L[to]:L[from]);m++){
 							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
-								let s=D[m][0],vl0r=vl0.replace(/←/g,s);
+								let s=D[m][0].split(".")[0],vl0r=vl0.replace(/←/g,s);
 								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));Gp.push(0);fail=0}
 								else if(Gi0.includes(".")&&m){
 									var n=L[id1]
