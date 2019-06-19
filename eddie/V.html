@@ -218,9 +218,10 @@ function updateCam(){
 }
 function updateUP(i,font,alpha){
 	if(U){
-		var goName=(L[D[i][0]+".name"]+"")
-		var goFont=L[D[i][0]+".font"]
-		var goAlign=L[D[i][0]+".align"]
+		var id=(D[i][0]).split(".")[0]
+		var goName=(L[id+".name"]+"")
+		var goFont=L[id+".font"]
+		var goAlign=L[id+".align"]
 		var typeA=Math.abs(D[i][3])>=2||Math.abs(D[i-D[i][2]][3])>=2
 		U2d.textAlign =goAlign?goAlign:"left"
 		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(typeA*alpha)+')'
@@ -228,7 +229,7 @@ function updateUP(i,font,alpha){
 		U2d.textBaseline = "top"
     	var names=typeA? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
+		U2d.fillText(goName!="undefined"?goName:(names[0]+dots).replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
 	}
 }
 function download(type, text, ext) {
