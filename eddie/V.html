@@ -382,7 +382,7 @@ function Geval(){
 						let isPar=D[L[from]][2]==0
 						for(var m=L[from];m<=(L[to]?L[to]:L[from]);m++){
 							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
-								let s=D[m][0].split(".")[0],vl0r=vl0.replace(/←/g,s);
+								let s=D[m][0].split(".")[0],vl0r=vl0.replace(/←/g,s).replace(/⇤/g,s.split("_")[0]);
 								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));Gp.push(0);fail=0}
 								else if(Gi0.includes(".")&&m){
 									var n=L[id1]
@@ -567,7 +567,7 @@ function id(s){return document.getElementById(s)}
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,",\n\n",/=/g,"\n=")}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/,\n/g,",",/\n/g,",",/\+-/g,"±");F2DE();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
+function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
 function getx(s){let t=dvx[L[s]];return t?t:0}
 function gety(s){let t=dvy[L[s]];return t?t:0}
 function getz(s){let t=dvz[L[s]];return t?t:0}
