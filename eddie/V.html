@@ -20,7 +20,7 @@
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0
+var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
@@ -50,7 +50,7 @@ function init(){
 	}
 }
 function start(){
-	document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
+//	document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 	let doc=document
 	V=doc.getElementById("glcanvas")
 	I=doc.getElementById('imgcanvas')
@@ -94,7 +94,7 @@ function loop(){
 		sTime=time
 		DE2F()
 		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
-		out="D_"+T+"."+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";VF:"+VF+";Bb:"+Bb+";dT:"+dT+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		out="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(fLog.value)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
@@ -189,30 +189,83 @@ function initCam(){
 	    cam=1;if(dT==0)dT=0.04
 	  }).catch(function(error){alert(error)})}
 }
+let audioTrack
+let audioTrack1
+let offset = 0
 function initMic(){
 	if(navigator.mediaDevices.getUserMedia) {       
 	    navigator.mediaDevices.getUserMedia({audio:true})
 	  .then(function(stream){
-		var audioCtx = new AudioContext();
-		var source = audioCtx.createMediaStreamSource(stream);
-		var processor =audioCtx.createScriptProcessor(1024);
+//		var audioCtx = new AudioContext();
+		var source = au.createMediaStreamSource(stream);
+		var filter = au.createBiquadFilter()
+		filter.type="bandpass"
+		filter.frequency.value=880
+		filter.Q.value=1.2
+//		filter.gain=
+		var processor =au.createScriptProcessor(1024);
 		processor.onaudioprocess = function(ev){
 			var buf=ev.inputBuffer.getChannelData(0);
+			var out0=ev.outputBuffer.getChannelData(0);
+			var out1=ev.outputBuffer.getChannelData(1);
 		//	alert(buf)
 			var sample = 0
+			let theta
 			for(var i=0;i<buf.length;i++){
-				//sample+=Math.abs(buf[i])
-				sample=Math.max(sample,buf[i])
+				if(distort)theta=offset+freq*i*Math.PI/au.sampleRate;
+				else theta=1
+				out0[i]=buf[i]*Math.sin(theta)
+				out1[i]=buf[i]*Math.sin(theta)
+				sample=Math.max(sample,out0[i],out1[i])
 			}
+			offset=theta
 			//mic=sample/buf.length
 			mic=sample
 		}
-		processor.connect(audioCtx.destination)
+//		processor.connect(audioCtx.destination)
 		source.connect(processor)
-		
+//		source.connect(filter)
+		var streamDestination = au.createMediaStreamDestination();
+		processor.connect(filter)
+		filter.connect(streamDestination)
+		filter.connect(au.destination)
+	 	audioTrack=streamDestination.stream.getAudioTracks()[0]
+//		audioTrack1=streamDestination.stream.getAudioTracks()[0]
 	  }).catch(function(error){alert(error)})}
 }
+let mediaRecorder
+let blobs
+let url
+function record(){
+	if(recordbutton.value=="Start Recording"){
+//		blobs=[]
+		let canvasStream=V.captureStream()
+		let canvasTrack=canvasStream.getVideoTracks()[0]		
+		let inputStream=new MediaStream()
+		inputStream.addTrack(canvasTrack)
+		inputStream.addTrack(audioTrack)
+//		inputStream.addTrack(audioTrack1)
+		mediaRecorder=new MediaRecorder(inputStream)
+		mediaRecorder.start();
+		mediaRecorder.ondataavailable =function(e){
+//		blobs.push(e.data)
+		url=window.URL.createObjectURL(e.data,{type:'video/mp4'})
+		video.src=url
+		}
+		mediaRecorder.onstop =function(e){
+//			const blob=new Blob(blobs)
+//			video.src=window.URL.createObjectURL(blob,{type: 'video/webm'})
+		}
+		recordbutton.value="Stop Recording"
 
+	}
+	else if(recordbutton.value=="Stop Recording"){
+		mediaRecorder.stop();
+		video.hidden=false
+		video.controls=true
+		recordbutton.value="Start Recording"
+	}	
+}
 function updateCam(){
 	I2d.drawImage(video,0,0)
 }
@@ -237,6 +290,15 @@ function download(type, text, ext) {
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text.replace(/;/g,";\n" )); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
+}
+function downloadVideo() {
+  var a = document.createElement('a');
+  document.body.appendChild(a);
+  a.style = 'display: none';
+  a.href = url;
+  a.download = "R_"+T+"_"+HE()+GPS+".mp4";
+  a.click();
+  window.URL.revokeObjectURL(url);
 }
 function addF(s){
 	if(!F.includes(s)){F+="+"+s;inF();F2DE()}
@@ -646,7 +708,9 @@ function playSound(){
 	Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
 	<input type="button" onclick="initCam()" value="Camera"></input>
 	<input type="button" onclick="initMic()" value="Microphone"></input>
+	<input id="recordbutton" type="button" onclick="record()" value="Start Recording"></input>
+	<input id="downloadbutton" type="button" onclick="downloadVideo()" value="Download video"></input>
 	<input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
-	<video autoplay hidden></video>
+	<video id="video" hidden></video>
 </div>
 </body></html>
