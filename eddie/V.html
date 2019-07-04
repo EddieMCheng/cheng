@@ -19,7 +19,7 @@
 */
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[], Gp=[]
-var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
+var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
@@ -168,7 +168,7 @@ function readTextUrl(file){
 		}
 		else if(raw.status==404 && file.includes("_"))readTextUrl(file.replace("_","/"))
 	}
-	raw.send(null);
+	raw.send(null)
 }
 function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
 function updateI(idx){
@@ -433,9 +433,9 @@ function Geval(){
 			if(Gi!=""){
 				let GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
 				let idArr=Gi0?Gi0.split("."):"",id0=idArr[0]?idArr[0]:null,id1=idArr[idArr.length-1]
-				let Bi=Gi1.indexOf("["),Bj=Gi1.indexOf("]")
+				let Bi=Gi1.indexOf("{"),Bj=Gi1.indexOf("}")
 				let Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
-				let vPair=Gi1?Gi1.replace("["+Bval+"]","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
+				let vPair=Gi1?Gi1.replace("{"+Bval+"}","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
 				let d=vl0&&question(vl0)?vl0:""
 				let fromTo=id0.split("→"),from=fromTo?fromTo[0].split(".")[0]:0,to=fromTo[1]?fromTo[1].split(".")[0]:0
 				let pArr=id1.split("")
@@ -493,7 +493,7 @@ function DE2B(){
 		var nn=0
 		var PArray=D[i][0].split(".")
 		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0;
-		dv[Ni]=[];dc[Ni]=[];dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
+		dv[Ni]=[];dc[Ni]=[];dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		for(var j=0; j<(pdep==0?1:jlen*pdep); j++){
 			var s=fr||isFrac?j/jlen:-1
 			var d=DEG(i,14,s,j)+Pd
@@ -537,6 +537,7 @@ function DE2B(){
 			var xx=x5*scale, yy=y5*scale
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>-1?1:1/(-z5*VF)
 			dv[Ni].push(xx*SH/SW,yy,z5*1e-6,1); dc[Ni].push(r1,g1,b1,a1)
+			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
@@ -551,6 +552,7 @@ function DE2B(){
 
 		}
 		var jlenT=Math.ceil(jlen)
+		dvr[i]/=jlenT;dvg[i]/=jlenT;dvb[i]/=jlenT
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
 		dvX[i]/=jlenT;dvY[i]/=jlenT;dvZ[i]/=jlenT
 		X[i]/=jlenT ;Y[i]/=jlenT;Z[i]/=jlenT
@@ -624,12 +626,15 @@ function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
-function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/([xyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
+function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,",\n\n",/=/g,"\n=")}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/,\n/g,",",/\n/g,",",/\+-/g,"±");F2DE();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
+function getr(s){let t=dvr[L[s]];return t?t:0}
+function getg(s){let t=dvg[L[s]];return t?t:0}
+function getb(s){let t=dvb[L[s]];return t?t:0}
 function getx(s){let t=dvx[L[s]];return t?t:0}
 function gety(s){let t=dvy[L[s]];return t?t:0}
 function getz(s){let t=dvz[L[s]];return t?t:0}
@@ -642,6 +647,7 @@ function getE(s){let pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pa
 function getN(s){return L[s]?parseFloat(L[s]):0}
 function getS(s){return L[s]?L[s]+"":""}
 function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
+function getWS(i){return WS[i]?WS[i]:WebSocket}
 function getI(x,y,c){return I2d.getImageData(x,y,1,1).data[c]/255}
 function getM(s){return getHyp(X[L[s]]-Mx,Y[L[s]]-My)}
 function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
@@ -713,4 +719,5 @@ function playSound(){
 	<input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
 	<video id="video" hidden></video>
 </div>
+<input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
 </body></html>
