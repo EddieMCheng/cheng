@@ -249,7 +249,7 @@ function setVar(s){
 		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(L[sArr[0]]!=this[sArr[0]]){
+		else if(L[sArr[0]]&L[sArr[0]]!=this[sArr[0]]){
 			if(sVal)this[sArr[0]]=sVal
 			L[sArr[0]]=this[sArr[0]];
 			switch(sArr[0]){
