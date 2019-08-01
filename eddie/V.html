@@ -20,6 +20,7 @@
 var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
+var Ix=0,Iy=0,Iu=1
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
@@ -28,7 +29,7 @@ var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
-var autosave=0
+var autosave=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
@@ -177,7 +178,7 @@ function updateI(idx){
 		I2d.clearRect(0,0,I.width,I.height)
 			if(idx>=0)img = images[idx]
 			if(img){
-			I2d.drawImage(img,0,0)
+			I2d.drawImage(img,Ix,Iy,img.width*Iu,img.height*Iu)
 		}	
 	}
 }
@@ -316,13 +317,15 @@ function setVar(s){
 			L[sArr[0]]=this[sArr[0]];
 			switch(sArr[0]){
 				case "SW":
-				case "SH":
-							V.width=SW;V.height=SH
+				case "SH":	V.width=SW;V.height=SH
 							I.width=SW;I.height=SH
 							U.width=SW;U.height=SH
 							uidiv.style.width=parseInt(SW)+"px"
 							uidiv.style.height=parseInt(SH)+"px"
 							gl.viewport(0,0,SW,SH)
+				case "Ix":
+				case "Iy":
+				case "Iu":
 				case "IS":	updateI();break
 				case "Vr":
 				case "Vg":
