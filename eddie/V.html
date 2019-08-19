@@ -517,24 +517,24 @@ function DE2B(){
 				var u=DEG(i,10,s,j),	v=DEG(i,11,s,j),	w=DEG(i,12,s,j),	o=DEG(i,13,s,j)
 			}
 			var	pii = 2*Math.PI,x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5
-			x0=u==0?0:u*Math.sin((v+Pv)*pii)
-			y0=u==0&&v==0&&Pv==0?0:u*Math.cos((v+Pv)*pii)
-			z0=y0==0&&w==0?z:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
-			x1=u==0&&w==0?x0:x0*Math.cos(w*pii)
-			y1=o==0?y0:(y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii))
-			z1=o==0?z0:(z0*Math.cos(o*pii)+y0*Math.sin(o*pii))
-			x2=Pv==0?x1+x:x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
-			y2=Pv==0?y1+y:y*Math.cos(Pv*pii)-x*Math.sin(Pv*pii)+y1
-			z2=Pw==0?z1:z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
-			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
-			y3=Po==0?y2*Pu+Py:(y2*Math.cos(-Po*pii)+z2*Math.sin(-Po*pii))*Pu+Py
-			z3=Po==0?z2*Pu+Pz:(z2*Math.cos(Po*pii)+y2*Math.sin(Po*pii))*Pu+Pz
-			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
-			y4=Vv==0||p<0?y3:y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
-			z4=Vw==0||p<0?z3:z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
-			x5=Vw==0||p<0?x4+Vx:x4*Math.cos(-Vw*pii)+z3*Math.sin(-Vw*pii)+Vx
-			y5=Vo==0||p<0?y4+Vy:y4*Math.cos(-Vo*pii)+z4*Math.sin(-Vo*pii)+Vy
-			z5=Vo==0||p<0?z4+Vz:z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
+			x0=u*Math.sin((v+Pv)*pii)
+			y0=u*Math.cos((v+Pv)*pii)
+			z0=u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
+			x1=x0*Math.cos(w*pii)
+			y1=(y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii))
+			z1=(z0*Math.cos(o*pii)+y0*Math.sin(o*pii))
+			x2=x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
+			y2=y*Math.cos(Pv*pii)-x*Math.sin(Pv*pii)+y1
+			z2=z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
+			x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
+			y3=(y2*Math.cos(-Po*pii)+z2*Math.sin(-Po*pii))*Pu+Py
+			z3=(z2*Math.cos(Po*pii)+y2*Math.sin(Po*pii))*Pu+Pz
+			x4=p<0?x3:x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
+			y4=p<0?y3:y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
+			z4=p<0?z3:z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
+			x5=p<0?x4+Vx:x4*Math.cos(-Vw*pii)+z3*Math.sin(-Vw*pii)+Vx
+			y5=p<0?y4+Vy:y4*Math.cos(-Vo*pii)+z4*Math.sin(-Vo*pii)+Vy
+			z5=p<0?z4+Vz:z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
 			m=j*4
 			let angle=p<0?1:Math.acos(-z5/getHyp3(x5,y5,z5)), scale=p>0?angle/getHyp(x5,y5)*VP:z5>1?2*z5*VP:2*VP/(2-z5)
 			var xx=x5*scale, yy=y5*scale
