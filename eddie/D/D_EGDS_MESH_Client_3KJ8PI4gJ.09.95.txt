@@ -1,0 +1,4 @@
+D_EGDS_MESH_Client.3KJ8PI4fJ.09.95;
+G:CONNECT.y=L['My Name']?-1.03!-5,CONNECT_SQUARE.y=L['My Name']?-0.7!-5,input=M(Me)<0.1?'My Name'!'',Me.name=L['My Name'],Oven→CONNECT.align='center',Oven→CONNECT.font='24px sans-serif',Vw=Mx/5,Vv=0,autosave=1,bConnect=M(CONNECT)<0.1?1!0,SH=1280,SW=720,Va=1,Vr=0.9,Vg=0.9,Vb=1,Bb=0,CD[7]=0,CD[8]=0,CD[9]=0,dT=0.04,T='EGDS_MESH_Client';
+F:Unit_Oven*0.2x*-0.5z*0.2u=Oven*2p*2y*a+Oven_front*0.25*0.5y*u*0.125v±0.5*a+Oven_panel*0x±0.707*1.5y*a+Oven_0*0.7x*1.35y±0.15*a+Oven_1*-0.7x*1.35y±0.15*a,Unit_Oven_Door*0.2x*-0.5z*0.2u*0.1o=Oven_handle*0x±0.5*0.8y*a+Oven_door*0.25*0.5y*0.02z*u*0.125v±0.5*a,Device*0.1u=Me*0.02*2p*-2y*z*u*v±0.5*a,UI*-1p=CONNECT*2p*-1.03y*a+CONNECT_SQUARE*0.25*-0.7y*z*0.15u*0.125v±0.5*a;
+file:///C:/Users/Eddie/Documents/cheng/eddie/V.html
