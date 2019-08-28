@@ -629,7 +629,7 @@ function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
-function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
+function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,",\n\n",/=/g,"\n=")}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/,\n/g,",",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();if(autosave)urlTFG()}
@@ -655,6 +655,7 @@ function getI(x,y,c){return I2d.getImageData(x,y,1,1).data[c]/255}
 function getM(s){return getHyp(X[L[s]]-Mx,Y[L[s]]-My)}
 function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
 function getSpace(s,t){return getHyp3(dvX[L[s]]-dvX[L[t]],dvY[L[s]]-dvY[L[t]],dvZ[L[s]]-dvZ[L[t]])}
+function getPart(i,s){return s.split("_")[i]}
 function Ir(x,y){return getI(x,y,0)}
 function Ig(x,y){return getI(x,y,1)}
 function Ib(x,y){return getI(x,y,2)}
