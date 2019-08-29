@@ -625,7 +625,9 @@ function getHyp3(a,b,c){return Math.sqrt(a*a+b*b+c*c)}
 function replacer(){let s=arguments[0];for(let i=1;i<arguments.length;i+=2){s=s.replace(arguments[i],arguments[i+1])};return s}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function question(s){return s.split("?").length>s.split("!").length}
-
+function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
+function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
+function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
