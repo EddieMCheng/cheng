@@ -542,6 +542,7 @@ async function execute(){
 			
 			bleConnecting=0;
 			bleConnected=1;
+			window.onclose = function(ev){console.log("disconnecting");device.gatt.disconnect()}
 			
 		  } catch(error) {
 			console.log('Argh! ' + error);
