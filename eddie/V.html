@@ -29,7 +29,7 @@ var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
-var bleDevices=[],bleData=[],bleSend="",bleSent="",bleDisconnect=0, bleConnect=0,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
+var bleDevices=[],bleData=[],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=0,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
 var input=""
 var autosave=1
 function init(){
@@ -509,22 +509,23 @@ async function execute(){
 		bleSent=bleSend;
 		await bleTx.writeValue(encoder.encode(bleSend));
 	}
-	if(bleConnect == 1 && bleConnecting==0){
+	if(bleConnect >= 0 && bleConnecting==0){
 		bleConnecting=1
 		try {
-			console.log('Requesting Bluetooth Device...');
-			const bleDevice = await navigator.bluetooth.requestDevice({
-				filters: [{services: [bleServiceID]}]});
-			const bleDeviceID = await bleDevice.id
-			
-			if(!L[bleDeviceID]){
-				L[bleDeviceID]=await bleDevice
-				L[bleDeviceID]=await bleDevice.name
-				bleDevices.push(bleDeviceID)
+			let bleDevice
+			if(bleDevices[bleConnect]&& L[bleDevices[bleConnect]]){
+				bleDevice = L[bleDevices[bleConnect]];
 			}
-			
+			else{
+				console.log('Requesting Bluetooth Device...');
+				 bleDevice = await navigator.bluetooth.requestDevice({filters: [{services: [bleServiceID]}]});
+				const bleDeviceID = await bleDevice.id
+				console.log(bleDeviceID+" added");
+				L[bleDeviceID]=await bleDevice
+				L[bleDeviceID].idx = bleConnect
+				bleDevices[bleConnect]=bleDeviceID
+			}
 			bleDevice.addEventListener('gattserverdisconnected', bleDisconnected);
-			
 			console.log(bleDevice.name);
 			console.log('Connecting to GATT Server...');
 			const server = await bleDevice.gatt.connect();
@@ -534,7 +535,13 @@ async function execute(){
 
 			console.log('Getting Characteristic...');
 			bleRx = await service.getCharacteristic(bleRxID);
-			bleRx.addEventListener('characteristicvaluechanged',bleReceive);
+			bleRx.idx=bleConnect;
+			//bleRx.addEventListener('characteristicvaluechanged',bleReceive);
+			bleRx.oncharacteristicvaluechanged=function(ev){
+				let data=decoder.decode(ev.target.value)
+				console.log(this.idx+'>' + data);
+				bleData[this.idx]=data.split(" ");
+			}
 			await bleRx.startNotifications();
 			
 			console.log('Getting transmission...');
@@ -542,17 +549,16 @@ async function execute(){
 			
 			bleConnecting=0;
 			bleConnected=1;
-			window.onclose = function(ev){console.log("disconnecting");device.gatt.disconnect()}
+			window.onclose = function(ev){for(let bledevice of bledevices)L[bleDevice].gatt.disconnect()}
 			
 		  } catch(error) {
 			console.log('Argh! ' + error);
 			bleConnecting=0;
-			bleConnected=0;
 		  }
 		
 	}
-	else if(bleDisconnect && bleConnected==1){
-		L[bleDevices[0]].gatt.disconnect();
+	else if(bleDisconnect>-1){
+		L[bleDevices[bleDisconnect]].gatt.disconnect();
 	}
 	if(input!="")L[input]=prompt(input);
 	
@@ -562,13 +568,7 @@ let decoder = new TextDecoder('utf-8');
 let encoder = new TextEncoder('utf-8');
 function bleDisconnected(){
 	console.log("disconnected");
-	bleConnected=0;
-}
-function bleReceive(ev){
-	let data=decoder.decode(ev.target.value)
-	console.log('>' + data);
-	bleData=data.split(" ");
-	go=1;
+	bleConnected--
 }
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
