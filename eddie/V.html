@@ -29,8 +29,8 @@ var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
-var bleDevices=[],bleData=[],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=0,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
-var input=""
+var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
+var input="", addF=""; removeF="";
 var autosave=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
@@ -95,7 +95,14 @@ function loop(){
 
 	if(time-sTime>1000){
 		sTime=time
-		DE2F()
+		if(removeF!="" && L[removeF]){
+			D.splice(L[removeF],1);updateL();N--;DE2F();F2DE();inF()
+		}
+		else DE2F()
+		if(addF!="" && !L[addF.split("+")[0]]){
+			F+="+"+addF;inF();outF();
+		}
+		
 		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
 		out="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
@@ -197,9 +204,6 @@ function download(type, text, ext) {
 	else pom.click();
 }
 
-function addF(s){
-	if(!F.includes(s)){F+="+"+s;inF();F2DE()}
-}
 function setVar(s){
 	if(s){
 		var sPair=s.split(":")
