@@ -99,7 +99,7 @@ function loop(){
 			D.splice(L[removeF],1);updateL();N--;DE2F();F2DE();inF()
 		}
 		else DE2F()
-		if(addF!="" && !L[addF.split("+")[0]]){
+		if(addF && addF!="" && !L[addF]){
 			F+="+"+addF;inF();outF();
 		}
 		
@@ -336,12 +336,12 @@ function Geval(){
 				let Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
 				let vPair=Gi1?Gi1.replace("{"+Bval+"}","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
 				let d=vl0&&question(vl0)?vl0:""
-				let fromTo=id0.split("→"),from=fromTo?fromTo[0].split(".")[0]:0,to=fromTo[1]?fromTo[1].split(".")[0]:0
+				let fromTo=id0.split("→"),from=fromTo?L[fromTo[0].split(".")[0]]:0,to=fromTo[1]?L[fromTo[1].split(".")[0]]:id0.includes("→")?N:-1
 				let pArr=id1.split("")
 				if(Gi0.includes(".")&&Gi0.substr(0,5)!="this."){
-					if(L[from]&&vl0){
-						let isPar=D[L[from]][2]==0
-						for(var m=L[from];m<=(L[to]?L[to]:L[from]);m++){
+					if(from&&vl0){
+						let isPar=D[from][2]==0
+						for(var m=from;m<=(to>=0?to:from);m++){
 							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
 								let s=D[m][0].split(".")[0],vl0r=vl0.replace(/←/g,s).replace(/⇤/g,s.split("_")[0]);
 								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));Gp.push(0);fail=0}
