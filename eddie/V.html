@@ -17,18 +17,21 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
-var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[], Gp=[]
+var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*a"
+var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0
+var Ix=0,Iy=0,Iu=1
+var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
+var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
-var autosave=0
+var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
+var input="", addF=""; removeF="";
+var autosave=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
@@ -40,7 +43,7 @@ function init(){
 		uidiv.style.width=parseInt(SW)+"px"
 		uidiv.style.height=parseInt(SH)+"px"
 		datadiv.style.left=(parseInt(SW)+10)+"px"
-		updateI()
+
 		gl.viewport(0,0,SW,SH)
 		gl.clearColor(Vr,Vg,Vb,Va)		
 		gl.lineWidth(LS)
@@ -50,7 +53,7 @@ function init(){
 	}
 }
 function start(){
-	document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
+//	document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 	let doc=document
 	V=doc.getElementById("glcanvas")
 	I=doc.getElementById('imgcanvas')
@@ -70,9 +73,9 @@ function start(){
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
 	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
-	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
-	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
-	window.ondevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
+	window.onbleDeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
+	window.onbleDeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
+	window.onbleDevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
 	navigator.geolocation.getCurrentPosition(showPosition)
 	V.width=SW;V.height=SH
 	I.width=SW;I.height=SH
@@ -92,9 +95,16 @@ function loop(){
 
 	if(time-sTime>1000){
 		sTime=time
-		DE2F()
+		if(removeF!="" && L[removeF]){
+			D.splice(L[removeF],1);updateL();N--;DE2F();F2DE();inF()
+		}
+		else DE2F()
+		if(addF && addF!="" && !L[addF]){
+			F+="+"+addF;inF();outF();
+		}
+		
 		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
-		out="D_"+T+"."+HE()+GPS+";SS:"+SS+";Font:"+Font+";VS:"+VS+";LS:"+LS+";Va:"+Va+";VF:"+VF+";Bb:"+Bb+";dT:"+dT+";CD:"+CD+";CE:"+CE+";G:"+G+";F:"+F+";"+A;
+		out="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
 		saveD.value="D_"+T+" ("+kb(out)+")"
 		saveF.value="F_"+T+" ("+kb(fLog.value)+")"
 		saveG.value="G_"+T+" ("+kb(gLog.value)+")"
@@ -170,52 +180,7 @@ function readTextUrl(file){
 	}
 	raw.send(null)
 }
-function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
-function updateI(idx){
-	if(I){
-		I2d.scale(IS,IS)
-		I2d.clearRect(0,0,I.width,I.height)
-			if(idx>=0)img = images[idx]
-			if(img){
-			I2d.drawImage(img,0,0)
-		}	
-	}
-}
-function initCam(){
-	if(navigator.mediaDevices.getUserMedia) {       
-	    navigator.mediaDevices.getUserMedia({video:{width:SW,height:SH,advanced:[{facingMode:"environment"}]}})
-	  .then(function(stream){
-	    video.srcObject = stream
-	    cam=1;if(dT==0)dT=0.04
-	  }).catch(function(error){alert(error)})}
-}
-function initMic(){
-	if(navigator.mediaDevices.getUserMedia) {       
-	    navigator.mediaDevices.getUserMedia({audio:true})
-	  .then(function(stream){
-		var audioCtx = new AudioContext();
-		var source = audioCtx.createMediaStreamSource(stream);
-		var processor =audioCtx.createScriptProcessor(1024);
-		processor.onaudioprocess = function(ev){
-			var buf=ev.inputBuffer.getChannelData(0);
-		//	alert(buf)
-			var sample = 0
-			for(var i=0;i<buf.length;i++){
-				//sample+=Math.abs(buf[i])
-				sample=Math.max(sample,buf[i])
-			}
-			//mic=sample/buf.length
-			mic=sample
-		}
-		processor.connect(audioCtx.destination)
-		source.connect(processor)
-		
-	  }).catch(function(error){alert(error)})}
-}
 
-function updateCam(){
-	I2d.drawImage(video,0,0)
-}
 function updateUP(i,font,alpha){
 	if(U){
 		var id=(D[i][0]).split(".")[0]
@@ -229,7 +194,7 @@ function updateUP(i,font,alpha){
 		U2d.textBaseline = "top"
     	var names=typeA? D[i][0].split("."):" "
 		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName:(names[0]+dots).replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
+		U2d.fillText(goName!="undefined"?goName.replace(/_/g," "):(names[0]+dots).replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
 	}
 }
 function download(type, text, ext) {
@@ -238,9 +203,7 @@ function download(type, text, ext) {
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
-function addF(s){
-	if(!F.includes(s)){F+="+"+s;inF();F2DE()}
-}
+
 function setVar(s){
 	if(s){
 		var sPair=s.split(":")
@@ -254,14 +217,12 @@ function setVar(s){
 			L[sArr[0]]=this[sArr[0]];
 			switch(sArr[0]){
 				case "SW":
-				case "SH":
-							V.width=SW;V.height=SH
+				case "SH":	V.width=SW;V.height=SH
 							I.width=SW;I.height=SH
 							U.width=SW;U.height=SH
 							uidiv.style.width=parseInt(SW)+"px"
 							uidiv.style.height=parseInt(SH)+"px"
 							gl.viewport(0,0,SW,SH)
-				case "IS":	updateI();break
 				case "Vr":
 				case "Vg":
 				case "Vb":
@@ -294,6 +255,7 @@ function updateL(){
 		L["#"+j]=j
 		D[j][0]=D[j][0].replace(nm,nNm)
 	 }
+
 }
 function DE2F(){
 	F=""
@@ -303,7 +265,7 @@ function DE2F(){
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
 		F+=D[i][0]
-		if(D[i][1]>0&&D[i][1]!=CD[1])F+="*"+(D[i][1]+"")
+		if(D[i][1]!=0&&D[i][1]!=CD[1])F+="*"+(D[i][1]+"")
 		for(var j=3;j<C.length;j++){
 			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
@@ -356,8 +318,8 @@ function F2DE(){
 			}
 			for(var ii=1; ii<C.length; ii++){if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?0:CE[ii]}
 		}
-		var LEN=D[par][1]
-		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
+		var LEN=Math.abs(D[par][1])
+		var NLEN=LEN<1?1/LEN:LEN
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 
 	}
@@ -375,12 +337,12 @@ function Geval(){
 				let Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
 				let vPair=Gi1?Gi1.replace("{"+Bval+"}","").split("±"):"",vl0=vPair[0]?vPair[0]:null,vl1=vPair[1]?vPair[1]:null
 				let d=vl0&&question(vl0)?vl0:""
-				let fromTo=id0.split("→"),from=fromTo?fromTo[0].split(".")[0]:0,to=fromTo[1]?fromTo[1].split(".")[0]:0
+				let fromTo=id0.split("→"),from=fromTo?L[fromTo[0].split(".")[0]]:0,to=fromTo[1]?L[fromTo[1].split(".")[0]]:id0.includes("→")?N:-1
 				let pArr=id1.split("")
 				if(Gi0.includes(".")&&Gi0.substr(0,5)!="this."){
-					if(L[from]&&vl0){
-						let isPar=D[L[from]][2]==0
-						for(var m=L[from];m<=(L[to]?L[to]:L[from]);m++){
+					if(from&&vl0){
+						let isPar=D[from][2]==0
+						for(var m=from;m<=(to>=0?to:from);m++){
 							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
 								let s=D[m][0].split(".")[0],vl0r=vl0.replace(/←/g,s).replace(/⇤/g,s.split("_")[0]);
 								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));Gp.push(0);fail=0}
@@ -452,42 +414,33 @@ function DE2B(){
 				var u=DEG(i,10,s,j),	v=DEG(i,11,s,j),	w=DEG(i,12,s,j),	o=DEG(i,13,s,j)
 			}
 			var	pii = 2*Math.PI,x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5
-			x0=u==0?0:u*Math.sin((v+Pv)*pii)
-			y0=u==0&&v==0&&Pv==0?0:u*Math.cos((v+Pv)*pii)
-			z0=y0==0&&w==0?z:u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
-			x1=u==0&&w==0?x0:x0*Math.cos(w*pii)
-			y1=o==0?y0:(y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii))
-			z1=o==0?z0:(z0*Math.cos(o*pii)+y0*Math.sin(o*pii))
-			x2=Pv==0?x1+x:x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
-			y2=Pv==0?y1+y:y*Math.cos(Pv*pii)-x*Math.sin(Pv*pii)+y1
-			z2=Pw==0?z1:z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
-			x3=Pw==0?x2*Pu+Px:(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
-			y3=Po==0?y2*Pu+Py:(y2*Math.cos(-Po*pii)+z2*Math.sin(-Po*pii))*Pu+Py
-			z3=Po==0?z2*Pu+Pz:(z2*Math.cos(Po*pii)+y2*Math.sin(Po*pii))*Pu+Pz
-			x4=Vv==0||p<0?x3:x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
-			y4=Vv==0||p<0?y3:y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
-			z4=Vw==0||p<0?z3:z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
-			x5=Vw==0||p<0?x4+Vx:x4*Math.cos(-Vw*pii)+z3*Math.sin(-Vw*pii)+Vx
-			y5=Vo==0||p<0?y4+Vy:y4*Math.cos(-Vo*pii)+z4*Math.sin(-Vo*pii)+Vy
-			z5=Vo==0||p<0?z4+Vz:z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
+			x0=u*Math.sin((v+Pv)*pii)
+			y0=u*Math.cos((v+Pv)*pii)
+			z0=u*Math.sin((v+Pv)*pii)*Math.sin(w*pii)+z
+			x1=x0*Math.cos(w*pii)
+			y1=(y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii))
+			z1=(z0*Math.cos(o*pii)+y0*Math.sin(o*pii))
+			x2=x*Math.cos(Pv*pii)+y*Math.sin(Pv*pii)+x1
+			y2=y*Math.cos(Pv*pii)-x*Math.sin(Pv*pii)+y1
+			z2=z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
+			x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
+			y3=(y2*Math.cos(-Po*pii)+z2*Math.sin(-Po*pii))*Pu+Py
+			z3=(z2*Math.cos(Po*pii)+y2*Math.sin(Po*pii))*Pu+Pz
+			x4=p<0?x3:x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
+			y4=p<0?y3:y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
+			z4=p<0?z3:z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
+			x5=p<0?x4+Vx:x4*Math.cos(-Vw*pii)+z3*Math.sin(-Vw*pii)+Vx
+			y5=p<0?y4+Vy:y4*Math.cos(-Vo*pii)+z4*Math.sin(-Vo*pii)+Vy
+			z5=p<0?z4+Vz:z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
 			m=j*4
 			let angle=p<0?1:Math.acos(-z5/getHyp3(x5,y5,z5)), scale=p>0?angle/getHyp(x5,y5)*VP:z5>1?2*z5*VP:2*VP/(2-z5)
-			var xx=x5*scale, yy=y5*scale
+			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>-1?1:1/(-z5*VF)
 			dv[Ni].push(xx*SH/SW,yy,z5*1e-6,1); dc[Ni].push(r1,g1,b1,a1)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
-			if(te && !Bau){ 
-				sect=tl/10;
-				for(let jj=0;jj<sect;jj++){arr[jj]=y1/1000*(jj/sect)*Math.sin(x1*pii*jj/au.sampleRate)}
-				let k=0
-				for(let jj=sect*(j);jj<sect*(j+1);jj++){let pr=k/sect;arr[jj]=(ly*(1-pr)+y1*pr)/1000*Math.sin((lx*(1-pr)+x1*pr)*pii*jj/au.sampleRate);k++}
-				lx=x1;ly=y1
-				if(j==Math.ceil(jlen)-1){for(let jj=tl-sect;jj<tl;jj++){arr[jj]=y1/1000*((tl-jj)/sect)*Math.sin(x1*pii*jj/au.sampleRate)}}
-			}
-
 		}
 		var jlenT=Math.ceil(jlen)
 		dvr[i]/=jlenT;dvg[i]/=jlenT;dvb[i]/=jlenT
@@ -512,12 +465,6 @@ function DE2B(){
 		}
 	}
 	alertUserOnError= !alertsExists
-	
-	if(!Bau && arr>0){
-		var buff = new Float32Array(arr)
-		Bau = au.createBuffer(1, buff.length, au.sampleRate)
-		Bau.copyToChannel(buff, 0)
-      }
 }
 function draw(a) {
 	if(cam)updateCam()
@@ -557,17 +504,84 @@ function showPosition(position){
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 	
 }
-function getMx(ev){return 2*decimal4(ev.pageX/SW)-1}
+function getMx(ev){return (2*decimal4(ev.pageX/SW)-1)*SW/SH}
 function getMy(ev){return 1-2*decimal4(ev.pageY/SH)}
 function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;setMB(ev);touch=1}
-function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1}
+function setM0(ev){Mx_0=MxB[0];My_0=MyB[0];touch=0;drag=0;go=1;execute()}
+async function execute(){
+	
+	if(bleSend!="" && bleSend!=bleSent && bleTx){
+		bleSent=bleSend;
+		await bleTx.writeValue(encoder.encode(bleSend));
+	}
+	if(bleConnect >= 0 && bleConnecting==0){
+		bleConnecting=1
+		try {
+			let bleDevice
+			if(bleDevices[bleConnect]&& L[bleDevices[bleConnect]]){
+				bleDevice = L[bleDevices[bleConnect]];
+			}
+			else{
+				console.log('Requesting Bluetooth Device...');
+				 bleDevice = await navigator.bluetooth.requestDevice({filters: [{services: [bleServiceID]}]});
+				const bleDeviceID = await bleDevice.id
+				console.log(bleDeviceID+" added");
+				L[bleDeviceID]=await bleDevice
+				L[bleDeviceID].idx = bleConnect
+				bleDevices[bleConnect]=bleDeviceID
+			}
+			bleDevice.addEventListener('gattserverdisconnected', bleDisconnected);
+			console.log(bleDevice.name);
+			console.log('Connecting to GATT Server...');
+			const server = await bleDevice.gatt.connect();
+
+			console.log('Getting Service...');
+			const service = await server.getPrimaryService(bleServiceID);
+
+			console.log('Getting Characteristic...');
+			bleRx = await service.getCharacteristic(bleRxID);
+			bleRx.idx=bleConnect;
+			//bleRx.addEventListener('characteristicvaluechanged',bleReceive);
+			bleRx.oncharacteristicvaluechanged=function(ev){
+				let data=decoder.decode(ev.target.value)
+				console.log(this.idx+'>' + data);
+				bleData[this.idx]=data.split(" ");
+			}
+			await bleRx.startNotifications();
+			
+			console.log('Getting transmission...');
+			bleTx = await service.getCharacteristic(bleTxID);
+			
+			bleConnecting=0;
+			bleConnected=1;
+			window.onclose = function(ev){for(let bledevice of bledevices)L[bleDevice].gatt.disconnect()}
+			
+		  } catch(error) {
+			console.log('Argh! ' + error);
+			bleConnecting=0;
+		  }
+		
+	}
+	else if(bleDisconnect>-1){
+		L[bleDevices[bleDisconnect]].gatt.disconnect();
+	}
+	if(input!="")L[input]=prompt(input);
+	
+	go=1;
+}
+let decoder = new TextDecoder('utf-8');
+let encoder = new TextEncoder('utf-8');
+function bleDisconnected(){
+	console.log("disconnected");
+	bleConnected--
+}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
-function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
+function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,",\n\n",/=/g,"\n=")}
-function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/,\n/g,",",/\n/g,",",/\+-/g,"±");F2DE();if(autosave)urlTFG()}
+function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/,\n/g,",",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
 function getr(s){let t=dvr[L[s]];return t?t:0}
@@ -590,6 +604,23 @@ function getI(x,y,c){return I2d.getImageData(x,y,1,1).data[c]/255}
 function getM(s){return getHyp(X[L[s]]-Mx,Y[L[s]]-My)}
 function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
 function getSpace(s,t){return getHyp3(dvX[L[s]]-dvX[L[t]],dvY[L[s]]-dvY[L[t]],dvZ[L[s]]-dvZ[L[t]])}
+function getPart(i,s){return s?s.split("_")[i]:""}
+function insertF(s,t){
+	if(L[s] && !L[t.split("*")[0]]){
+			let i=F.indexOf(s)
+			F=F.slice(0,i)+t+"+"+F.slice(i);inF();outF();
+			return 1
+		}
+		return 0
+}
+function deleteF(s,i){
+	if(!i)i=1;
+	if(L[s]){
+		D.splice(L[s],i);updateL();N-=i;DE2F();F2DE();inF()
+		return 1
+	}
+	return 0
+}
 function Ir(x,y){return getI(x,y,0)}
 function Ig(x,y){return getI(x,y,1)}
 function Ib(x,y){return getI(x,y,2)}
@@ -616,12 +647,9 @@ function getHyp3(a,b,c){return Math.sqrt(a*a+b*b+c*c)}
 function replacer(){let s=arguments[0];for(let i=1;i<arguments.length;i+=2){s=s.replace(arguments[i],arguments[i+1])};return s}
 function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
 function question(s){return s.split("?").length>s.split("!").length}
-function playSound(){
-	sound = au.createBufferSource()
-	sound.buffer = Bau
-	sound.connect(au.destination);
-	sound.start()
-}
+function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
+function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
+function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
@@ -638,21 +666,14 @@ function playSound(){
 <div id="datadiv">
 	<input type="file" onchange="loadFiles(this.files)" multiple=""></input>
 	<input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
-	<input id="playS" type="button" value="play" onclick="playSound()" hidden></input>
 	<input type="button" value="URL" onclick="urlTFG()"></input>
 	<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
 	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
 	<input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
-	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea></p>
+	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea>
 	<input value="update" type="button" onclick="inF();inG()"></input>
 	<input value="apply" type="button" onclick="outG();outF();go=1"></input>
 <br>
  </div>
-<div id="imagediv">
-	Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
-	<input type="button" onclick="initCam()" value="Camera"></input>
-	<input type="button" onclick="initMic()" value="Microphone"></input>	
-	<video autoplay hidden></video>
-</div>
 <input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
 </body></html>
