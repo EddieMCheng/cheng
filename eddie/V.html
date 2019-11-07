@@ -434,7 +434,7 @@ function DE2B(){
 			z5=p<0?z4+Vz:z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
 			m=j*4
 			let angle=p<0?1:Math.acos(-z5/getHyp3(x5,y5,z5)), scale=p>0?angle/getHyp(x5,y5)*VP:z5>1?2*z5*VP:2*VP/(2-z5)
-			var xx=x5*scale, yy=y5*scale
+			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>-1?1:1/(-z5*VF)
 			dv[Ni].push(xx*SH/SW,yy,z5*1e-6,1); dc[Ni].push(r1,g1,b1,a1)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
