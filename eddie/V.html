@@ -17,8 +17,8 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="Box*.25*w±.5=lin*.25*z*1.414u*.375v±.5*a"
-var G=["Vw=-Mx","Vv=-My"],GB=[],GBd=[], GV=[], Gp=[]
+var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*a"
+var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var Ix=0,Iy=0,Iu=1
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
@@ -265,7 +265,7 @@ function DE2F(){
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
 		F+=D[i][0]
-		if(D[i][1]>0&&D[i][1]!=CD[1])F+="*"+(D[i][1]+"")
+		if(D[i][1]!=0&&D[i][1]!=CD[1])F+="*"+(D[i][1]+"")
 		for(var j=3;j<C.length;j++){
 			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
@@ -318,8 +318,8 @@ function F2DE(){
 			}
 			for(var ii=1; ii<C.length; ii++){if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?0:CE[ii]}
 		}
-		var LEN=D[par][1]
-		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
+		var LEN=Math.abs(D[par][1])
+		var NLEN=LEN<1?1/LEN:LEN
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 
 	}
