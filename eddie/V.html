@@ -73,9 +73,9 @@ function start(){
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0"}
 	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
-	window.onbleDeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
-	window.onbleDeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
-	window.onbleDevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
+	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
+	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
+	window.ondevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
 	navigator.geolocation.getCurrentPosition(showPosition)
 	V.width=SW;V.height=SH
 	I.width=SW;I.height=SH
@@ -223,9 +223,7 @@ function setVar(s){
 							uidiv.style.width=parseInt(SW)+"px"
 							uidiv.style.height=parseInt(SH)+"px"
 							gl.viewport(0,0,SW,SH)
-				case "Vr":
-				case "Vg":
-				case "Vb":
+				case "Vr": case "Vg":case "Vb":
 				case "Va":	gl.clearColor(Vr,Vg,Vb,Va);break
 				case "LS":	gl.lineWidth(LS);break
 				case "VS":	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
