@@ -244,7 +244,7 @@ function updateL(){
 		var nm=D[j][0].split(".")[0];
 		var nNm = nm
 		var dp=0
-		while((L[nNm] || L[nNm+"_"+dp]) && dp<D.length-1){
+		while(L[nNm]>=0 || L[nNm+"_"+dp]){
 			var nmLen=nm.lastIndexOf("_")
 			var nmArr=nmLen<0?nm:nm.substring(0,nmLen)
 			var nmEndStr= parseInt(nm.substring(nmLen,nm.length)+1)
@@ -288,7 +288,7 @@ function F2DE(){
 		var par=N+1
 		for(var i=0; i<adds.length; i++){
 			N++
-			if(i>0){Np_.push(N);Nl_.push(adds.length-1)}
+			if(i>=0){Np_.push(N);Nl_.push(adds.length-1)}
 			D[N]=[], E[N]=[],	D[N][0]="", D[N][1]=i==0?CP[1]:CD[1];	D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
@@ -340,17 +340,17 @@ function Geval(){
 				let fromTo=id0.split("→"),from=fromTo?L[fromTo[0].split(".")[0]]:0,to=fromTo[1]?L[fromTo[1].split(".")[0]]:id0.includes("→")?N:-1
 				let pArr=id1.split("")
 				if(Gi0.includes(".")&&Gi0.substr(0,5)!="this."){
-					if(from&&vl0){
+					if(from>=0&&vl0>=0){
 						let isPar=D[from][2]==0
 						for(var m=from;m<=(to>=0?to:from);m++){
 							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
 								let s=D[m][0].split(".")[0],vl0r=vl0.replace(/←/g,s).replace(/⇤/g,s.split("_")[0]);
 								if(id1=="name"||id1=="font"||id1=="align"){GV.push("L['"+s+"."+id1+"']="+vdScript(vl0r+d));Gp.push(0);fail=0}
-								else if(Gi0.includes(".")&&m){
+								else if(Gi0.includes(".")&&m>=0){
 									var n=L[id1]
 									if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
-									if(vl0&&m){GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""));Gp.push(0)}
-									if(vl1&&m){GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""));Gp.push(0)}
+									if(vl0&&m>=0){GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""));Gp.push(0)}
+									if(vl1&&m>=0){GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""));Gp.push(0)}
 									fail=0
 								}
 							}
