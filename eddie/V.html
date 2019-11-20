@@ -197,19 +197,16 @@ function initMic(){
 	if(navigator.mediaDevices.getUserMedia) {       
 	    navigator.mediaDevices.getUserMedia({audio:true})
 	  .then(function(stream){
-//		var audioCtx = new AudioContext();
 		var source = au.createMediaStreamSource(stream);
 		var filter = au.createBiquadFilter()
 		filter.type="bandpass"
 		filter.frequency.value=880
 		filter.Q.value=1.2
-//		filter.gain=
 		var processor =au.createScriptProcessor(1024);
 		processor.onaudioprocess = function(ev){
 			var buf=ev.inputBuffer.getChannelData(0);
 			var out0=ev.outputBuffer.getChannelData(0);
 			var out1=ev.outputBuffer.getChannelData(1);
-		//	alert(buf)
 			var sample = 0
 			let theta
 			for(var i=0;i<buf.length;i++){
@@ -220,18 +217,13 @@ function initMic(){
 				sample=Math.max(sample,out0[i],out1[i])
 			}
 			offset=theta
-			//mic=sample/buf.length
 			mic=sample
 		}
-//		processor.connect(audioCtx.destination)
 		source.connect(processor)
-//		source.connect(filter)
 		var streamDestination = au.createMediaStreamDestination();
 		processor.connect(filter)
 		filter.connect(streamDestination)
-//		filter.connect(au.destination)
 	 	audioTrack=streamDestination.stream.getAudioTracks()[0]
-//		audioTrack1=streamDestination.stream.getAudioTracks()[0]
 	  }).catch(function(error){alert(error)})}
 }
 let mediaRecorder
@@ -239,23 +231,16 @@ let blobs
 let url
 function record(){
 	if(recordbutton.value=="Start Recording"){
-//		blobs=[]
 		let canvasStream=V.captureStream()
 		let canvasTrack=canvasStream.getVideoTracks()[0]		
 		let inputStream=new MediaStream()
 		inputStream.addTrack(canvasTrack)
 		inputStream.addTrack(audioTrack)
-//		inputStream.addTrack(audioTrack1)
 		mediaRecorder=new MediaRecorder(inputStream)
 		mediaRecorder.start();
 		mediaRecorder.ondataavailable =function(e){
-//		blobs.push(e.data)
 		url=window.URL.createObjectURL(e.data,{type:'video/mp4'})
 		video.src=url
-		}
-		mediaRecorder.onstop =function(e){
-//			const blob=new Blob(blobs)
-//			video.src=window.URL.createObjectURL(blob,{type: 'video/webm'})
 		}
 		recordbutton.value="Stop Recording"
 
