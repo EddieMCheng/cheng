@@ -42,7 +42,7 @@ function init(){
 		U.width=SW;U.height=SH
 		uidiv.style.width=parseInt(SW)+"px"
 		uidiv.style.height=parseInt(SH)+"px"
-		datadiv.style.left=(parseInt(SW)+10)+"px"
+//		datadiv.style.left=(parseInt(SW)+10)+"px"
 
 		gl.viewport(0,0,SW,SH)
 		gl.clearColor(Vr,Vg,Vb,Va)		
@@ -205,7 +205,6 @@ function download(type, text, ext) {
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
-
 function setVar(s){
 	if(s){
 		var sPair=s.split(":")
@@ -214,7 +213,7 @@ function setVar(s){
 		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(L[sArr[0]]&L[sArr[0]]!=this[sArr[0]]){
+		else if(this[sArr[0]]){//L[sArr[0]]&&L[sArr[0]]!=this[sArr[0]]){
 			if(sVal)this[sArr[0]]=sVal
 			L[sArr[0]]=this[sArr[0]];
 			switch(sArr[0]){
@@ -230,7 +229,6 @@ function setVar(s){
 				case "LS":	gl.lineWidth(LS);break
 				case "VS":	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
 							break
-				case "F":	
 			}
 		}
 	}
@@ -288,7 +286,7 @@ function F2DE(){
 		var par=N+1
 		for(var i=0; i<adds.length; i++){
 			N++
-			if(i>=0){Np_.push(N);Nl_.push(adds.length-1)}
+			if(i>0){Np_.push(N);Nl_.push(adds.length-1)}
 			D[N]=[], E[N]=[],	D[N][0]="", D[N][1]=i==0?CP[1]:CD[1];	D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
@@ -319,9 +317,8 @@ function F2DE(){
 			for(var ii=1; ii<C.length; ii++){if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?0:CE[ii]}
 		}
 		var LEN=Math.abs(D[par][1])
-		var NLEN=LEN<1?1/LEN:LEN
+		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
-
 	}
 	updateL();Geval();go=1;
 }
@@ -340,7 +337,7 @@ function Geval(){
 				let fromTo=id0.split("→"),from=fromTo?L[fromTo[0].split(".")[0]]:0,to=fromTo[1]?L[fromTo[1].split(".")[0]]:id0.includes("→")?N:-1
 				let pArr=id1.split("")
 				if(Gi0.includes(".")&&Gi0.substr(0,5)!="this."){
-					if(from>=0&&vl0>=0){
+					if(from>=0&&vl0){
 						let isPar=D[from][2]==0
 						for(var m=from;m<=(to>=0?to:from);m++){
 							if((isPar&&D[m][2]==0)||(!isPar&&D[m][2]!=0)){
@@ -357,7 +354,7 @@ function Geval(){
 						}
 					}
 				}
-				else{GV.push(Gi0+"="+vdScript(vl0+d));Gp.push(Gi0)} 
+				else{if(!this[Gi0])this[Gi0]="";GV.push(Gi0+"="+vdScript(vl0+(d!=""?"!"+Gi0:"")+""));Gp.push(Gi0)}
 			}
 		}
 	}
@@ -389,7 +386,7 @@ function DE2B(){
 		var fr=len<0
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
-		var p=DE(i,3)*DE(i-D[i][2],3), pdep=Math.abs(p)>1?1:Math.abs(p)
+		var p=DE(i,3)*DEG(i-D[i][2],3,S), pdep=Math.abs(p)>1?1:Math.abs(p)
 		var nn=0
 		var PArray=D[i][0].split(".")
 		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0;
@@ -435,7 +432,8 @@ function DE2B(){
 			m=j*4
 			let angle=p<0?1:Math.acos(-z5/getHyp3(x5,y5,z5)), scale=p>0?angle/getHyp(x5,y5)*VP:z5>1?2*z5*VP:2*VP/(2-z5)
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
-			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=z5*VF>-1?1:1/(-z5*VF)
+			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5-Vz)*VF>-1?1:1/((Vz-z5)*VF)
+			
 			dv[Ni].push(xx*SH/SW,yy,z5*1e-6,1); dc[Ni].push(r1,g1,b1,a1)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
@@ -655,7 +653,7 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	html,body{margin:1px;padding:0}
 	canvas{position:absolute;left:0px;top:0px;bottom:0px;right:0px}
 	#imgcanvas{z-index:-10}
-	#datadiv{width:550px}
+	#datadiv{position:absolute;width:512px;top:'512px'}
 </style>
 </head><body onload="start()">
 <div id="uidiv">
