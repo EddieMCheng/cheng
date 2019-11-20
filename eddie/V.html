@@ -92,16 +92,16 @@ function start(){
 function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-
-	if(time-sTime>1000){
+	let editing=document.activeElement==fLog||document.activeElement==gLog
+	if(time-sTime>1000 && !editing){
 		sTime=time
-		if(removeF && removeF!=removedF){
-			D.splice(L[removeF],1);updateL();N--;DE2F();F2DE();inF()
+		if(L[removeF] && removeF && removeF!=removedF){
+			D.splice(L[removeF],1);updateL();N--;
 			removedF=removeF
 		}
-		else DE2F()
+		DE2F();inF()
 		if(addF && addF!=addedF){
-			F+="+"+addF;inF();outF();
+			F+="+"+addF;outF();
 			addedF=addF
 		}
 		
@@ -281,6 +281,8 @@ function F2DE(){
 	N=-1
 	Np=[],D=[],E=[],Nl=[],Bau=0
 	for(var I=0; I<commas.length; I++){
+		while(commas[I]=="")I++;
+		if(I>commas.length-1)break;
 		var adds=commas[I].replace("=","+").split("+")
 		var Np_=[],Nl_=[]
 		var par=N+1
@@ -579,7 +581,7 @@ function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
 function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,",\n\n",/=/g,"\n=")}
-function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/,\n/g,",",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();if(autosave)urlTFG()}
+function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
 function getr(s){let t=dvr[L[s]];return t?t:0}
