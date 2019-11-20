@@ -42,7 +42,6 @@ function init(){
 		U.width=SW;U.height=SH
 		uidiv.style.width=parseInt(SW)+"px"
 		uidiv.style.height=parseInt(SH)+"px"
-//		datadiv.style.left=(parseInt(SW)+10)+"px"
 
 		gl.viewport(0,0,SW,SH)
 		gl.clearColor(Vr,Vg,Vb,Va)		
@@ -53,7 +52,6 @@ function init(){
 	}
 }
 function start(){
-//	document.oncontextmenu = document.body.oncontextmenu = function() {return false;}
 	let doc=document
 	V=doc.getElementById("glcanvas")
 	I=doc.getElementById('imgcanvas')
@@ -181,6 +179,79 @@ function readTextUrl(file){
 		else if(raw.status==404 && file.includes("_"))readTextUrl(file.replace("_","/"))
 	}
 	raw.send(null)
+}
+function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
+function updateI(idx){
+	if(I){
+		I2d.scale(IS,IS)
+		I2d.clearRect(0,0,I.width,I.height)
+			if(idx>=0)img = images[idx]
+			if(img){
+			I2d.drawImage(img,Ix,Iy,img.width*Iu,img.height*Iu)
+		}	
+	}
+}
+function initCam(){
+	if(navigator.mediaDevices.getUserMedia) {       
+	    navigator.mediaDevices.getUserMedia({video:{width:SW,height:SH,advanced:[{facingMode:"environment"}]}})
+	  .then(function(stream){
+	    video.srcObject = stream
+	    cam=1;if(dT==0)dT=0.04
+	  }).catch(function(error){alert(error)})}
+}
+let audioTrack
+let offset = 0
+function initMic(){
+	if(navigator.mediaDevices.getUserMedia) {       
+	    navigator.mediaDevices.getUserMedia({audio:true})
+	  .then(function(stream){
+		var source = au.createMediaStreamSource(stream);
+		var filter = au.createBiquadFilter()
+		filter.type="bandpass"
+		filter.frequency.value=880
+		filter.Q.value=1.2
+		var processor =au.createScriptProcessor(1024);
+		processor.onaudioprocess = function(ev){
+			var buf=ev.inputBuffer.getChannelData(0);
+			var out0=ev.outputBuffer.getChannelData(0);
+			var out1=ev.outputBuffer.getChannelData(1);
+			var sample = 0
+			let theta
+			for(var i=0;i<buf.length;i++){
+				if(distort)theta=offset+freq*i*Math.PI/au.sampleRate;
+				else theta=1
+				out0[i]=buf[i]*Math.sin(theta)
+				out1[i]=buf[i]*Math.sin(theta)
+				sample=Math.max(sample,out0[i],out1[i])
+			}
+			offset=theta
+			mic=sample
+		}
+		source.connect(processor)
+		var streamDestination = au.createMediaStreamDestination();
+		processor.connect(filter)
+		filter.connect(streamDestination)
+	 	audioTrack=streamDestination.stream.getAudioTracks()[0]
+	  }).catch(function(error){alert(error)})}
+}
+let mediaRecorder
+let blobs
+let url
+function record(){
+	if(recordbutton.value=="Start Recording"){
+		let canvasStream=V.captureStream()
+		let canvasTrack=canvasStream.getVideoTracks()[0]		
+		let inputStream=new MediaStream()
+		inputStream.addTrack(canvasTrack)
+		inputStream.addTrack(audioTrack)
+		mediaRecorder=new MediaRecorder(inputStream)
+		mediaRecorder.start();
+		mediaRecorder.ondataavailable =function(e){
+		url=window.URL.createObjectURL(e.data,{type:'video/mp4'})
+		video.src=url
+		}
+		recordbutton.value="Stop Recording"
+	}
 }
 
 function updateUP(i,font,alpha){
