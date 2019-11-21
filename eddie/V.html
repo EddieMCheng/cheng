@@ -288,6 +288,7 @@ function setVar(s){
 			if(sVal)this[sArr[0]]=sVal
 			L[sArr[0]]=this[sArr[0]];
 			switch(sArr[0]){
+				case "Ix": case "Iy":case "Iu": updateI(0);break
 				case "SW":
 				case "SH":	V.width=SW;V.height=SH
 							I.width=SW;I.height=SH
@@ -745,6 +746,8 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	<input value="update" type="button" onclick="inF();inG()"></input>
 	<input value="apply" type="button" onclick="outG();outF();go=1"></input>
 <br>
- </div>
+Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
 <input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
+
+ </div>
 </body></html>
