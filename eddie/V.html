@@ -30,7 +30,7 @@ var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,ti
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
-var input="", addF="",addedF="", removeF="",removedF=""
+var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
 var autosave=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
@@ -90,18 +90,27 @@ function start(){
 function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	let editing=document.activeElement==fLog||document.activeElement==gLog
+	let editing=document.activeElement==fLog
 	if(time-sTime>1000 && !editing){
 		sTime=time
-		if(L[removeF] && removeF && removeF!=removedF){
-			D.splice(L[removeF],1);updateL();N--;
+		if(removeF=="")removedF=""
+		if(removeF!=removedF){
+			let str=getF(removeF)
+			if(str!="")F=F.replace("+"+str,"").replace(str+"+","");
 			removedF=removeF
 		}
-		DE2F();inF()
-		if(addF && addF!=addedF){
-			F+="+"+addF;outF();
+		if(duplicateF=="")duplicatedF=""
+		if(duplicateF!=duplicatedF){
+			let str=getF(duplicateF)
+			F=F.replace(str,str+"+"+str)
+			duplicatedF=duplicateF
+		}
+		if(addF=="")addedF=""
+		if(addF!=addedF){
+			F+="+"+addF
 			addedF=addF
 		}
+		F2DE();inF();
 		
 		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
 		out="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
@@ -324,8 +333,7 @@ function updateL(){
 		L[nNm]=j
 		L["#"+j]=j
 		D[j][0]=D[j][0].replace(nm,nNm)
-	 }
-
+ 	}
 }
 function DE2F(){
 	F=""
@@ -652,8 +660,13 @@ function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
 function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
-function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,",\n\n",/=/g,"\n=")}
-function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();if(autosave)urlTFG()}
+function getF(s){
+	let start=fLog.value.indexOf(s)
+	let end=fLog.value.indexOf("\n",start)
+	return start>=0?fLog.value.substring(start,(end>=0?end:fLog.value.length)):""
+}
+function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");F2DE();DE2F()}
+function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
 function getr(s){let t=dvr[L[s]];return t?t:0}
@@ -677,22 +690,6 @@ function getM(s){return getHyp(X[L[s]]-Mx,Y[L[s]]-My)}
 function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
 function getSpace(s,t){return getHyp3(dvX[L[s]]-dvX[L[t]],dvY[L[s]]-dvY[L[t]],dvZ[L[s]]-dvZ[L[t]])}
 function getPart(i,s){return s?s.split("_")[i]:""}
-function insertF(s,t){
-	if(L[s] && !L[t.split("*")[0]]){
-			let i=F.indexOf(s)
-			F=F.slice(0,i)+t+"+"+F.slice(i);inF();outF();
-			return 1
-		}
-		return 0
-}
-function deleteF(s,i){
-	if(!i)i=1;
-	if(L[s]){
-		D.splice(L[s],i);updateL();N-=i;DE2F();F2DE();inF()
-		return 1
-	}
-	return 0
-}
 function Ir(x,y){return getI(x,y,0)}
 function Ig(x,y){return getI(x,y,1)}
 function Ib(x,y){return getI(x,y,2)}
