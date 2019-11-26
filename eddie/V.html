@@ -23,7 +23,7 @@ var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=
 var Ix=0,Iy=0,Iu=1
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SS=512,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
+var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -37,9 +37,6 @@ function init(){
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
 	updateL();Geval();F2DE();DE2B();outG();outF()
 	if(gl){
-		V.width=SW;V.height=SH
-		I.width=SW;I.height=SH
-		U.width=SW;U.height=SH
 		uidiv.style.width=parseInt(SW)+"px"
 		uidiv.style.height=parseInt(SH)+"px"
 
@@ -98,19 +95,21 @@ function loop(){
 			let str=getF(removeF)
 			if(str!="")F=F.replace("+"+str,"").replace(str+"+","");
 			removedF=removeF
+			F2DE();inF()
 		}
 		if(duplicateF=="")duplicatedF=""
 		if(duplicateF!=duplicatedF){
 			let str=getF(duplicateF)
 			F=F.replace(str,str+"+"+str)
 			duplicatedF=duplicateF
+			F2DE();inF()
 		}
 		if(addF=="")addedF=""
 		if(addF!=addedF){
 			F+="+"+addF
 			addedF=addF
+			F2DE();inF()
 		}
-		F2DE();inF();
 		
 		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
 		out="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
@@ -293,18 +292,20 @@ function setVar(s){
 		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(this[sArr[0]]){//L[sArr[0]]&&L[sArr[0]]!=this[sArr[0]]){
+		else if(this[sArr[0]]&&L[sArr[0]]!=this[sArr[0]]){
 			if(sVal)this[sArr[0]]=sVal
-			L[sArr[0]]=this[sArr[0]];
+			L[sArr[0]]=this[sArr[0]];go=1
 			switch(sArr[0]){
 				case "Ix": case "Iy":case "Iu": updateI(0);break
 				case "SW":
-				case "SH":	V.width=SW;V.height=SH
-							I.width=SW;I.height=SH
-							U.width=SW;U.height=SH
-							uidiv.style.width=parseInt(SW)+"px"
-							uidiv.style.height=parseInt(SH)+"px"
-							gl.viewport(0,0,SW,SH)
+				case "SH":
+					U.width=SW;U.height=SH
+					V.width=SW;V.height=SH
+					I.width=SW;I.height=SH
+					uidiv.style.width=parseInt(SW)+"px"
+					uidiv.style.height=parseInt(SH)+"px"
+					gl.viewport(0,0,SW,SH)
+					break
 				case "Vr": case "Vg":case "Vb":
 				case "Va":	gl.clearColor(Vr,Vg,Vb,Va);break
 				case "LS":	gl.lineWidth(LS);break
@@ -621,7 +622,6 @@ async function execute(){
 			console.log('Getting Characteristic...');
 			bleRx = await service.getCharacteristic(bleRxID);
 			bleRx.idx=bleConnect;
-			//bleRx.addEventListener('characteristicvaluechanged',bleReceive);
 			bleRx.oncharacteristicvaluechanged=function(ev){
 				let data=decoder.decode(ev.target.value)
 				console.log(this.idx+'>' + data);
