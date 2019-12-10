@@ -19,7 +19,7 @@
 */
 var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*a"
 var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
-var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dv=[],dc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
+var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var Ix=0,Iy=0,Iu=1
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuvwodta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
@@ -471,57 +471,76 @@ function DE2B(){
 		var fr=len<0
 		var isFrac=(len<1&&len>0)||(type>0&&len==1)
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
-		var p=DE(i,3)*Pp, pdep=Math.abs(p)>1?1:Math.abs(p)
+		var p=DE(i,3), pdep=Math.abs(p*Pp)>1?1:Math.abs(p*Pp)
 		var nn=0
 		var PArray=D[i][0].split(".")
 		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0;
 		tdv[Ni]=[];tdc[Ni]=[]
 		dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
+		if(p>0||!dvc[Ni])dvc[Ni]=[]
 		for(var j=0; j<(pdep==0?1:jlen*pdep); j++){
-			var s=fr||isFrac?j/jlen:-1
-			let x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5
-			var x,y,z,r,g,b,u,v,w,t,o
-			var d=DEG(i,14,s,j)+Pd
-			if(PArray.length>1){
-				var ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
-				var i0 = L[PArray[ii]]
-				var i1 = L[PArray[ii+1]]
-				if(i0 && i1){
-					var d2 = (PArray.length-1)*d-ii
-					x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s);	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s);	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
-					r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s);	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s);	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
-					u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s);	v=(1-d2)*DE(i0,11,s)+d2*DE(i1,11,s);	w=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s);o=(1-d2)*DE(i0,13,s)+d2*DE(i1,13,s)
+			let x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5,r,g,b
+			let	pii = 2*Math.PI
+			if(p>0||dvc[Ni].length<jlen*pdep*6){
+				let s=fr||isFrac?j/jlen:-1
+				let x,y,z,u,v,w,t,o
+				let d=DEG(i,14,s,j)+Pd
+				if(PArray.length>1){
+					let ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
+					let i0 = L[PArray[ii]]
+					let i1 = L[PArray[ii+1]]
+					if(i0 && i1){
+						var d2 = (PArray.length-1)*d-ii
+						x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s);	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s);	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
+						r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s);	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s);	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
+						u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s);	v=(1-d2)*DE(i0,11,s)+d2*DE(i1,11,s);	w=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s);o=(1-d2)*DE(i0,13,s)+d2*DE(i1,13,s)
+					}
 				}
+				else{
+					x=DEG(i,4,s,j);		y=DEG(i,5,s,j);		z=DEG(i,6,s,j)
+					r=DEG(i,7,s,j);		g=DEG(i,8,s,j);		b=DEG(i,9,s,j)
+					u=DEG(i,10,s,j);	v=DEG(i,11,s,j);	w=DEG(i,12,s,j);	o=DEG(i,13,s,j)
+				}
+
+				x0=u*Math.sin(v*pii)
+				y0=u*Math.cos(v*pii)
+				z0=u*Math.sin(v*pii)*Math.sin(w*pii)
+				x1=x0*Math.cos(w*pii)+x
+				y1=y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii)+y
+				z1=z0*Math.cos(o*pii)+y0*Math.sin(o*pii)+z
+				dvc[Ni][j*6]=x1
+				dvc[Ni][j*6+1]=y1
+				dvc[Ni][j*6+2]=z1
+				dvc[Ni][j*6+3]=r
+				dvc[Ni][j*6+4]=g
+				dvc[Ni][j*6+5]=b
 			}
 			else{
-				x=DEG(i,4,s,j);		y=DEG(i,5,s,j);		z=DEG(i,6,s,j)
-				r=DEG(i,7,s,j);		g=DEG(i,8,s,j);		b=DEG(i,9,s,j)
-				u=DEG(i,10,s,j);	v=DEG(i,11,s,j);	w=DEG(i,12,s,j);	o=DEG(i,13,s,j)
+				x1=dvc[Ni][j*6]
+				y1=dvc[Ni][j*6+1]
+				z1=dvc[Ni][j*6+2]
+				r=dvc[Ni][j*6+3]
+				g=dvc[Ni][j*6+4]
+				b=dvc[Ni][j*6+5]
 			}
-			var	pii = 2*Math.PI
-			x0=u*Math.sin(v*pii)
-			y0=u*Math.cos(v*pii)
-			z0=u*Math.sin(v*pii)*Math.sin(w*pii)+z
-			x1=x0*Math.cos(w*pii)
-			y1=y0*Math.cos(-o*pii)+z0*Math.sin(-o*pii)
-			z1=z0*Math.cos(o*pii)+y0*Math.sin(o*pii)
+			
 			x2=x1*Math.cos(Pv*pii)+y1*Math.sin(Pv*pii)
 			y2=y1*Math.cos(Pv*pii)-x1*Math.sin(Pv*pii)
 			z2=z1*Math.cos(-Pw*pii)-x2*Math.sin(-Pw*pii)
 			x3=(x2*Math.cos(-Pw*pii)+z1*Math.sin(-Pw*pii))*Pu+Px
 			y3=(y2*Math.cos(-Po*pii)+z2*Math.sin(-Po*pii))*Pu+Py
 			z3=(z2*Math.cos(Po*pii)+y2*Math.sin(Po*pii))*Pu+Pz
-			x4=p<0?x3:x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
-			y4=p<0?y3:y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
-			z4=p<0?z3:z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
-			x5=p<0?x4+Vx:x4*Math.cos(-Vw*pii)+z3*Math.sin(-Vw*pii)+Vx
-			y5=p<0?y4+Vy:y4*Math.cos(-Vo*pii)+z4*Math.sin(-Vo*pii)+Vy
-			z5=p<0?z4+Vz:z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
+			x4=x3*Math.cos(Vv*pii)+y3*Math.sin(Vv*pii)
+			y4=y3*Math.cos(Vv*pii)-x3*Math.sin(Vv*pii)
+			z4=z3*Math.cos(-Vw*pii)-x4*Math.sin(-Vw*pii)
+			x5=x4*Math.cos(-Vw*pii)+z3*Math.sin(-Vw*pii)+Vx
+			y5=y4*Math.cos(-Vo*pii)+z4*Math.sin(-Vo*pii)+Vy
+			z5=z4*Math.cos(Vo*pii)+y4*Math.sin(Vo*pii)+Vz
 			m=j*4
-			let angle=p<0?1:Math.acos(-z5/getHyp3(x5,y5,z5)), scale=p>0?angle/getHyp(x5,y5)*VP:z5>1?2*z5*VP:2*VP/(2-z5)
+			let angle=Math.acos(-z5/getHyp3(x5,y5,z5)), scale=angle/getHyp(x5,y5)*VP
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5-Vz)*VF>-1?1:1/((Vz-z5)*VF)
-			
+
 			tdv[Ni].push(xx*SH/SW,yy,z5*1e-6,1); tdc[Ni].push(r1,g1,b1,a1)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
