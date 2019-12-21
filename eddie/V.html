@@ -477,11 +477,11 @@ function DE2B(){
 		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0;
 		tdv[Ni]=[];tdc[Ni]=[]
 		dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
-		if(p>0||!dvc[Ni])dvc[Ni]=[]
+		if(p*Pp>0||!dvc[Ni])dvc[Ni]=[]
 		for(var j=0; j<(pdep==0?1:jlen*pdep); j++){
 			let x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5,r,g,b
 			let	pii = 2*Math.PI
-			if(p>0||dvc[Ni].length<jlen*pdep*6){
+			if(p*Pp>0||dvc[Ni].length<jlen*pdep*6){
 				let s=fr||isFrac?j/jlen:-1
 				let x,y,z,u,v,w,t,o
 				let d=DEG(i,14,s,j)+Pd
@@ -541,7 +541,7 @@ function DE2B(){
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5-Vz)*VF>-1?1:1/((Vz-z5)*VF)
 
-			tdv[Ni].push(xx*SH/SW,yy,z5*1e-6,1); tdc[Ni].push(r1,g1,b1,a1)
+			tdv[Ni].push(xx*SH/SW,yy,z5*1e-34,1); tdc[Ni].push(r1,g1,b1,a1)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
@@ -689,7 +689,7 @@ function getF(s){
 	let end=fLog.value.indexOf("\n",start)
 	return start>=0?fLog.value.substring(start,(end>=0?end:fLog.value.length)):""
 }
-function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");F2DE();DE2F()}
+function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
@@ -715,7 +715,7 @@ function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
 function getSpace(s,t){return getHyp3(dvX[L[s]]-dvX[L[t]],dvY[L[s]]-dvY[L[t]],dvZ[L[s]]-dvZ[L[t]])}
 function getPart(i,s){return s?s.split("_")[i]:""}
 function Ir(x,y){return getI(x,y,0)}
-function Ig(x,y){return getI(x,y,1)}
+function Ig(x,y){return getI(x,y,1)}	
 function Ib(x,y){return getI(x,y,2)}
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
@@ -748,7 +748,7 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	html,body{margin:1px;padding:0}
 	canvas{position:absolute;left:0px;top:0px;bottom:0px;right:0px}
 	#imgcanvas{z-index:-10}
-	#datadiv{position:absolute;width:512px;top:'512px'}
+	#datadiv{position:absolute;width:512px;top:512px}
 </style>
 </head><body onload="start()">
 <div id="uidiv">
@@ -761,7 +761,7 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	<input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
 	<input type="button" value="URL" onclick="urlTFG()"></input>
 	<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
-	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="inF()"></textarea>
+	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="DE2F();inF()"></textarea>
 	<input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
 	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea>
 	<input value="update" type="button" onclick="inF();inG()"></input>
