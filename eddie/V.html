@@ -23,7 +23,7 @@ var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dv
 var Ix=0,Iy=0,Iu=1
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
-var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vx=0,Vy=0,Vz=-1,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
+var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
@@ -527,20 +527,20 @@ function DE2B(){
 			z2=z1*cPo+y1*sPo
 			y2=y1*cPo-z1*sPo
 			x2=x1*cPv+y2*sPv
-			z3=(z2*cPw+x2*sPw)*Pu+Pz			
-			y3=(y2*cPv-x1*sPv)*Pu+Py
-			x3=(x2*cPw-z2*sPw)*Pu+Px
+			z3=((z2*cPw+x2*sPw)*Pu+Pz-Vz)*Vu
+			y3=((y2*cPv-x1*sPv)*Pu+Py-Vy)*Vu
+			x3=((x2*cPw-z2*sPw)*Pu+Px-Vx)*Vu
 			z4=z3*cVo-y3*sVo
 			y4=y3*cVo+z3*sVo
 			x4=x3*cVv+y4*sVv
-			z5=z4*cVw+x4*sVw+Vz
-			y5=y4*cVv-x3*sVv+Vy
-			x5=x4*cVw-z4*sVw+Vx
+			z5=z4*cVw+x4*sVw-Vzu
+			y5=y4*cVv-x3*sVv
+			x5=x4*cVw-z4*sVw
 			
 			m=j*4
 			let angle=Math.acos(-z5/getHyp3(x5,y5,z5)), scale=angle/getHyp(x5,y5)*VP
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
-			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5-Vz)*VF>-1?1:1/((Vz-z5)*VF)
+			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5+Vzu)*VF>-1?1:1/((-Vzu-z5)*VF)
 
 			tdv[Ni].push(xx*SH/SW,yy,z5*1e-34,1); tdc[Ni].push(r1,g1,b1,a1)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
