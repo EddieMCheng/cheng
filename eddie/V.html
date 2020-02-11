@@ -556,7 +556,7 @@ function DE2B(){
 		updateUP(i,Font,Z[i])
 		if(tdv[Ni]){
 			dvi[Np.length-Ni-1]=Bdv.length
-			Bdv = Bdv.concat(tdv[Ni]);Bdc = Bdc.concat(tdc[Ni])
+			Array.prototype.push.apply(Bdv,tdv[Ni]);Array.prototype.push.apply(Bdc,tdc[Ni])
 		}
 		n+=jlen+nn
 	} 
