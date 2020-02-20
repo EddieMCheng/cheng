@@ -17,12 +17,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*a"
+var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*3a"
 var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var Ix=0,Iy=0,Iu=1
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
-var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,0], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
+var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
@@ -31,7 +31,7 @@ var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
-var autosave=1
+var autosave=1,cl=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
@@ -76,7 +76,7 @@ function start(){
 	I.width=SW;I.height=SH
 	U.width=SW;U.height=SH
 
-	gl=V.getContext("webgl")
+	gl=V.getContext("webgl",{preserveDrawingBuffer:true})
 	I2d=I.getContext('2d')
 	U2d=U.getContext('2d')
 
@@ -466,14 +466,14 @@ function DE2B(){
 			Pw=DEG(i-l,13,S,Pi);Pd=DEG(i-l,14,S,Pi)
 		}
 		var len=DE(i,1)
-		var type = D[i][16]+D[i-D[i][2]][16]
+		var type=D[i][16]+D[i-D[i][2]][16], typeA=type-Math.ceil(type)+1
 		var fr=len<0
-		var isFrac=(len<1&&len>0)||(type>0&&len==1)
+		var isFrac=(len<1&&len>0)||(Math.abs(type)>1&&len==1)
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
 		var p=DE(i,3), pdep=Math.abs(p*Pp)>1?1:Math.abs(p*Pp)
 		var nn=0
 		var PArray=D[i][0].split(".")
-		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0;
+		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0
 		tdv[Ni]=[];tdc[Ni]=[]
 		dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		if(p*Pp>0||!dvc[Ni])dvc[Ni]=[]
@@ -542,7 +542,7 @@ function DE2B(){
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5+Vzu)*VF>-1?1:1/((-Vzu-z5)*VF)
 
-			tdv[Ni].push(xx*SH/SW,yy,z5*1e-34,1); tdc[Ni].push(r1,g1,b1,a1)
+			tdv[Ni].push(xx*SH/SW,yy,z5*1e-34,1); tdc[Ni].push(r1,g1,b1,a1*typeA)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
@@ -587,7 +587,7 @@ function draw(a) {
 		gl.enable(gl.DEPTH_TEST)
 		gl.depthFunc(gl.GREATER)
 	}
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	if(cl)gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	var Gprog=gl.createProgram()
 	gl.attachShader(Gprog, Gvert)
 	gl.attachShader(Gprog, Gfrag)
@@ -600,7 +600,11 @@ function draw(a) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var Ni=0;Ni<Np.length; Ni++){
 		var i=Np[Np.length-Ni-1],type=D[i][16]+D[i-D[i][2]][16]
-		gl.drawArrays(type>3?gl.TRIANGLE_FAN:type>2?gl.TRIANGLE_STRIP:type>1?gl.TRIANGLES:type>0.5?gl.LINE_STRIP:type>0?gl.LINES:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
+		if(type>=0){gl.blendEquation(gl.FUNC_ADD)}
+		else{gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT)
+			type=Math.abs(type)
+		}
+		gl.drawArrays(type>5?gl.TRIANGLE_FAN:type>4?gl.TRIANGLE_STRIP:type>3?gl.TRIANGLES:type>2?gl.LINE_STRIP:type>1?gl.LINES:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
 function showPosition(position){
