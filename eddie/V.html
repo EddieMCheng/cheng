@@ -20,12 +20,12 @@
 var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*3a"
 var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var Ix=0,Iy=0,Iu=1
+var Ix=0,Iy=0,Iu=1, xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
-var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
+var Rx=0,Ry=0,Rz=0,Rzr=0,Ro=0,Rv=0,Rw=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
@@ -69,14 +69,14 @@ function start(){
 	document.onkeyup=function(ev){key=ev.code+"_0"}
 	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
 	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
-	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360}
+	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360;Rw=-Rzr;Rv=Ry;Ro=Rx+0.25}
 	window.ondevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
 	navigator.geolocation.getCurrentPosition(showPosition)
 	V.width=SW;V.height=SH
 	I.width=SW;I.height=SH
 	U.width=SW;U.height=SH
 
-	gl=V.getContext("webgl",{preserveDrawingBuffer:true})
+	gl=V.getContext("webgl",{xrCompatible:true,preserveDrawingBuffer:true})
 	I2d=I.getContext('2d')
 	U2d=U.getContext('2d')
 
@@ -144,7 +144,7 @@ function loop(){
 		draw()
 	}
 	ping=new Date().getTime()-time
-	window.requestAnimationFrame(loop);
+	if(!xrOn)window.requestAnimationFrame(loop);
 }
 function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G+(Va<1?";Va="+Va:""))}
 function updateT(s){
@@ -530,12 +530,13 @@ function DE2B(){
 			z3=((z2*cPw+x2*sPw)*Pu+Pz-Vz)*Vu
 			y3=((y2*cPv-x1*sPv)*Pu+Py-Vy)*Vu
 			x3=((x2*cPw-z2*sPw)*Pu+Px-Vx)*Vu
-			z4=z3*cVo-y3*sVo
-			y4=y3*cVo+z3*sVo
-			x4=x3*cVv+y4*sVv
-			z5=z4*cVw+x4*sVw-Vzu
-			y5=y4*cVv-x3*sVv
-			x5=x4*cVw-z4*sVw
+			x4=x3*cVw+z3*sVw
+			z4=z3*cVw-x3*sVw
+			y4=y3*cVv+x4*sVv
+			x5=x4*cVv-y3*sVv
+			z5=z4*cVo+y4*sVo-Vzu
+			y5=y4*cVo-z4*sVo
+			
 			
 			m=j*4
 			let angle=Math.acos(-z5/getHyp3(x5,y5,z5)), scale=angle/getHyp(x5,y5)*VP
@@ -684,6 +685,46 @@ function bleDisconnected(){
 	console.log("disconnected");
 	bleConnected--
 }
+function xrStarted(session) {
+	session.addEventListener('end',xrEnded);
+	session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl)});
+	session.requestReferenceSpace('local').then((refSpace) => {
+		xrSpace = refSpace;
+		xrOn=1
+		
+		//V.width=screen.width;V.height=screen.height
+		gl.viewport(0,0,screen.width*window.devicePixelRatio,screen.height*window.devicePixelRatio)
+		session.requestAnimationFrame(onXRFrame);
+	});
+}
+function xrEnded(session){
+		xrOn=0
+		init();
+}
+function onXRFrame(t, frame) {
+	let pose = frame.getViewerPose(xrSpace);
+	frame.session.requestAnimationFrame(onXRFrame);
+	    let layer = frame.session.renderState.baseLayer;
+	
+	    if (!gl) {
+	      return;
+	    }
+	    gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
+	    
+	if(pose){
+		let pos = pose.views[0].transform.position
+		let rot = pose.views[0].transform.orientation
+		let pii=2*Math.PI
+		
+		xrx=pos.x*10;xry=pos.y*10;xrz=pos.z*10
+		//xro=-(rot.x*Math.cos(rot.y*fac)+rot.z*Math.sin(rot.y*fac))/2.8
+		//xrv=-(rot.z*Math.cos(rot.y*fac)+rot.x*Math.sin(rot.y*fac))/2.8
+		xro=rot.x
+		xrv=rot.z
+		xrw=rot.y//Math.atan2(rot.x,rot.z)/pii
+	}
+	loop();
+}
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
@@ -738,9 +779,9 @@ function round(v,d){return Math.round(v*Math.pow(10,d))/Math.pow(10,d)}
 function decimal3(v){return round(v,3)}
 function decimal4(v){return round(v,4)}
 function lim(s,s0,s1,t0,t1){return ((s>s1?s1:s<s0?s0:s)-s0)*(t1-t0)/(s1-s0)+t0}
-function cos(v){return Math.cos(v*2*PI)}
-function sin(v){return Math.sin(v*2*PI)}
-function tan(v){return Math.tan(v*2*PI)}
+function cos(v){return Math.cos(v*2*Math.PI)}
+function sin(v){return Math.sin(v*2*Math.PI)}
+function tan(v){return Math.tan(v*2*Math.PI)}
 function getHyp(a,b){return Math.sqrt(a*a+b*b)}
 function getHyp3(a,b,c){return Math.sqrt(a*a+b*b+c*c)}
 function replacer(){let s=arguments[0];for(let i=1;i<arguments.length;i+=2){s=s.replace(arguments[i],arguments[i+1])};return s}
@@ -754,7 +795,7 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	html,body{margin:1px;padding:0}
 	canvas{position:absolute;left:0px;top:0px;bottom:0px;right:0px}
 	#imgcanvas{z-index:-10}
-	#datadiv{position:absolute;width:512px;top:512px}
+	#datadiv{position:absolute;width:512px;top:420px}
 </style>
 </head><body onload="start()">
 <div id="uidiv">
@@ -775,6 +816,7 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 <br>
 Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
 <input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
-
+<input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR"></input>
  </div>
+ <div id="debugdiv" style="position:absolute;left:512px"></div>
 </body></html>
