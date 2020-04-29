@@ -27,11 +27,11 @@ var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=
 var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,Ro=0,Rv=0,Rw=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
-var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=.25,LON=0,ALT,ACC
+var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=0.25,LON=0,ALT=0,ACC=0
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
-var autosave=1,cl=1
+var autosave=0,cl=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
@@ -611,9 +611,8 @@ function draw(a) {
 function showPosition(position){
 	LAT=(90-position.coords.latitude)/360;LON=(360-position.coords.longitude)/360
 	ALT = position.coords.altitude; ACC=position.coords.accuracy
-	var lat = Math.round(100*LAT)/100+"", lon = Math.round(100*LON)/100+""
+	var lat = round(LAT,2)+"", lon = round(LON,2)+""
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
-	
 }
 function getMx(ev){return (2*decimal4(ev.clientX/SW)-1)*SW/SH}
 function getMy(ev){return 1-2*decimal4(ev.clientY/SH)}
@@ -715,13 +714,13 @@ function onXRFrame(t, frame) {
 		let pos = pose.views[0].transform.position
 		let rot = pose.views[0].transform.orientation
 		let pii=2*Math.PI
-		
+	
 		xrx=pos.x*10;xry=pos.y*10;xrz=pos.z*10
-		//xro=-(rot.x*Math.cos(rot.y*fac)+rot.z*Math.sin(rot.y*fac))/2.8
-		//xrv=-(rot.z*Math.cos(rot.y*fac)+rot.x*Math.sin(rot.y*fac))/2.8
-		xro=rot.x
-		xrv=rot.z
-		xrw=rot.y//Math.atan2(rot.x,rot.z)/pii
+
+		xro=-Math.atan2(2*(rot.w*rot.x+rot.y*rot.z),1-2*(rot.x*rot.x+rot.y*rot.y))/pii
+		let sinp= -2*(rot.w*rot.y-rot.z*rot.x)
+		xrv=sinp>=1?0.25:sinp<=-1?-0.25:Math.asin(sinp)/pii
+		xrw=-Math.atan2(2*(rot.w*rot.z+rot.x*rot.y),1-2*(rot.y*rot.y+rot.z*rot.z))/pii
 	}
 	loop();
 }
@@ -770,7 +769,7 @@ function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
 function DEG(p,q,s,i){let v=0,m,n,o,d=DE(p,q,s)?DE(p,q,s):0;if(GB[p]&&GB[p][q]){try{m=i>1?GBd[p][q][i-2]:0,n=i>0?GBd[p][q][i-1]:d;l=GBd[p][q][i];v=eval(GB[p][q]);GBd[p][q][i]=v}catch(e){}}; return d+v}
 function DE(m,n,s){return D[m][n]+Err(m,n,s);}
-function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(Math.random()-Math.random())}
+function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(2*Math.random()-1)}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
 function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(v%60)}
 function HE(){let date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
