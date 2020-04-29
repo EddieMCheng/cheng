@@ -1,0 +1,4 @@
+D_Seed_Fi.3KK4TAX1F.09.95;
+G:dT=0.02,seeds.p=touch|D(seeds.p)>1?0!D(seeds.p)+0.001,seeds.u=0{≝sqrt(D(seeds.p)*10000-i)/50},seeds.v=0{i*0.3819667};
+F:System=seeds*0.0001*0.146p*r±1*g±-1*0b;
+http://localhost:8080/cheng/eddie/V.html

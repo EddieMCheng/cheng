@@ -1,0 +1,4 @@
+D_GPS_data.3KK4TAdv7.09.95;
+G:autosave=1,LAT→.name='←   '+round(←)(4),;
+F:GPSData*2p*-2x*y*0.1u*0.5o=LAT*y+LON*2y+ALT*3y+ACC*4y;
+http://localhost:8080/cheng/eddie/V.html
