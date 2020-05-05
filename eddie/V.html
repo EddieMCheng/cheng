@@ -806,16 +806,16 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	<input type="file" onchange="loadFiles(this.files)" multiple=""></input>
 	<input id="saveD" type="button" onclick="download('D',out,'txt')"></input>
 	<input type="button" value="URL" onclick="urlTFG()"></input>
-	<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')"></input>
+	<input id="saveF" type="button" onclick="download('F','F:'+fLog.value,'txt')" hidden></input>
 	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="DE2F();inF()"></textarea>
-	<input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')"></input>
+	<input id="saveG" type="button" onclick="download('G','G:'+gLog.value,'txt')" hidden></input>
 	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea>
-	<input value="update" type="button" onclick="inF();inG()"></input>
-	<input value="apply" type="button" onclick="outG();outF();go=1"></input>
+	<input value="update" type="button" onclick="inF();inG()" hidden></input>
+	<input value="apply" type="button" onclick="outG();outF();go=1" hidden></input>
 <br>
-Image:<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
+<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
 <input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
-<input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR"></input>
+<input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
  </div>
  <div id="debugdiv" style="position:absolute;left:512px"></div>
 </body></html>
