@@ -278,8 +278,8 @@ function updateUP(i,font,alpha){
 		U2d.fillText(goName!="undefined"?goName.replace(/_/g," "):(names[0]+dots).replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
 	}
 }
-function download(type, text, ext) {
-	filename= type+"_"+T+"_"+HE()+GPS+"."+ext
+function download(type, text, ext,stamp) {
+	filename=stamp? type+"_"+T+"_"+HE()+GPS+"."+ext:type+"_"+T+"."+ext
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text.replace(/;/g,";\n" )); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
