@@ -273,7 +273,7 @@ function updateUP(i,font,alpha){
 		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(typeA*alpha)+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
-    	var names=typeA? D[i][0].split("."):" "
+    	var names=!typeA?" ":E[i][0]?E[i][0].split("."):D[i][0].split(".")
 		var dots=names.length>1?"...":"";
 		U2d.fillText(goName!="undefined"?goName.replace(/_/g," "):(names[0]+dots).replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
 	}
@@ -313,6 +313,7 @@ function setVar(s){
 							break
 			}
 		}
+		if(!this[sArr[0]])this[sArr[0]]=0;
 	}
 }
 function updateL(){
@@ -331,6 +332,7 @@ function updateL(){
 			nNm=nmEndStr?nmArr+"_"+nmEndStr:nmArr+"_"+dp
 			dp++
 		}
+		L[E[j][0]]=j
 		L[nNm]=j
 		L["#"+j]=j
 		D[j][0]=D[j][0].replace(nm,nNm)
@@ -344,6 +346,7 @@ function DE2F(){
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
 		F+=D[i][0]
+		if(E[i][0])F+="±"+E[i][0];
 		if(D[i][1]!=0&&D[i][1]!=CD[1])F+="*"+(D[i][1]+"")
 		for(var j=3;j<C.length;j++){
 			var CEj=D[i][2]==0?0:CE[j]
@@ -391,7 +394,7 @@ function F2DE(){
 					if(propIndex==1&&propName!=C[3]){
 						if(D[N][0])D[N][0]+="."
 						D[N][0] += propName
-						
+						E[N][0] = props[1]
 					}
 					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
 					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):D[N][2]==0?0:CE[propIndex]
@@ -429,8 +432,8 @@ function Geval(){
 								else if(Gi0.includes(".")&&m>=0){
 									var n=L[id1]
 									if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
-									if(vl0&&m>=0){GV.push("D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+""));Gp.push(0)}
-									if(vl1&&m>=0){GV.push("E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+""));Gp.push(0)}
+									if(vl0&&m>=0){GV.push((n==0?"delete L[D["+m+"][0]];":"")+"D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+"")+(n==0?";L[D["+m+"][0]]="+m:""));Gp.push(0)}
+									if(vl1&&m>=0){GV.push((n==0?"delete L[E["+m+"][0]];":"")+"E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+"")+(n==0?";L[E["+m+"][0]]="+m:""));Gp.push(0)}
 									fail=0
 								}
 							}
@@ -727,7 +730,7 @@ function onXRFrame(t, frame) {
 function setM(ev){Mx=getMx(ev);My=getMy(ev);setMB(ev);drag=1}
 function setMB(ev){MxB.pop();MxB.unshift(getMx(ev));MyB.pop();MyB.unshift(getMy(ev));if(dT==0)go=1}
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
-function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZ])\((\w+)\)/g,"get$1\('$2'\)",/([BDENS])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
+function vdScript(s){return replacer(s,/!/g,":",/></g,"==",/<>/g,"!=",/<</g,"<=",/>>/g,">=",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function getF(s){
 	let start=fLog.value.indexOf(s)
@@ -737,7 +740,8 @@ function getF(s){
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
+function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
+
 function getr(s){let t=dvr[L[s]];return t?t:0}
 function getg(s){let t=dvg[L[s]];return t?t:0}
 function getb(s){let t=dvb[L[s]];return t?t:0}
@@ -747,21 +751,22 @@ function getz(s){let t=dvz[L[s]];return t?t:0}
 function getX(s){let t=dvX[L[s]];return t?t:0}
 function getY(s){let t=dvY[L[s]];return t?t:0}
 function getZ(s){let t=dvZ[L[s]];return t?t:0}
-function getB(s,i){let pair=s.split("."),v=GBd[L[pair[0]]][L[pair[pair.length-1]]][i]; return v?v:0}
-function getD(s){let pair=s.split(".");return L[pair[0]]?D[L[pair[0]]][L[pair[pair.length-1]]]:0}
-function getE(s){let pair=s.split(".");return L[pair[0]]?E[L[pair[0]]][L[pair[pair.length-1]]]:0}
-function getN(s){return L[s]?parseFloat(L[s]):0}
-function getS(s){return L[s]?L[s]+"":""}
+function getB(s,i){let pr=getPairL(s),v=GBd[pr.l][pr.r][i]; return v?v:0}
+function getD(s){let pr=getPairL(s); return pr.l||pr.l==0?getValue(pr.r,D[pr.l][pr.r]):0}
+function getE(s){let pr=getPairL(s); return pr.l||pr.l==0?getValue(pr.r,E[pr.l][pr.r]):0}
+function getPairL(s){let pair=s.split("."); pair.l=L[pair[0]]; pair.r=L[pair[1]]; return pair}
+function getValue(i,val){v=i==0?val:parseFloat(val);return v?v:0}
+function getL(s){return L[s]}
 function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
 function getWS(i){return WS[i]?WS[i]:WebSocket}
 function getI(x,y,c){return I2d.getImageData(x,y,1,1).data[c]/255}
 function getM(s){return getHyp(X[L[s]]-Mx,Y[L[s]]-My)}
-function getM1(s){return getHyp(X[L[s]]-Mx_1,Y[L[s]]-My_1)}
+function getN(s){return getHyp(X[L[s]]-Mx_1,Y[L[s]]-My_1)}
 function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
 function getSpace(s,t){return getHyp3(dvX[L[s]]-dvX[L[t]],dvY[L[s]]-dvY[L[t]],dvZ[L[s]]-dvZ[L[t]])}
 function getPart(i,s){return s?s.split("_")[i]:""}
 function Ir(x,y){return getI(x,y,0)}
-function Ig(x,y){return getI(x,y,1)}	
+function Ig(x,y){return getI(x,y,1)}
 function Ib(x,y){return getI(x,y,2)}
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
@@ -777,7 +782,7 @@ function vib(ms){if(抖)navigator.vibrate(ms)}
 function round(v,d){return Math.round(v*Math.pow(10,d))/Math.pow(10,d)}
 function decimal3(v){return round(v,3)}
 function decimal4(v){return round(v,4)}
-function lim(s,s0,s1,t0,t1){return ((s>s1?s1:s<s0?s0:s)-s0)*(t1-t0)/(s1-s0)+t0}
+function lim(s,s0,s1,t0,t1){if(!t0||!t1)return s>s1?s1:s<s0?s0:s; else return ((s>s1?s1:s<s0?s0:s)-s0)*(t1-t0)/(s1-s0)+t0}
 function cos(v){return Math.cos(v*2*Math.PI)}
 function sin(v){return Math.sin(v*2*Math.PI)}
 function tan(v){return Math.tan(v*2*Math.PI)}
