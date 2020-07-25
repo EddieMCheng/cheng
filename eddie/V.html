@@ -608,11 +608,13 @@ function draw(a) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var Ni=0;Ni<Np.length; Ni++){
 		var i=Np[Np.length-Ni-1],type=D[i][16]+D[i-D[i][2]][16]
-		if(type>=0){gl.blendEquation(gl.FUNC_ADD)}
-		else{gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT)
+		if(type>=0)gl.blendEquation(gl.FUNC_ADD)
+		else{
+			gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT)
 			type=Math.abs(type)
 		}
-		gl.drawArrays(type>5?gl.TRIANGLE_FAN:type>4?gl.TRIANGLE_STRIP:type>3?gl.TRIANGLES:type>2?gl.LINE_STRIP:type>1?gl.LINES:gl.POINT, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
+		
+		gl.drawArrays(Math.ceil(type-1), (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
 function showPosition(position){
@@ -823,7 +825,7 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	<input value="update" type="button" onclick="inF();inG()" hidden></input>
 	<input value="apply" type="button" onclick="outG();outF();go=1" hidden></input>
 <br>
-<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
+<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
 <input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
 <input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
  </div>
