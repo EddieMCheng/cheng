@@ -1,22 +1,20 @@
 <!doctype html>
 <html>
 <head>
-  <title>WebRTC: Simple RTCDataChannel sample</title>
+  <title>WebRTC</title>
   <meta charset="utf-8">
   <script src="main.js"></script>
 </head>
 <body>
-  <h1>MDN - WebRTC: Simple RTCDataChannel sample</h1>
-  <p>This sample is an admittedly contrived example of how to use an <code>RTCDataChannel</code> to
-  exchange data between two objects on the same page. See the
-  <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Simple_RTCDataChannel_sample">
-  corresponding article</a> for details on how it works.</p>
-  
+
   <div class="controlbox">
     <button id="initButton" name="initButton" class="buttonleft">
-      Init
+      Call
     </button>
     <button id="connectButton" name="connectButton" class="buttonleft">
+      Answer
+    </button>
+    <button id="finalizeButton" name="finalizeButton" class="buttonleft">
       Connect
     </button>
     <button id="disconnectButton" name="disconnectButton" class="buttonright" disabled>
@@ -38,9 +36,6 @@
   </div>
 
   <textarea id="localCandidateText"></textarea>
-  <textarea id="localCandidate2Text"></textarea>
-  <textarea id="remoteCandidateText"></textarea>
-  <textarea id="remoteCandidate2Text"></textarea>
   <textarea id="callerText"></textarea>
   <textarea id="answerText"></textarea>
 </body>
