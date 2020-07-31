@@ -52,12 +52,13 @@
         let jsonCandidate=JSON.stringify(e.candidate);
         console.log("local: "+jsonCandidate);
         if(!firstLocalCandidate){
-          localCandidateText.value=jsonCandidate;
+          localCandidateText.value=codeCandidate(jsonCandidate);
           firstLocalCandidate=true;
         }
         else{
           firstLocalCandidate=false;
         }
+
       }
         
     }
@@ -68,17 +69,17 @@
     .then(() =>{ 
         var jsonDesc=JSON.stringify(localConnection.localDescription);
         console.log("offer: "+jsonDesc);
-        callerText.value=jsonDesc;
+        callerText.value=codeOffer(jsonDesc);
 
     })
     .catch(handleCreateDescriptionError);
   }
   function connectPeers(){
 
-    let desc=new RTCSessionDescription(JSON.parse(callerText.value));
+    let desc=new RTCSessionDescription(JSON.parse(parseOffer(callerText.value)));
     localConnection.setRemoteDescription(desc);
 
-    let candidate = new RTCIceCandidate(JSON.parse(localCandidateText.value));
+    let candidate = new RTCIceCandidate(JSON.parse(parseCandidate(localCandidateText.value)));
     localConnection.addIceCandidate(candidate);
 
     localConnection.createAnswer()
@@ -86,15 +87,19 @@
       .then(() =>{ 
         var jsonDesc=JSON.stringify(localConnection.localDescription);
         console.log("answer: "+jsonDesc);
-        answerText.value=jsonDesc;
+        answerText.value=codeAnswer(jsonDesc);
         
         
+        let code = codeAnswer(jsonDesc);
+        console.log("answer code:"+code);
+        let json = parseAnswer(code);
+        console.log("answer json:"+json);
     })
     .catch(handleCreateDescriptionError);
   }
   
   function finalizePeers(){
-    let desc=new RTCSessionDescription(JSON.parse(answerText.value));
+    let desc=new RTCSessionDescription(JSON.parse(parseAnswer(answerText.value)));
       localConnection.setRemoteDescription(desc);
   }
     
@@ -182,7 +187,30 @@
   }
   
   // Handle status changes on the receiver's channel.
-  
+  function codeCandidate(json){
+    let arr = json.replace("candidate:"," ").split(" ");
+    return arr[1]+" "+arr[4]+" "+arr[5]+" "+arr[6]+" "+arr[12];
+  }
+  function parseCandidate(code){
+    let arr=code.split(" ");
+    return `{"candidate":"candidate:${arr[0]} 1 udp ${arr[1]} ${arr[2]} ${arr[3]} typ host generation 0 ufrag ${arr[4]} network-cost 999","sdpMid":"0","sdpMLineIndex":0}`
+  }
+  function codeOffer(json){
+    let arr = json.replace("ufrag:"," ").replace("pwd:"," ").replace(/(?:\\[rn])+/g," ").split(" ");
+    return arr[2]+" "+arr[22]+" "+arr[24]+" "+arr[27].replace(/:/g,"");
+  }
+  function parseOffer(code){
+    let arr=code.split(" ");
+    return `{"type":"offer","sdp":"v=0\\r\\no=- ${arr[0]} 2 IN IP4 127.0.0.1\\r\\ns=-\\r\\nt=0 0\\r\\na=group:BUNDLE 0\\r\\na=msid-semantic: WMS\\r\\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\\r\\nc=IN IP4 0.0.0.0\\r\\na=ice-ufrag:${arr[1]}\\r\\na=ice-pwd:${arr[2]}\\r\\na=ice-options:trickle\\r\\na=fingerprint:sha-256 ${insertColon(arr[3])}\\r\\na=setup:actpass\\r\\na=mid:0\\r\\na=sctp-port:5000\\r\\na=max-message-size:262144\\r\\n"}`
+  }
+  function codeAnswer(json){
+    let arr = json.replace("ufrag:"," ").replace("pwd:"," ").replace(/(?:\\[rn])+/g," ").split(" ");
+    return arr[2]+" "+arr[23]+" "+arr[25]+" "+arr[28].replace(/:/g,"");
+  }
+  function parseAnswer(code){
+    let arr=code.split(" ");
+    return `{"type":"answer","sdp":"v=0\\r\\no=- ${arr[0]} 2 IN IP4 127.0.0.1\\r\\ns=-\\r\\nt=0 0\\r\\na=group:BUNDLE 0\\r\\na=msid-semantic: WMS\\r\\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\\r\\nc=IN IP4 0.0.0.0\\r\\nb=AS:30\\r\\na=ice-ufrag:${arr[1]}\\r\\na=ice-pwd:${arr[2]}\\r\\na=ice-options:trickle\\r\\na=fingerprint:sha-256 ${insertColon(arr[3])}\\r\\na=setup:active\\r\\na=mid:0\\r\\na=sctp-port:5000\\r\\na=max-message-size:262144\\r\\n"}`
+  }  
   function handleReceiveChannelStatusChange(event) {
     if (receiveChannel) {
       console.log("Receive channel's status has changed to " +
@@ -193,6 +221,10 @@
     // when the channel's status changes.
   }
   
+  function insertColon(str){
+    var chunks = str.match(/.{1,2}/g);
+    return chunks.join(":");
+  }
   // Close the connection, including data channels if they're open.
   // Also update the UI to reflect the disconnected status.
   
