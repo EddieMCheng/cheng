@@ -52,7 +52,8 @@
         let jsonCandidate=JSON.stringify(e.candidate);
         console.log("local: "+jsonCandidate);
         if(!firstLocalCandidate){
-          localCandidateText.value=codeCandidate(jsonCandidate);
+          //localCandidateText.value=codeCandidate(jsonCandidate);
+          callerText.value+=";"+codeCandidate(jsonCandidate);
           firstLocalCandidate=true;
         }
         else{
@@ -75,11 +76,16 @@
     .catch(handleCreateDescriptionError);
   }
   function connectPeers(){
-
-    let desc=new RTCSessionDescription(JSON.parse(parseOffer(callerText.value)));
+    let pair=callerText.value.split(";");
+    let ufrag=pair[0].split(" ")[1];
+    let offer=parseOffer(pair[0]);
+    let cand=parseCandidate(pair[1]+" "+ufrag);
+    let desc=new RTCSessionDescription(JSON.parse(offer));
+    
+    console.log("pair:"+pair);
+    
     localConnection.setRemoteDescription(desc);
-
-    let candidate = new RTCIceCandidate(JSON.parse(parseCandidate(localCandidateText.value)));
+    let candidate = new RTCIceCandidate(JSON.parse(cand));
     localConnection.addIceCandidate(candidate);
 
     localConnection.createAnswer()
@@ -187,9 +193,9 @@
   }
   
   // Handle status changes on the receiver's channel.
-  function codeCandidate(json){
+  function codeCandidate(json, ufrag){
     let arr = json.replace("candidate:"," ").split(" ");
-    return arr[1]+" "+arr[4]+" "+arr[5]+" "+arr[6]+" "+arr[12];
+    return arr[1]+" "+arr[4]+" "+arr[5]+" "+arr[6]+" "+(ufrag?arr[12]:"");
   }
   function parseCandidate(code){
     let arr=code.split(" ");
