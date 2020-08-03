@@ -50,15 +50,15 @@
       
       if(e.candidate){
         let jsonCandidate=JSON.stringify(e.candidate);
-        console.log("local: "+jsonCandidate);
-        if(!firstLocalCandidate){
+        console.log("candidate: "+jsonCandidate);
+      //  if(!firstLocalCandidate){
           //localCandidateText.value=codeCandidate(jsonCandidate);
           callerText.value+=";"+codeCandidate(jsonCandidate);
           firstLocalCandidate=true;
-        }
-        else{
-          firstLocalCandidate=false;
-        }
+      //  }
+     //   else{
+     //     firstLocalCandidate=false;
+    //    }
 
       }
         
@@ -76,18 +76,21 @@
     .catch(handleCreateDescriptionError);
   }
   function connectPeers(){
-    let pair=callerText.value.split(";");
-    let ufrag=pair[0].split(" ")[1];
-    let offer=parseOffer(pair[0]);
-    let cand=parseCandidate(pair[1]+" "+ufrag);
-    let desc=new RTCSessionDescription(JSON.parse(offer));
+    let arr=callerText.value.split(";");
+    let ufrag=arr[0].split(" ")[1];
+    let offer=parseOffer(arr[0]);
     
-    console.log("pair:"+pair);
     
+    console.log("arr:"+arr);
+    let desc=new RTCSessionDescription(JSON.parse(offer));    
     localConnection.setRemoteDescription(desc);
-    let candidate = new RTCIceCandidate(JSON.parse(cand));
-    localConnection.addIceCandidate(candidate);
-
+    
+    for(let i=1;i<arr.length;i++){
+      let cand=parseCandidate(arr[1]+" "+ufrag);
+      let candidate = new RTCIceCandidate(JSON.parse(cand));
+     localConnection.addIceCandidate(candidate);
+    }
+    
     localConnection.createAnswer()
       .then(answer => localConnection.setLocalDescription(answer))
       .then(() =>{ 
@@ -102,11 +105,41 @@
         console.log("answer json:"+json);
     })
     .catch(handleCreateDescriptionError);
+
+    localConnection.onicecandidate = e =>{
+      
+      if(e.candidate){
+        let jsonCandidate=JSON.stringify(e.candidate);
+        console.log("candidate: "+jsonCandidate);
+      //  if(!firstLocalCandidate){
+          //localCandidateText.value=codeCandidate(jsonCandidate);
+          answerText.value+=";"+codeCandidate(jsonCandidate);
+          firstLocalCandidate=true;
+      //  }
+     //   else{
+     //     firstLocalCandidate=false;
+    //    }
+
+      }
+    }
+
   }
   
   function finalizePeers(){
-    let desc=new RTCSessionDescription(JSON.parse(parseAnswer(answerText.value)));
-      localConnection.setRemoteDescription(desc);
+
+    let arr=answerText.value.split(";");
+    let ufrag=arr[0].split(" ")[1];
+    let answer=parseAnswer(arr[0]);
+
+    let desc=new RTCSessionDescription(JSON.parse(answer));
+    localConnection.setRemoteDescription(desc);
+
+    for(let i=1;i<arr.length;i++){
+      let cand=parseCandidate(arr[1]+" "+ufrag);
+      let candidate = new RTCIceCandidate(JSON.parse(cand));
+     localConnection.addIceCandidate(candidate);
+    }
+
   }
     
   
