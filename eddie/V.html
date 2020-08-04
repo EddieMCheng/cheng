@@ -24,8 +24,8 @@ var Ix=0,Iy=0,Iu=1, xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
-var Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0, click=0 ,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
-var Rx=0,Ry=0,Rz=0,Rzr=0,Ro=0,Rv=0,Rw=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
+var Me=PointerEvent,Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(5).fill(0),MyB=new Array(5).fill(0),keyB=new Array(10).fill(""),算,抖=1
+var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=0.25,LON=0,ALT=0,ACC=0
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
@@ -54,12 +54,11 @@ function start(){
 	I=doc.getElementById('imgcanvas')
 	U=doc.getElementById('uicanvas')
 	inF();inG()
-	uidiv.ontouchstart=function(ev){setM1(ev.touches[0])}
-	uidiv.onmousedown=function(ev){setM1(ev)}
-	uidiv.ontouchmove=function(ev){if((gLog.value.includes("Mx")||gLog.value.includes("My"))&&ev.touches.length==1)ev.preventDefault();setM(ev.touches[0])}
-	uidiv.onmousemove=function(ev){if(touch)setM(ev)}
-	uidiv.ontouchend=function(ev){setM0(ev.touches[0])}
-	uidiv.onmouseup=function(ev){setM0(ev);go=1}
+	uidiv.onpointerdown=ev=>{Me=ev;setM1(ev)}	
+	uidiv.onpointerup=ev=>{Me=ev;setM0(ev)}
+	uidiv.onpointermove=ev=>{Me=ev;setM(ev)}
+	uidiv.ontouchmove=ev=>{if(gLog.value.includes("Mx")||gLog.value.includes("My")||GLog.value.includes("Me"))ev.preventDefault()}
+
 	document.onkeydown=function(ev){
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){DE2F();inF();inG();go=1}
