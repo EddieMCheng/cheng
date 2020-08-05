@@ -24,7 +24,7 @@ var Ix=0,Iy=0,Iu=1, xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
-var Me=PointerEvent,MB=[],Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
+var Me=PointerEvent,MB=[],Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=0.25,LON=0,ALT=0,ACC=0
@@ -56,11 +56,11 @@ function start(){
 	inF();inG()
 	uidiv.onpointerdown=ev=>{Me=ev;setM1(ev)}
 	uidiv.onpointerup=ev=>{Me=ev;setM0(ev)}
-	uidiv.onpointermove=ev=>{Me=ev;setM(ev)}
+	uidiv.onpointermove=ev=>{Me=ev;if(ev.buttons>0)setM(ev)}
 	uidiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
 	uidiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
 	uidiv.ontouchmove=ev=>{if(gLog.value.includes("Mx")||gLog.value.includes("My")||gLog.value.includes("Me"))ev.preventDefault();setMB(ev)}
-
+	uidiv.onmousemove=ev=>{if(gLog.value.includes("Mx")||gLog.value.includes("My")||gLog.value.includes("Me"))ev.preventDefault()}
 	document.onkeydown=function(ev){
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){DE2F();inF();inG();go=1}
@@ -733,9 +733,9 @@ function onXRFrame(t, frame) {
 function getMx(ev){return (2*decimal4(ev.clientX/SW)-1)*SW/SH}
 function getMy(ev){return 1-2*decimal4(ev.clientY/SH)}
 function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;touch=1;click=0}
-function setM0(ev){Mx_0=getMx(ev);My_0=getMy(ev);touch=0;drag=0;go=1;click=Mx_0==Mx_1&&My_1==My_0?1:0;execute()}
+function setM0(ev){Mx_0=getMx(ev);My_0=getMy(ev);touch=0;drag=0;go=1;click=getHyp(Mx_1-Mx,My_1-My)<0.05?1:0;execute()}
 
-function setM(ev){Mx=getMx(ev);My=getMy(ev);drag=1;go=1}
+function setM(ev){Mx=getMx(ev);My=getMy(ev);drag=getHyp(Mx_1-Mx,My_1-My)>0.02?1:0;go=1}
 function setMB(ev){
 	for(let i=0; i<10;i++){
 		if(i<ev.touches.length){
@@ -760,7 +760,6 @@ function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
-
 function getr(s){let t=dvr[L[s]];return t?t:0}
 function getg(s){let t=dvg[L[s]];return t?t:0}
 function getb(s){let t=dvb[L[s]];return t?t:0}
