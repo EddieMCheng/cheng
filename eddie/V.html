@@ -57,6 +57,8 @@ function start(){
 	uidiv.onpointerdown=ev=>{Me=ev;setM1(ev)}
 	uidiv.onpointerup=ev=>{Me=ev;setM0(ev)}
 	uidiv.onpointermove=ev=>{Me=ev;setM(ev)}
+	uidiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
+	uidiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
 	uidiv.ontouchmove=ev=>{if(gLog.value.includes("Mx")||gLog.value.includes("My")||gLog.value.includes("Me"))ev.preventDefault();setMB(ev)}
 
 	document.onkeydown=function(ev){
@@ -733,13 +735,17 @@ function getMy(ev){return 1-2*decimal4(ev.clientY/SH)}
 function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;touch=1;click=0}
 function setM0(ev){Mx_0=getMx(ev);My_0=getMy(ev);touch=0;drag=0;go=1;click=Mx_0==Mx_1&&My_1==My_0?1:0;execute()}
 
-function setM(ev){Mx=getMx(ev);My=getMy(ev);drag=1}
+function setM(ev){Mx=getMx(ev);My=getMy(ev);drag=1;go=1}
 function setMB(ev){
-	//MxB[ev.pointerId]=getMx(ev);MyB[ev.pointerId]=getMy(ev);if(dT==0)go=1
-
-	for(let i=0; i<ev.touches.length;i++){
-		MxB[i]=getMx(ev.touches[i])
-		MyB[i]=getMy(ev.touches[i])
+	for(let i=0; i<10;i++){
+		if(i<ev.touches.length){
+			MxB[i]=getMx(ev.touches[i])
+			MyB[i]=getMy(ev.touches[i])	
+		}
+		else{
+			MxB[i]=0
+			MyB[i]=0
+		}
 	}
 }
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
