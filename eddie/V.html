@@ -20,7 +20,8 @@
 var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*3a"
 var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var Ix=0,Iy=0,Iu=1, xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
+var Ix=0,Iy=0,Iu=1,Id=[],Idn=0
+var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
@@ -196,6 +197,7 @@ function readTextUrl(file){
 function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
 function updateI(idx){
 	if(I){
+		Idn=1
 		I2d.scale(IS,IS)
 		I2d.clearRect(0,0,I.width,I.height)
 			if(idx>=0)img = images[idx]
@@ -474,7 +476,8 @@ function DE2B(){
 			Pw=DEG(i-l,13,S,Pi);Pd=DEG(i-l,14,S,Pi)
 		}
 		var len=DE(i,1)
-		var type=D[i][16]+D[i-D[i][2]][16], typeA=type-Math.ceil(type)+1
+		var type=D[i][16]+D[i-D[i][2]][16], typeA=Math.abs(type-Math.ceil(type)+1)
+		let nt=Math.ceil(type)-5
 		var fr=len<0
 		var isFrac=(len<1&&len>0)||(Math.abs(type)>1&&len==1)
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
@@ -550,13 +553,20 @@ function DE2B(){
 			let angle=Math.acos(-z5/getHyp3(x5,y5,z5)), scale=angle/getHyp(x5,y5)*VP
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5+Vzu)*VF>-1?1:1/((-Vzu-z5)*VF)
-
+			
+			if(nt>=3 && j>=nt){
+				prevp=j<2*nt?(j-nt)*4:(nt-1)*4+(j-2*nt+1)*8
+				tdv[Ni].push(tdv[Ni][prevp],tdv[Ni][prevp+1],tdv[Ni][prevp+2],1)
+				tdc[Ni].push(tdc[Ni][prevp],tdc[Ni][prevp+1],tdc[Ni][prevp+2],tdc[Ni][prevp+3])
+			}
 			tdv[Ni].push(xx*SH/SW,yy,z5*1e-34,1); tdc[Ni].push(r1,g1,b1,a1*typeA)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
 			X[i]+=xx; Y[i]+=yy; Z[i]+=a1
 		}
+		tdv[Ni].splice(0,nt*4)
+		tdc[Ni].splice(0,nt*4)
 		var jlenT=Math.ceil(jlen)
 		dvr[i]/=jlenT;dvg[i]/=jlenT;dvb[i]/=jlenT
 		dvx[i]/=jlenT;dvy[i]/=jlenT;dvz[i]/=jlenT
@@ -615,7 +625,7 @@ function draw(a) {
 			type=Math.abs(type)
 		}
 		
-		gl.drawArrays(Math.ceil(type-1), (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
+		gl.drawArrays(type>8?5:Math.ceil(type-1), (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
 function showPosition(position){
