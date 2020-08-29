@@ -83,7 +83,6 @@ function start(){
 	U2d=U.getContext('2d')
 
 	video = document.querySelector('video')
-	
 	init()
 }
 function loop(){
@@ -271,7 +270,7 @@ function record(){
 
 function updateUP(i,font,alpha){
 	if(U){
-		var id=(D[i][0]).split(".")[0]
+		var id=(D[i][0]).split(".")[0].split("→")[0]
 		var goName=(L[id+".name"]+"")
 		var goFont=L[id+".font"]
 		var goAlign=L[id+".align"]
@@ -280,9 +279,8 @@ function updateUP(i,font,alpha){
 		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(typeA*alpha)+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline = "top"
-    	var names=!typeA?" ":E[i][0]?E[i][0].split("."):D[i][0].split(".")
-		var dots=names.length>1?"...":"";
-		U2d.fillText(goName!="undefined"?goName.replace(/_/g," "):(names[0]+dots).replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
+    	var name=!typeA?" ":E[i][0]?E[i][0]:id
+		U2d.fillText(goName!="undefined"?goName.replace(/_/g," "):name.replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
 	}
 }
 function download(type, text, ext,stamp) {
@@ -329,7 +327,7 @@ function updateL(){
 	L["#N"]=D.length-1
 	for(var j=0;j<D.length;j++){
 		var par=j-D[j][2]
-		var nm=D[j][0].split(".")[0];
+		var nm=D[j][0].split(".")[0].split("→")[0];
 		var nNm = nm
 		var dp=0
 		while(L[nNm]>=0 || L[nNm+"_"+dp]){
@@ -484,6 +482,7 @@ function DE2B(){
 		var p=DE(i,3), pdep=Math.abs(p*Pp)>1?1:Math.abs(p*Pp)
 		var nn=0
 		var PArray=D[i][0].split(".")
+		var PRange=D[i][0].split("→")
 		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0
 		tdv[Ni]=[];tdc[Ni]=[]
 		dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
@@ -495,12 +494,24 @@ function DE2B(){
 				let s=fr||isFrac?j/jlen:-1
 				let x,y,z,u,v,w,t,o
 				let d=DEG(i,14,s,j)+Pd
-				if(PArray.length>1){
-					let ii = d<0?0:d>=1?PArray.length-2:Math.floor((PArray.length-1)*d)
-					let i0 = L[PArray[ii]]
-					let i1 = L[PArray[ii+1]]
+				if(PArray.length>1 || PRange.length==2){
+					let id,ii,i0,i1,d2
+					let PR0=L[PRange[0]], PR1=L[PRange[1]]
+					if(PR1>PR0){
+						id=PR0+(PR1-PR0)*d
+						ii=d<0?PR0:d>=1?PR1-1:Math.floor(id)
+						i0=ii
+						i1=ii+1
+						d2=id-ii
+					}
+					else{
+						id=(PArray.length-1)*d
+						ii=d<0?0:d>=1?PArray.length-2:Math.floor(id)
+						i0=L[PArray[ii]]
+						i1=L[PArray[ii+1]]						
+						d2=id-ii
+					}
 					if(i0 && i1){
-						var d2 = (PArray.length-1)*d-ii
 						x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s);	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s);	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
 						r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s);	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s);	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
 						u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s);	o=((1-d2)*DE(i0,11,s)+d2*DE(i1,11,s));	v=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s);w=(1-d2)*DE(i0,13,s)+d2*DE(i1,13,s)
@@ -767,7 +778,7 @@ function getF(s){
 	return start>=0?fLog.value.substring(start,(end>=0?end:fLog.value.length)):""
 }
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");}
-function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_");F2DE();DE2F();if(autosave)urlTFG()}
+function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
 function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
 function getr(s){let t=dvr[L[s]];return t?t:0}
