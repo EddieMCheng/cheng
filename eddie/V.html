@@ -482,8 +482,8 @@ function DE2B(){
 		var p=DE(i,3), pdep=Math.abs(p*Pp)>1?1:Math.abs(p*Pp)
 		var nn=0
 		var PArray=D[i][0].split(".")
-		var PRange=D[i][0].split("→")
-		let te=E[i][15], tl=te*au.sampleRate, lx=0,ly=0
+		var PRange=PArray[0].split("→")
+		let te=E[i][15], tl=te*au.sampleRate,lx=0,ly=0
 		tdv[Ni]=[];tdc[Ni]=[]
 		dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		if(p*Pp>0||!dvc[Ni])dvc[Ni]=[]
@@ -529,37 +529,37 @@ function DE2B(){
 				z1=z0*cw+x0*sw+z
 				y1=y0*Math.cos(v*pii)+y
 				x1=x0*cw-z0*sw+x
-				dvc[Ni][j*6]=x1
-				dvc[Ni][j*6+1]=y1
-				dvc[Ni][j*6+2]=z1
+				let cPo=Math.cos(Po*pii),sPo=Math.sin(Po*pii),cPv=Math.cos(Pv*pii),sPv=Math.sin(Pv*pii),cPw=Math.cos(Pw*pii),sPw=Math.sin(Pw*pii)
+				z2=z1*cPo+y1*sPo
+				y2=y1*cPo-z1*sPo
+				x2=x1*cPv+y2*sPv
+				z3=(z2*cPw+x2*sPw)*Pu+Pz
+				y3=(y2*cPv-x1*sPv)*Pu+Py
+				x3=(x2*cPw-z2*sPw)*Pu+Px
+				
+				dvc[Ni][j*6]=x3
+				dvc[Ni][j*6+1]=y3
+				dvc[Ni][j*6+2]=z3
 				dvc[Ni][j*6+3]=r
 				dvc[Ni][j*6+4]=g
 				dvc[Ni][j*6+5]=b
 			}
 			else{
-				x1=dvc[Ni][j*6]
-				y1=dvc[Ni][j*6+1]
-				z1=dvc[Ni][j*6+2]
+				x3=dvc[Ni][j*6]
+				y3=dvc[Ni][j*6+1]
+				z3=dvc[Ni][j*6+2]
 				r=dvc[Ni][j*6+3]
 				g=dvc[Ni][j*6+4]
 				b=dvc[Ni][j*6+5]
 			}
-			let cPo=Math.cos(Po*pii),sPo=Math.sin(Po*pii),cPv=Math.cos(Pv*pii),sPv=Math.sin(Pv*pii),cPw=Math.cos(Pw*pii),sPw=Math.sin(Pw*pii)
 			let cVo=Math.cos(Vo*pii),sVo=Math.sin(Vo*pii),cVv=Math.cos(Vv*pii),sVv=Math.sin(Vv*pii),cVw=Math.cos(Vw*pii),sVw=Math.sin(Vw*pii)
-			z2=z1*cPo+y1*sPo
-			y2=y1*cPo-z1*sPo
-			x2=x1*cPv+y2*sPv
-			z3=((z2*cPw+x2*sPw)*Pu+Pz-Vz)*Vu
-			y3=((y2*cPv-x1*sPv)*Pu+Py-Vy)*Vu
-			x3=((x2*cPw-z2*sPw)*Pu+Px-Vx)*Vu
-			x4=x3*cVw+z3*sVw
-			z4=z3*cVw-x3*sVw
-			y4=y3*cVv+x4*sVv
+			x4=(x3-Vx)*Vu*cVw+z3*sVw
+			z4=(z3-Vz)*Vu*cVw-x3*sVw
+			y4=(y3-Vy)*Vu*cVv+x4*sVv
 			x5=x4*cVv-y3*sVv
 			z5=z4*cVo+y4*sVo-Vzu
 			y5=y4*cVo-z4*sVo
-			
-			
+
 			m=j*4
 			let angle=Math.acos(-z5/getHyp3(x5,y5,z5)), scale=angle/getHyp(x5,y5)*VP
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
