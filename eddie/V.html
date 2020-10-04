@@ -356,8 +356,12 @@ function DE2F(){
 			var CEj=D[i][2]==0?0:CE[j]
 			if(j!=2 && (D[i][j]!=C0[j]||E[i][j]!=CEj)&&(D[i][2]!=0||j!=1)){
 				if(j>0)F+="*"
-				if(D[i][j]!=1)	F+=(round(D[i][j],9)+"")
-				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],9)+"")}
+				if(D[i][j]!=1){
+					
+					if(D[i][j]>1e5||D[i][j]<1e-5)F+=D[i][j].toExponential().replace("+","")+""
+					else F+=(round(D[i][j],6)+"")
+				}
+				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],6)+"")}
 			}
 		}
 		if(D[i][2]==0)F+="="
@@ -387,10 +391,9 @@ function F2DE(){
 				else{
 					var propValue=parseFloat(prop)
 					var valueStrLen
-					if(prop[0]==".")		valueStrLen=propValue.toString().length-1
-					else if(propValue==0)	valueStrLen=1
-					else if(!propValue){	valueStrLen=0;		propValue=1			}
-	 				else{					valueStrLen=propValue.toString().length	}
+					if(propValue==0)	valueStrLen=1
+					else if(!propValue){valueStrLen=0;propValue=1}
+	 				else{				valueStrLen=prop.length-1}
 					var propName=prop.substr(valueStrLen,prop.length-valueStrLen)
 					var propIndex
 					if(C.includes(propName)){propIndex=L[propName]}
@@ -563,7 +566,7 @@ function DE2B(){
 			let angle=Math.acos(-z5/getHyp3(x5,y5,z5)), scale=angle/getHyp(x5,y5)*VP
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5+Vzu)*VF>-1?1:1/((-Vzu-z5)*VF)
-			
+
 			if(nt>=3 && j>=nt){
 				prevp=j<2*nt?(j-nt)*4:(nt-1)*4+(j-2*nt+1)*8
 				tdv[Ni].push(tdv[Ni][prevp],tdv[Ni][prevp+1],tdv[Ni][prevp+2],1)
