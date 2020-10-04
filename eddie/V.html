@@ -60,8 +60,6 @@ function start(){
 	uidiv.onpointermove=ev=>{Me=ev;if(ev.buttons>0)setM(ev)}
 	uidiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
 	uidiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
-	uidiv.ontouchmove=ev=>{if(gLog.value.includes("Mx")||gLog.value.includes("My")||gLog.value.includes("Me"))ev.preventDefault();setMB(ev)}
-	uidiv.onmousemove=ev=>{if(gLog.value.includes("Mx")||gLog.value.includes("My")||gLog.value.includes("Me"))ev.preventDefault()}
 	document.onkeydown=function(ev){
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){DE2F();inF();inG();go=1}
@@ -88,7 +86,7 @@ function start(){
 function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	let editing=document.activeElement==fLog
+	let editing=document.activeElement==fLog||document.activeElement==gLog
 	if(removeF=="")removedF=""
 	if(removeF!=removedF){
 		DE2F();
@@ -289,6 +287,7 @@ function download(type, text, ext,stamp) {
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
 }
+LsV=[]
 function setVar(s){
 	if(s){
 		var sPair=s.split(":")
@@ -297,9 +296,9 @@ function setVar(s){
 		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(this[sArr[0]]&&L[sArr[0]]!=this[sArr[0]]){
+		else if(this[sArr[0]]&&LsV[sArr[0]]!=this[sArr[0]]){
 			if(sVal)this[sArr[0]]=sVal
-			L[sArr[0]]=this[sArr[0]];go=1
+			LsV[sArr[0]]=this[sArr[0]];go=1
 			switch(sArr[0]){
 				case "Ix": case "Iy":case "Iu": updateI(0);break
 				case "SW":
@@ -553,8 +552,8 @@ function DE2B(){
 				b=dvc[Ni][j*6+5]
 			}
 			let cVo=Math.cos(Vo*pii),sVo=Math.sin(Vo*pii),cVv=Math.cos(Vv*pii),sVv=Math.sin(Vv*pii),cVw=Math.cos(Vw*pii),sVw=Math.sin(Vw*pii)
-			x4=(x3-Vx)*Vu*cVw+z3*sVw
-			z4=(z3-Vz)*Vu*cVw-x3*sVw
+			x4=((x3-Vx)*cVw+(z3-Vz)*sVw)*Vu
+			z4=((z3-Vz)*cVw-(x3-Vx)*sVw)*Vu
 			y4=(y3-Vy)*Vu*cVv+x4*sVv
 			x5=x4*cVv-y3*sVv
 			z5=z4*cVo+y4*sVo-Vzu
@@ -780,7 +779,12 @@ function getF(s){
 function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");}
 function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gLog.value=G.join(",\n\n")}
-function outG(){G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");Geval();if(autosave)urlTFG();alertUserOnError=true}
+function outG(){
+	if(gLog.value.includes("Mx")||gLog.value.includes("My")||gLog.value.includes("Me"))uidiv.style="touch-action:none"
+	else uidiv.style="touch-action:auto"
+	G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
+	Geval();if(autosave)urlTFG();alertUserOnError=true;
+}
 function getr(s){let t=dvr[L[s]];return t?t:0}
 function getg(s){let t=dvg[L[s]];return t?t:0}
 function getb(s){let t=dvb[L[s]];return t?t:0}

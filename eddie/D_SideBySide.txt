@@ -1,0 +1,4 @@
+D_New.3KKA1MpQ5.09.95;
+G:Vw=-Mx,Vo=-My;
+F:Box*-4*w±0.5=lin*-4*z*1.414u*0.375v±0.5*3a;
+http://localhost:8080/cheng/eddie/V.html
