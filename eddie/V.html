@@ -358,7 +358,7 @@ function DE2F(){
 				if(j>0)F+="*"
 				if(D[i][j]!=1){
 					
-					if(Math.abs(D[i][j])>1e5||Math.abs(D[i][j])<1e-5)F+=D[i][j].toExponential().replace("+","")+""
+					if(D[i][j]!=0&&(Math.abs(D[i][j])>1e5||MaTD[i][j]<1e-5))F+=D[i][j].toExponential().replace("+","")+""
 					else F+=(round(D[i][j],6)+"")
 				}
 				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],6)+"")}
