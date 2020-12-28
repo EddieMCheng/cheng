@@ -273,7 +273,7 @@ function updateUP(i,font,alpha){
 		var pari=i-D[i][2]
 		var typeA=Math.abs(D[i][3])>=2||Math.abs(D[pari][3])>=2
 		U2d.textAlign =goAlign?goAlign:"left"
-		U2d.fillStyle='rgba('+getByte(i,"r")*getByte(pari,"r")+','+getByte(i,"g")*getByte(pari,"g")+','+getByte(i,"b")*getByte(pari,"b")+','+(typeA*alpha)+')'
+		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(typeA*alpha)+')'
 		U2d.font=goFont?goFont:font
 		U2d.textBaseline =goBaseline?goBaseline:"top"
     	var name=!typeA?" ":E[i][0]?E[i][0]:id
@@ -835,7 +835,7 @@ function tan(v){return Math.tan(v*2*Math.PI)}
 function getHyp(a,b){return Math.sqrt(a*a+b*b)}
 function getHyp3(a,b,c){return Math.sqrt(a*a+b*b+c*c)}
 function replacer(){let s=arguments[0];for(let i=1;i<arguments.length;i+=2){s=s.replace(arguments[i],arguments[i+1])};return s}
-function getByte(idx,s){return Math.floor(D[idx][L[s]]*255)}
+function getByte(idx,s){return Math.floor(D[idx][L[s]]*D[idx-D[idx][2]][L[s]]*255)}
 function question(s){return s.split("?").length>s.split("!").length}
 function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
