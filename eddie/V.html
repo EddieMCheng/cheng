@@ -358,7 +358,7 @@ function DE2F(){
 				if(j>0)F+="*"
 				if(D[i][j]!=1){
 					
-					if(D[i][j]!=0&&(Math.abs(D[i][j])>1e5||MaTD[i][j]<1e-5))F+=D[i][j].toExponential().replace("+","")+""
+					if(D[i][j]!=0&&(Math.abs(D[i][j])>1e5||Math.abs(D[i][j])<1e-5))F+=D[i][j].toExponential().replace("+","")+""
 					else F+=(round(D[i][j],6)+"")
 				}
 				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],6)+"")}
@@ -477,7 +477,7 @@ function DE2B(){
 		}
 		var len=DE(i,1)
 		var type=D[i][16]+D[i-D[i][2]][16], typeA=Math.abs(type-Math.ceil(type)+1)
-		let nt=Math.ceil(type)-5
+		let nt=Math.ceil(type)-7
 		var fr=len<0
 		var isFrac=(len<1&&len>0)||(Math.abs(type)>1&&len==1)
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
@@ -632,13 +632,13 @@ function draw(a) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
 	for(var Ni=0;Ni<Np.length; Ni++){
 		var i=Np[Np.length-Ni-1],type=D[i][16]+D[i-D[i][2]][16]
-		if(type>=0)gl.blendEquation(gl.FUNC_ADD)
+		if(type>0)gl.blendEquation(gl.FUNC_ADD)
 		else{
 			gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT)
 			type=Math.abs(type)
 		}
 		
-		gl.drawArrays(type>8?5:Math.ceil(type-1), (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
+		if(type>0)gl.drawArrays(type>=8?5:Math.ceil(type-1), (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
 function showPosition(position){
