@@ -87,7 +87,7 @@ function start(){
 function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	let editing=document.activeElement==fLog||document.activeElement==gLog
+	let editing=document.activeElement==fdiv||document.activeElement==gdiv
 	if(removeF=="")removedF=""
 	else if(removeF!=removedF){
 		DE2F();
@@ -115,7 +115,7 @@ function loop(){
 		sTime=time
 		
 		
-		if(gLog.value.includes("LAT")&&gLog.value.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
+		if(gdiv.innerText.includes("LAT")&&gdiv.innerText.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
 		out="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
 		if(WP){
 			var dArr=WP.split(" ");Wl=dArr.length
@@ -777,17 +777,17 @@ function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
 function vdScript(s){return replacer(s,/!/g,":",/~/g,"!",/∧/g,"&&",/∨/g,"||",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function getF(s){
-	let start=fLog.value.indexOf(s)
-	let end=fLog.value.indexOf("\n",start)
-	return start>=0?fLog.value.substring(start,(end>=0?end:fLog.value.length)):""
+	let start=fdiv.innerText.indexOf(s)
+	let end=fdiv.innerText.indexOf("\n",start)
+	return start>=0?fdiv.innerText.substring(start,(end>=0?end:fdiv.innerText.length)):""
 }
-function inF(){fLog.value=replacer(F,/\+/g,"\n+",/,/g,"\n\n,",/=/g,"\n=");}
-function outF(){F=replacer(fLog.value,/\n\n/g,"\n",/\n\+/g,"+",/\n=/g,"=",/\n/g,",",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
-function inG(){gLog.value=G.join(",\n\n")}
+function inF(){fdiv.innerText=F;colorizeF()}
+function outF(){F=replacer(fdiv.innerText,/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
+function inG(){gdiv.innerText=G.join(",");colorizeG()}
 function outG(){
-	if(gLog.value.includes("Mx")||gLog.value.includes("My")||gLog.value.includes("Me"))uidiv.style="touch-action:none"
+	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uidiv.style="touch-action:none"
 	else uidiv.style="touch-action:auto"
-	G=replacer(gLog.value,/\n\n/g,"\n",/,\n/g,",",/\n/g,",",/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
+	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
 	Geval();if(autosave)urlTFG();alertUserOnError=true;
 }
 function getr(s){let t=dvr[L[s]];return t?t:0}
@@ -842,6 +842,12 @@ function question(s){return s.split("?").length>s.split("!").length}
 function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
+function colorizeF(){
+	fdiv.innerHTML=replacer(fdiv.innerText,/=/g,"</br>=",/\+/g,"</br>+",/\*/g,"<span style='color:lightgray'>*</span>",/\±/g,"<span style='color:gray'>±</span>");
+}
+function colorizeG(){
+	gdiv.innerHTML=replacer(gdiv.innerText,/,/g,"</br>,",/\+/g,"</br>+",/\*/g,"<span style='color:lightgray'>*</span>",/\±/g,"<span style='color:gray'>±</span>");
+}
 </script>
 <style>
 	html,body{margin:1px;padding:0}
@@ -856,15 +862,12 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	<canvas id="uicanvas"></canvas>
 </div></br>
 <div id="datadiv">
+	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF()" onfocusout="colorizeF();outF()" oninput="">Block <b>bold</b> quote</div>
+	<b>G:</b><div id="gdiv" contenteditable="true" onfocus="inG()" onfocusout="colorizeG();outG()" oninput="">Block <b>bold</b> quote</div>
 	<input id="loadfiles" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveD" type="button" onclick="download('D',out,'txt')" hidden></input>
-	<textarea id="fLog" cols="60" rows="10" onchange="outF()" onfocus="DE2F();inF()"></textarea>
-	<textarea id="gLog" cols="60" rows="10" onchange="outG()" onfocus="inG()"></textarea>
-	<input value="update" type="button" onclick="inF();inG()" hidden></input>
-	<input value="apply" type="button" onclick="outG();outF();go=1" hidden></input>
 <br>
 <input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
 <input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
  </div>
- <div id="debugdiv" style="position:absolute;left:512px"></div>
 </body></html>
