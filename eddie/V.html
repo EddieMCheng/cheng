@@ -32,6 +32,7 @@ var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
+var loadD="", loadedD=false, downloadF=""
 var autosave=0,cl=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
@@ -88,7 +89,7 @@ function loop(){
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	let editing=document.activeElement==fLog||document.activeElement==gLog
 	if(removeF=="")removedF=""
-	if(removeF!=removedF){
+	else if(removeF!=removedF){
 		DE2F();
 		let str=getF(removeF)
 		if(str!="")F=F.replace("+"+str,"").replace(str+"+","");
@@ -96,7 +97,7 @@ function loop(){
 		F2DE();inF()
 	}
 	if(duplicateF=="")duplicatedF=""
-	if(duplicateF!=duplicatedF){
+	else if(duplicateF!=duplicatedF){
 		DE2F();
 		let str=getF(duplicateF)
 		F=F.replace(str,str+"+"+str)
@@ -104,7 +105,7 @@ function loop(){
 		F2DE();inF()
 	}
 	if(addF=="")addedF=""
-	if(addF!=addedF){
+	else if(addF!=addedF){
 		F+="+"+addF
 		addedF=addF
 		F2DE();inF()
@@ -149,7 +150,7 @@ function loop(){
 	ping=new Date().getTime()-time
 	if(!xrOn)window.requestAnimationFrame(loop);
 }
-function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G+(Va<1?";Va="+Va:""))}
+function urlTFG(){window.history.pushState(null, "Title", "?D_"+T+";F:"+F+";G:"+G)}
 function updateT(s){
 	if(s)T=s.replace("D_","").split(".")[0];document.title="VD - "+T.replace(/_/g," ")
 	if(!window.location.href.includes(";"))window.history.pushState(null, "Title", "?D_"+T)
@@ -169,16 +170,6 @@ function readFile(file){
 	let	rdr = new FileReader()
 	rdr.onload=function(e){updateD(rdr.result.replace(/\n/g,"").split(";"))}
 	rdr.readAsText(file,"UTF-8");
-}
-function readF(){
-	var rdr=new FileReader()
-	rdr.onload=function(){fLog.value=rdr.result+",\n\n"+fLog.value;outF()}
-	rdr.readAsText(loadF.files[0])
-}
-function readG(){
-	var rdr=new FileReader()
-	rdr.onload=function(){gLog.value=rdr.result;outG()}
-	rdr.readAsText(loadG.files[0])
 }
 function readTextUrl(file){
 	fetch(file).then(function(response){
@@ -288,13 +279,14 @@ function download(type, text, ext,stamp) {
 }
 LsV=[]
 function setVar(s){
-	
 	if(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
 		var sArr=sPair[0].trim().split(".")
 		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
-		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
+		else if(sArr[0]=="+F"){F+=","+sPair[1];inF();F2DE()}
+		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG()}
+		else if(sArr[0]=="+G"){G=G.concat(sPair[1].split(","));inG();outG()}
 		else if(sArr[0]=="T")updateT(sVal)
 		else if(this[sArr[0]]!==undefined&&LsV[sArr[0]]!=this[sArr[0]]){
 			if(sVal)this[sArr[0]]=sVal
@@ -361,7 +353,7 @@ function DE2F(){
 					if(D[i][j]!=0&&(Math.abs(D[i][j])>1e5||Math.abs(D[i][j])<1e-5))F+=D[i][j].toExponential().replace("+","")+""
 					else F+=(round(D[i][j],6)+"")
 				}
-				if(j>2){		F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],6)+"")}
+				if(j>2){F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],6)+"")}
 			}
 		}
 		if(D[i][2]==0)F+="="
@@ -649,6 +641,11 @@ function showPosition(position){
 }
 async function execute(){
 	
+	if(loadD=="")loadedD=false;
+	else if(!loadedD){
+		readTextUrl(loadD);
+		loadedD=true;
+	}
 	if(bleSend!="" && bleSend!=bleSent && bleTx){
 		bleSent=bleSend;
 		await bleTx.writeValue(encoder.encode(bleSend));
