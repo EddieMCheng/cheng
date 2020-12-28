@@ -42,7 +42,7 @@ function init(){
 		uidiv.style.height=parseInt(SH)+"px"
 
 		gl.viewport(0,0,SW,SH)
-		gl.clearColor(Vr,Vg,Vb,Va)		
+		gl.clearColor(Vr,Vg,Vb,Va)
 		gl.lineWidth(LS)
 		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
 		Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
@@ -181,15 +181,12 @@ function readG(){
 	rdr.readAsText(loadG.files[0])
 }
 function readTextUrl(file){
-	var raw = new XMLHttpRequest(); raw.open("GET", file, true); 
-	raw.onreadystatechange = function (){
-		if(file && raw.readyState==4&&(raw.status==200||raw.status==0)){
-			if(raw.responseText){updateD(raw.responseText.replace(/\n/g,"").split(";"))}
-			else if(file.includes("_"))readTextUrl(file.replace("_","/"))
-		}
-		else if(raw.status==404 && file.includes("_"))readTextUrl(file.replace("_","/"))
-	}
-	raw.send(null)
+	fetch(file).then(function(response){
+		if(file.includes("_") && response.status==404)readTextUrl(file.replace("_","/"))
+		else return response.text();
+	}).then(function(data){
+		if(data)updateD(data.replace(/\n/g,"").split(";"))
+	})
 }
 function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
 function updateI(idx){
@@ -291,14 +288,15 @@ function download(type, text, ext,stamp) {
 }
 LsV=[]
 function setVar(s){
+	
 	if(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
-		var sArr=sPair[0].split(".")
+		var sArr=sPair[0].trim().split(".")
 		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG();}
 		else if(sArr[0]=="T")updateT(sVal)
-		else if(this[sArr[0]]&&LsV[sArr[0]]!=this[sArr[0]]){
+		else if(this[sArr[0]]!==undefined&&LsV[sArr[0]]!=this[sArr[0]]){
 			if(sVal)this[sArr[0]]=sVal
 			LsV[sArr[0]]=this[sArr[0]];go=1
 			switch(sArr[0]){
@@ -311,12 +309,12 @@ function setVar(s){
 					uidiv.style.width=parseInt(SW)+"px"
 					uidiv.style.height=parseInt(SH)+"px"
 					gl.viewport(0,0,SW,SH)
-					break
+				break
 				case "Vr": case "Vg":case "Vb":
-				case "Va":	gl.clearColor(Vr,Vg,Vb,Va);break
-				case "LS":	gl.lineWidth(LS);break
-				case "VS":	Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
-							break
+				case "Va":gl.clearColor(Vr,Vg,Vb,Va);break
+				case "LS":gl.lineWidth(LS);break
+				case "VS":Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
+				break
 			}
 		}
 		if(!this[sArr[0]])this[sArr[0]]=0;
