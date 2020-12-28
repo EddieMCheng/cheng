@@ -32,7 +32,7 @@ var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
-var loadD="", loadedD=false, downloadF="", loadFile=false, loadedFile=false
+var loadD="", loadedD=false, downloadF="", loadFile=false, loadedFile=false, goFullscreen=false, isFullscreen=false
 var autosave=0,cl=1
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
@@ -638,6 +638,9 @@ function showPosition(position){
 	GPS=lat.replace("0.",".")+lon.replace("0.",".")
 }
 async function execute(){
+	if(document.fullscreenElement==null && goFullscreen){
+		uidiv.requestFullscreen();screen.orientation.lock(screen.orientation.type)
+	}
 	if(!loadFile)loadedFile=false
 	else if(!loadedFile){
 		loadfiles.click();
@@ -860,8 +863,7 @@ function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 	<input value="update" type="button" onclick="inF();inG()" hidden></input>
 	<input value="apply" type="button" onclick="outG();outF();go=1" hidden></input>
 <br>
-<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)"></input>
-<input type="button" onclick="uidiv.webkitRequestFullscreen();screen.orientation.lock(screen.orientation.type)" value="fullscreen"></input>
+<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
 <input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
  </div>
  <div id="debugdiv" style="position:absolute;left:512px"></div>
