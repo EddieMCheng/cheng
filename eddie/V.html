@@ -843,10 +843,10 @@ function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 function colorizeF(){
-	fdiv.innerHTML=replacer(fdiv.innerText,/=/g,"</br>=",/\+/g,"</br>+",/\*/g,"<span style='color:lightgray'>*</span>",/\±/g,"<span style='color:gray'>±</span>");
+	fdiv.innerHTML=replacer(fdiv.innerText,/_/g,"",/ /g,"",/,/g,",</br>",/\=/g,"=</br> ",/\+/g,"+</br> ",/\*/g,"<span style='color:pink'>*</span>",/\±/g,"<span style='color:purple'>±</span>");
 }
 function colorizeG(){
-	gdiv.innerHTML=replacer(gdiv.innerText,/,/g,"</br>,",/\+/g,"</br>+",/\*/g,"<span style='color:lightgray'>*</span>",/\±/g,"<span style='color:gray'>±</span>");
+	gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,"<span style='color:purple'>=</span>");
 }
 </script>
 <style>
