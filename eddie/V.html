@@ -33,7 +33,7 @@ var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
 var loadD="", loadedD=false, downloadF="", loadFile=false, loadedFile=false, goFullscreen=false, isFullscreen=false
-var autosave=0,cl=1
+var autosave=0,cl=1, updateF=false
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
@@ -41,7 +41,7 @@ function init(){
 	if(gl){
 		uidiv.style.width=parseInt(SW)+"px"
 		uidiv.style.height=parseInt(SH)+"px"
-
+		datadiv.style.top=parseInt(SH)+"px"
 		gl.viewport(0,0,SW,SH)
 		gl.clearColor(Vr,Vg,Vb,Va)
 		gl.lineWidth(LS)
@@ -143,6 +143,7 @@ function loop(){
 		go=0
 		DE2B()
 		draw()
+		if(updateF){DE2F();inF()}
 	}
 	ping=new Date().getTime()-time
 	if(!xrOn)window.requestAnimationFrame(loop);
@@ -261,10 +262,10 @@ function updateUP(i,font,alpha){
 		var goBaseline=L[id+".baseline"]
 		var pari=i-D[i][2]
 		var typeA=Math.abs(D[i][3])>=2||Math.abs(D[pari][3])>=2
-		U2d.textAlign =goAlign?goAlign:"left"
+		if(goAlign)U2d.textAlign =goAlign
 		U2d.fillStyle='rgba('+getByte(i,"r")+','+getByte(i,"g")+','+getByte(i,"b")+','+(typeA*alpha)+')'
 		U2d.font=goFont?goFont:font
-		U2d.textBaseline =goBaseline?goBaseline:"top"
+		if(goBaseline)U2d.textBaseline=goBaseline
     	var name=!typeA?" ":E[i][0]?E[i][0]:id
 		U2d.fillText(goName!="undefined"?goName.replace(/_/g," "):name.replace(/_/g," "),(SW/2)+X[i]*SH/2,(SH/2)-Y[i]*(SH/2))
 	}
@@ -298,6 +299,7 @@ function setVar(s){
 					I.width=SW;I.height=SH
 					uidiv.style.width=parseInt(SW)+"px"
 					uidiv.style.height=parseInt(SH)+"px"
+					datadiv.style.top=uidiv.style.height
 					gl.viewport(0,0,SW,SH)
 				break
 				case "Vr": case "Vg":case "Vb":
@@ -409,7 +411,7 @@ function Geval(){
 	if(G&&G!=""){
 		GV=[],Gp=[],GB=[],GBd=[]
 		for(var i=0;i<G.length;i++){
-			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i]
+			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i].replace(/\n/g,"")
 			if(Gi!=""){
 				let GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
 				let idArr=Gi0?Gi0.split("."):"",id0=idArr[0]?idArr[0]:null,id1=idArr[idArr.length-1]
@@ -697,7 +699,7 @@ async function execute(){
 			window.onclose = function(ev){for(let bledevice of bledevices)L[bleDevice].gatt.disconnect()}
 			
 		  } catch(error) {
-			console.log('Argh! ' + error);
+			console.log(error);
 			bleConnecting=0;
 		  }
 		
@@ -781,9 +783,9 @@ function getF(s){
 	let end=fdiv.innerText.indexOf("\n",start)
 	return start>=0?fdiv.innerText.substring(start,(end>=0?end:fdiv.innerText.length)):""
 }
-function inF(){fdiv.innerText=F;colorizeF()}
-function outF(){F=replacer(fdiv.innerText,/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
-function inG(){gdiv.innerText=G.join(",");colorizeG()}
+function inF(){fdiv.innerText=F;prettifyF()}
+function outF(){F=replacer(fdiv.innerText,/\n/g,"",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
+function inG(){gdiv.innerText=G.join(",");prettifyG()}
 function outG(){
 	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uidiv.style="touch-action:none"
 	else uidiv.style="touch-action:auto"
@@ -842,18 +844,19 @@ function question(s){return s.split("?").length>s.split("!").length}
 function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
-function colorizeF(){
-	fdiv.innerHTML=replacer(fdiv.innerText,/_/g,"",/ /g,"",/,/g,",</br>",/\=/g,"=</br> ",/\+/g,"+</br> ",/\*/g,"<span style='color:pink'>*</span>",/\±/g,"<span style='color:purple'>±</span>");
+function prettifyF(){
+	fdiv.innerHTML=replacer(fdiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,"<span style='color:#FC0'>*</span>",/\±/g,"<span style='color:#E70'>±</span>");
 }
-function colorizeG(){
-	gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,"<span style='color:purple'>=</span>");
+function prettifyG(){
+	gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,"<span style='color:#FC0'>=</span>",/\±/g,"<span style='color:#E70'>±</span>",/([\?\!])/g,"<span style='color:#F00'>$1</span>");
 }
 </script>
 <style>
-	html,body{margin:1px;padding:0}
-	canvas{position:absolute;left:0px;top:0px;bottom:0px;right:0px}
+	html,body{margin:0px;padding:0; font-family:Arial, Helvetica, sans-serif; color:gray}
+	canvas{position:fixed}
 	#imgcanvas{z-index:-10}
-	#datadiv{position:absolute;width:512px;top:420px}
+	#datadiv{position:absolute;width:100%}
+
 </style>
 </head><body onload="start()">
 <div id="uidiv">
@@ -862,8 +865,8 @@ function colorizeG(){
 	<canvas id="uicanvas"></canvas>
 </div></br>
 <div id="datadiv">
-	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF()" onfocusout="colorizeF();outF()" oninput="">Block <b>bold</b> quote</div>
-	<b>G:</b><div id="gdiv" contenteditable="true" onfocus="inG()" onfocusout="colorizeG();outG()" oninput="">Block <b>bold</b> quote</div>
+	<b>F:</b><div id="fdiv"contenteditable="true" onfocus="DE2F();inF()" onfocusout="prettifyF();outF()" oninput="">Block <b>bold</b> quote</div>
+	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true" onfocus="inG()" onfocusout="prettifyG();outG()" oninput="">Block <b>bold</b> quote</div>
 	<input id="loadfiles" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveD" type="button" onclick="download('D',out,'txt')" hidden></input>
 <br>
