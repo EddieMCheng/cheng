@@ -22,7 +22,7 @@ var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var Ix=0,Iy=0,Iu=1,Id=[],Idn=0
 var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
-var A,all,out,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
+var A,all,Dout,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px sans-serif",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Me=PointerEvent,MB=[],Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
@@ -30,7 +30,7 @@ var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=0.25,LON=0,ALT=0,ACC=0
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
-var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=0, bleConnected=0 ,bd=[], bleServiceID="5f34937d-2db1-416c-88a6-0d2a47f7ac59", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx,bleTx
+var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=[], bleConnected=[] ,bd=[], bleServiceID="ae36a325-5667-4557-91a0-1174d836761a", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx=[],bleTx=[]
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
 var loadD="", loadedD=false, downloadF="", loadFile=false, loadedFile=false, goFullscreen=false, isFullscreen=false
 var autosave=0,cl=1, updateF=false
@@ -116,7 +116,7 @@ function loop(){
 		
 		
 		if(gdiv.innerText.includes("LAT")&&gdiv.innerText.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
-		out="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
+		Dout="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
 		if(WP){
 			var dArr=WP.split(" ");Wl=dArr.length
 			for(let i=0;i<Wl;i++){
@@ -275,6 +275,7 @@ function download(type, text, ext,stamp) {
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text.replace(/;/g,";\n" )); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
 	else pom.click();
+	return true;
 }
 LsV=[]
 function setVar(s){
@@ -653,12 +654,20 @@ async function execute(){
 		readTextUrl(loadD);
 		loadedD=true;
 	}
-	if(bleSend!="" && bleSend!=bleSent && bleTx){
+	if(bleSend!="" && bleSend!=bleSent){
 		bleSent=bleSend;
-		await bleTx.writeValue(encoder.encode(bleSend));
+		let idx = 0
+		let msg = bleSend;
+		if(bleSend.includes("#")){
+			let pair = bleSend.split("#");
+			idx = parseInt(pair[0])
+			msg = pair[1]
+		}
+		if(bleTx[idx])
+		await bleTx[idx].writeValue(encoder.encode(msg));
 	}
-	if(bleConnect >= 0 && bleConnecting==0){
-		bleConnecting=1
+	if(bleConnect >= 0 && !bleConnecting[bleConnect]){
+		bleConnecting[bleConnect]=1
 		try {
 			let bleDevice
 			if(bleDevices[bleConnect]&& L[bleDevices[bleConnect]]){
@@ -682,25 +691,25 @@ async function execute(){
 			const service = await server.getPrimaryService(bleServiceID);
 
 			console.log('Getting Characteristic...');
-			bleRx = await service.getCharacteristic(bleRxID);
-			bleRx.idx=bleConnect;
-			bleRx.oncharacteristicvaluechanged=function(ev){
+			bleRx[bleConnect] = await service.getCharacteristic(bleRxID);
+			bleRx[bleConnect].idx=bleConnect;
+			bleRx[bleConnect].oncharacteristicvaluechanged=function(ev){
 				let data=decoder.decode(ev.target.value)
 				console.log(this.idx+'>' + data);
 				bleData[this.idx]=data.split(" ");
 			}
-			await bleRx.startNotifications();
+			await bleRx[bleConnect].startNotifications();
 			
 			console.log('Getting transmission...');
-			bleTx = await service.getCharacteristic(bleTxID);
+			bleTx[bleConnect] = await service.getCharacteristic(bleTxID);
 			
-			bleConnecting=0;
-			bleConnected=1;
+			bleConnecting[bleConnect]=0;
+			bleConnected[bleConnect]=1;
 			window.onclose = function(ev){for(let bledevice of bledevices)L[bleDevice].gatt.disconnect()}
 			
 		  } catch(error) {
 			console.log(error);
-			bleConnecting=0;
+			bleConnecting[bleConnect]=0;
 		  }
 		
 	}
@@ -822,7 +831,7 @@ function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kb(s){return s.length/1000+" kb"}
-function DEG(p,q,s,i){let v=0,m,n,o,d=DE(p,q,s)?DE(p,q,s):0;if(GB[p]&&GB[p][q]){try{m=i>1?GBd[p][q][i-2]:0,n=i>0?GBd[p][q][i-1]:d;l=GBd[p][q][i];v=eval(GB[p][q]);GBd[p][q][i]=v}catch(e){}}; return d+v}
+function DEG(p,q,s,i){let v=0,m,n,o,d=DE(p,q,s)?DE(p,q,s):0;if(GB[p]&&GB[p][q])try{m=i>1?GBd[p][q][i-2]:0,n=i>0?GBd[p][q][i-1]:d;l=GBd[p][q][i];v=eval(GB[p][q]);GBd[p][q][i]=d+v}catch(e){}; return d+v}
 function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(2*Math.random()-1)}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
@@ -845,14 +854,27 @@ function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 function prettifyF(){
+	//let pos = 0
+	// if(document.getSelection().rangeCount>0){
+	// 	let _range = document.getSelection().getRangeAt(0)
+	// 	let range = _range.cloneRange()
+	// 	range.selectNodeContents(fdiv)
+	// 	range.setEnd(_range.endContainer, _range.endOffset)
+	// 	pos = range.toString().length;
+	// }
 	fdiv.innerHTML=replacer(fdiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,"<span style='color:#FC0'>*</span>",/\±/g,"<span style='color:#E70'>±</span>");
+	// if(document.getSelection().rangeCount>0){
+	// 	fdiv.focus()
+	// 	try{window.getSelection().collapse(fdiv, pos)}
+	// 	catch{}
+	// }
 }
 function prettifyG(){
 	gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,"<span style='color:#FC0'>=</span>",/\±/g,"<span style='color:#E70'>±</span>",/([\?\!])/g,"<span style='color:#F00'>$1</span>");
 }
 </script>
 <style>
-	html,body{margin:0px;padding:0; font-family:Arial, Helvetica, sans-serif; color:gray}
+	html,body{margin:0px;padding:0; font-family:'Courier New', monospace; color:gray}
 	canvas{position:fixed}
 	#imgcanvas{z-index:-10}
 	#datadiv{position:absolute;width:100%}
@@ -865,10 +887,10 @@ function prettifyG(){
 	<canvas id="uicanvas"></canvas>
 </div></br>
 <div id="datadiv">
-	<b>F:</b><div id="fdiv"contenteditable="true" onfocus="DE2F();inF()" onfocusout="prettifyF();outF()" oninput="">Block <b>bold</b> quote</div>
-	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true" onfocus="inG()" onfocusout="prettifyG();outG()" oninput="">Block <b>bold</b> quote</div>
+	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF()" oninput="" onfocusout="prettifyF();outF()" oninput="">Block <b>bold</b> quote</div>
+	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true"  oninput="" onfocus="inG()" onfocusout="prettifyG();outG()" oninput="">Block <b>bold</b> quote</div>
 	<input id="loadfiles" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
-	<input id="saveD" type="button" onclick="download('D',out,'txt')" hidden></input>
+	<input id="savefile" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
 <input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
 <input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
