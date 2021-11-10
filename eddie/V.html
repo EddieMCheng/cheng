@@ -62,12 +62,13 @@ function start(){
 	uidiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
 	uidiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
 	document.onkeydown=function(ev){
+		this[ev.code] = true
 		key=ev.code+"_1";setKeyB(ev)
 		if(ev.code=="Escape"){DE2F();inF();inG();go=1}
 		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outF();go=1}
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
-	document.onkeyup=function(ev){key=ev.code+"_0"}
+	document.onkeyup=function(ev){key=ev.code+"_0";this[ev.code] = false}
 	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
 	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
 	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360;Rw=-Rzr;Rv=Ry;Ro=Rx+0.25}
