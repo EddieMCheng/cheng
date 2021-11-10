@@ -34,6 +34,7 @@ var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleCon
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
 var loadD="", loadedD=false, downloadF="", loadFile=false, loadedFile=false, goFullscreen=false, isFullscreen=false
 var autosave=0,cl=1, updateF=false
+let Ev=[],editFocus=false
 function init(){
 	var ATD=decodeURI(window.location.href).replace("?",";").split(";");
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
@@ -62,13 +63,13 @@ function start(){
 	uidiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
 	uidiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
 	document.onkeydown=function(ev){
-		this[ev.code] = true
-		key=ev.code+"_1";setKeyB(ev)
+		if(!editFocus)Ev[ev.code] = true
+		setKeyB(ev)
 		if(ev.code=="Escape"){DE2F();inF();inG();go=1}
 		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outF();go=1}
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
-	document.onkeyup=function(ev){key=ev.code+"_0";this[ev.code] = false}
+	document.onkeyup=function(ev){key=ev.code+"_0";Ev[ev.code] = false}
 	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
 	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
 	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360;Rw=-Rzr;Rv=Ry;Ro=Rx+0.25}
@@ -594,9 +595,10 @@ function DE2B(){
 		catch(e){
 			alertsExists=true
 			if(alertUserOnError)alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
+			alertUserOnError=false
 		}
 	}
-	alertUserOnError= !alertsExists
+	
 }
 function draw(a) {
 	if(cam)updateCam()
@@ -799,7 +801,8 @@ function inG(){gdiv.innerText=G.join(",");prettifyG()}
 function outG(){
 	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uidiv.style="touch-action:none"
 	else uidiv.style="touch-action:auto"
-	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
+	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤",/ /g,",").split(",");
+	inG()
 	Geval();if(autosave)urlTFG();alertUserOnError=true;
 }
 function getr(s){let t=dvr[L[s]];return t?t:0}
@@ -854,6 +857,7 @@ function question(s){return s.split("?").length>s.split("!").length}
 function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
+function getSpanColor(s,c){return `<span style='color:${c}'>${s}</span>`}
 function prettifyF(){
 	//let pos = 0
 	// if(document.getSelection().rangeCount>0){
@@ -863,7 +867,7 @@ function prettifyF(){
 	// 	range.setEnd(_range.endContainer, _range.endOffset)
 	// 	pos = range.toString().length;
 	// }
-	fdiv.innerHTML=replacer(fdiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,"<span style='color:#FC0'>*</span>",/\±/g,"<span style='color:#E70'>±</span>");
+	fdiv.innerHTML=replacer(fdiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
 	// if(document.getSelection().rangeCount>0){
 	// 	fdiv.focus()
 	// 	try{window.getSelection().collapse(fdiv, pos)}
@@ -871,7 +875,7 @@ function prettifyF(){
 	// }
 }
 function prettifyG(){
-	gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,"<span style='color:#FC0'>=</span>",/\±/g,"<span style='color:#E70'>±</span>",/([\?\!])/g,"<span style='color:#F00'>$1</span>");
+gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
 }
 </script>
 <style>
@@ -888,8 +892,8 @@ function prettifyG(){
 	<canvas id="uicanvas"></canvas>
 </div></br>
 <div id="datadiv">
-	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF()" oninput="" onfocusout="prettifyF();outF()" oninput="">Block <b>bold</b> quote</div>
-	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true"  oninput="" onfocus="inG()" onfocusout="prettifyG();outG()" oninput="">Block <b>bold</b> quote</div>
+	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();editFocus=false" oninput="">Block <b>bold</b> quote</div>
+	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();editFocus=false" oninput="">Block <b>bold</b> quote</div>
 	<input id="loadfiles" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="savefile" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
