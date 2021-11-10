@@ -32,7 +32,7 @@ var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.",".")
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=[], bleConnected=[] ,bd=[], bleServiceID="ae36a325-5667-4557-91a0-1174d836761a", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx=[],bleTx=[]
 var input="", addF="",addedF="", removeF="",removedF="", duplicateF="", duplicatedF=""
-var loadD="", loadedD=false, downloadF="", loadFile=false, loadedFile=false, goFullscreen=false, isFullscreen=false
+var loadUrl="", loadedUrl=false, downloadF="", loadFile=false, loadedFile=false, goFullscreen=false, isFullscreen=false
 var autosave=0,cl=1, updateF=false
 let Ev=[],editFocus=false
 function init(){
@@ -175,6 +175,7 @@ function readFile(file){
 function readTextUrl(file){
 	fetch(file).then(function(response){
 		if(file.includes("_") && response.status==404)readTextUrl(file.replace("_","/"))
+		else if(response.status==404)loadedUrl=false
 		else return response.text();
 	}).then(function(data){
 		if(data)updateD(data.replace(/\n/g,"").split(";"))
@@ -652,10 +653,10 @@ async function execute(){
 		loadfiles.click();
 		loadedFiles=true;
 	}
-	if(loadD=="")loadedD=false;
-	else if(!loadedD){
-		readTextUrl(loadD);
-		loadedD=true;
+	if(loadUrl=="")loadedUrl=false;
+	else if(!loadedUrl){
+		readTextUrl(loadUrl);
+		loadedUrl=true;
 	}
 	if(bleSend!="" && bleSend!=bleSent){
 		bleSent=bleSend;
