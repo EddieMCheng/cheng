@@ -1,4 +1,4 @@
-D_Navigate2.3KLBAElCI.09.95;
+D_Navigate_UI.3KLBIG5W3.09.95;
 G:Vw=drag?Vw-(lMx-Mx)/4,
 Vo=drag?Vo+(lMy-My)/4,
 Vo=Vo<-0.25?-0.25!Vo>0.25?0.25,
@@ -15,12 +15,17 @@ xLeft=left*cos(Vw)+right*cos(Vw),
 Vz=parseFloat(Vz+zForward+zLeft),
 Vx=parseFloat(Vx+xForward+xLeft),
 Vy=parseFloat(Vy+up+down),
+UI.x=Vx,
+UI.y=Vy,
+UI.z=Vz,
+UI.w=Vw,
+UI.o=Vo,
 Vzu=3,
 VP=3,
 SW=1920,
 SH=1080,
 this.savefile.hidden=false,
 this.savefile.value='save',
-T='Navigate';
-F:Box*-4*2z*w±0.5=lin*-4*z*1.414u*0.375v±0.5*3a;
+T='Navigate_UI';
+F:Box*-4*2z*w±0.5=lin*-4*z*1.414u*0.375v±0.5*3a,UI*1.123643x*0.9y*-4.133589z*0.1u*0.02195o*-0.484356w=crosshair*0b;
 http://localhost/V.html

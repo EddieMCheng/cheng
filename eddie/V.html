@@ -22,10 +22,10 @@ var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var Ix=0,Iy=0,Iu=1,Id=[],Idn=0
 var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
-var A,all,Dout,T="New", 	alertUserOnError=true, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
+var A,all,Dout,T="New", 	alertUserOnError=false, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px sans-serif",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
-var Me=PointerEvent,MB=[],lMx=0,LMy=0,Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
+var Me=PointerEvent,MB=[],Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=0.25,LON=0,ALT=0,ACC=0
@@ -70,7 +70,7 @@ function start(){
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0";Ev[ev.code] = false}
-	window.onerror = function(msg, url, line) {alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
+	window.onerror = function(msg, url, line) {if(alertUserOnError)alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
 	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
 	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360;Rw=-Rzr;Rv=Ry;Ro=Rx+0.25}
 	window.ondevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
@@ -199,7 +199,7 @@ function initCam(){
 	  .then(function(stream){
 	    video.srcObject = stream
 	    cam=1;if(dT==0)dT=0.04
-	  }).catch(function(error){alert(error)})}
+	  }).catch(function(error){if(alertUserOnError)alert(error)})}
 }
 let audioTrack
 let offset = 0
@@ -234,7 +234,7 @@ function initMic(){
 		processor.connect(filter)
 		filter.connect(streamDestination)
 	 	audioTrack=streamDestination.stream.getAudioTracks()[0]
-	  }).catch(function(error){alert(error)})}
+	  }).catch(function(error){if(alertUserOnError)alert(error)})}
 }
 let mediaRecorder
 let blobs
@@ -772,7 +772,7 @@ function onXRFrame(t, frame) {
 }
 function getMx(ev){return (2*decimal4(ev.clientX/SW)-1)*SW/SH}
 function getMy(ev){return 1-2*decimal4(ev.clientY/SH)}
-function setM1(ev){Mx_1=getMx(ev);lMx=Mx;lMy=My;Mx=Mx_1;My_1=getMy(ev);My=My_1;touch=1;click=0}
+function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;touch=1;click=0}
 function setM0(ev){Mx_0=getMx(ev);My_0=getMy(ev);touch=0;drag=0;go=1;click=getHyp(Mx_1-Mx,My_1-My)<0.05?1:0;execute()}
 
 function setM(ev){Mx=getMx(ev);My=getMy(ev);drag=getHyp(Mx_1-Mx,My_1-My)>0.02?1:0;go=1}

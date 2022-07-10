@@ -1,0 +1,39 @@
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <center>
+    <form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
+    <input type='file' name='update' id='upd' ></br>
+    <input type='submit' value='Update' id='sbt'>
+    </form>
+    <div id='prg' hidden>progress: 0%</div>
+    </center>
+    <script>
+    $('form').submit(function(e){
+    e.preventDefault();
+    var form = $('#upload_form')[0];
+    var data = new FormData(form);
+     $.ajax({
+    url: '/update',
+    type: 'POST',
+    data: data,
+    contentType: false,
+    processData:false,
+    xhr: function() {
+    var xhr = new window.XMLHttpRequest();
+    xhr.upload.addEventListener('progress', function(evt) {
+    if (evt.lengthComputable) {
+    var per = evt.loaded / evt.total;
+    upd.hidden=true;sbt.hidden=true;prg.hidden=false
+    $('#prg').html('progress: ' + Math.round(per*100) + '%');
+    }
+    }, false);
+    return xhr;
+    },
+    success:function(d, s) {
+    console.log('success!')
+    $('#prg').html('SUCCESS!');
+    },
+    error: function (a, b, c) {
+    }
+    });
+    });
+    </script>
