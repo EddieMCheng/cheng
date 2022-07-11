@@ -40,9 +40,9 @@ function init(){
 	A=ATD[0];if(ATD[1]){readTextUrl(ATD[1].endsWith(".txt")?ATD[1]:ATD[1]+".txt");updateD(ATD)}else updateT(T)
 	updateL();Geval();F2DE();DE2B();outG();outF()
 	if(gl){
-		uidiv.style.width=parseInt(SW)+"px"
-		uidiv.style.height=parseInt(SH)+"px"
-		datadiv.style.top=parseInt(SH)+"px"
+		uiDiv.style.width=parseInt(SW)+"px"
+		uiDiv.style.height=parseInt(SH)+"px"
+		dataDiv.style.top=parseInt(SH)+"px"
 		gl.viewport(0,0,SW,SH)
 		gl.clearColor(Vr,Vg,Vb,Va)
 		gl.lineWidth(LS)
@@ -53,15 +53,15 @@ function init(){
 }
 function start(){
 	let doc=document
-	V=doc.getElementById("glcanvas")
-	I=doc.getElementById('imgcanvas')
-	U=doc.getElementById('uicanvas')
+	V=doc.getElementById("glCanvas")
+	I=doc.getElementById('imageCanvas')
+	U=doc.getElementById('uiCanvas')
 	inF();inG()
-	uidiv.onpointerdown=ev=>{Me=ev;setM1(ev)}
-	uidiv.onpointerup=ev=>{Me=ev;setM0(ev)}
-	uidiv.onpointermove=ev=>{Me=ev;if(ev.buttons>0)setM(ev)}
-	uidiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
-	uidiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
+	uiDiv.onpointerdown=ev=>{Me=ev;setM1(ev)}
+	uiDiv.onpointerup=ev=>{Me=ev;setM0(ev)}
+	uiDiv.onpointermove=ev=>{Me=ev;if(ev.buttons>0)setM(ev)}
+	uiDiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
+	uiDiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
 	document.onkeydown=function(ev){
 		if(!editFocus)Ev[ev.code] = true
 		setKeyB(ev)
@@ -165,7 +165,6 @@ function updateD(arr){
 }
 function loadFiles(files){
 	readFile(files[0])
-	loadfiles.value="";
 }
 function readFile(file){
 	let	rdr = new FileReader()
@@ -301,9 +300,9 @@ function setVar(s){
 					U.width=SW;U.height=SH
 					V.width=SW;V.height=SH
 					I.width=SW;I.height=SH
-					uidiv.style.width=parseInt(SW)+"px"
-					uidiv.style.height=parseInt(SH)+"px"
-					datadiv.style.top=uidiv.style.height
+					uiDiv.style.width=parseInt(SW)+"px"
+					uiDiv.style.height=parseInt(SH)+"px"
+					dataDiv.style.top=uiDiv.style.height
 					gl.viewport(0,0,SW,SH)
 				break
 				case "Vr": case "Vg":case "Vb":
@@ -646,7 +645,7 @@ function showPosition(position){
 }
 async function execute(){
 	if(document.fullscreenElement==null && goFullscreen){
-		uidiv.requestFullscreen();screen.orientation.lock(screen.orientation.type)
+		uiDiv.requestFullscreen();screen.orientation.lock(screen.orientation.type)
 	}
 	if(!loadFile)loadedFile=false
 	else if(!loadedFile){
@@ -800,8 +799,8 @@ function inF(){fdiv.innerText=F;prettifyF()}
 function outF(){F=replacer(fdiv.innerText,/\n/g,"",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gdiv.innerText=G.join(",");prettifyG()}
 function outG(){
-	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uidiv.style="touch-action:none"
-	else uidiv.style="touch-action:auto"
+	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uiDiv.style="touch-action:none"
+	else uiDiv.style="touch-action:auto"
 	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤",/ /g,",").split(",");
 	inG()
 	Geval();if(autosave)urlTFG();alertUserOnError=true;
@@ -882,23 +881,23 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 <style>
 	html,body{margin:0px;padding:0; font-family:'Courier New', monospace; color:gray}
 	canvas{position:fixed}
-	#imgcanvas{z-index:-10}
-	#datadiv{position:absolute;width:100%}
+	#imageCanvas{z-index:-10}
+	#dataDiv{position:absolute;width:100%}
 
 </style>
 </head><body onload="start()">
-<div id="uidiv">
-	<canvas id="imgcanvas"></canvas>
-	<canvas id="glcanvas"></canvas>
-	<canvas id="uicanvas"></canvas>
+<div id="uiDiv">
+	<canvas id="imageCanvas"></canvas>
+	<canvas id="glCanvas"></canvas>
+	<canvas id="uiCanvas"></canvas>
 </div></br>
-<div id="datadiv">
+<div id="dataDiv">
 	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();editFocus=false" oninput="">Block <b>bold</b> quote</div>
 	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();editFocus=false" oninput="">Block <b>bold</b> quote</div>
-	<input id="loadfiles" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
-	<input id="savefile" type="button" onclick="download('D',Dout,'txt')" hidden></input>
+	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
+	<input id="saveFileButton" value="save" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
-<input id="imgInput" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
+<input id="loadImageButton" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
 <input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
  </div>
 </body></html>
