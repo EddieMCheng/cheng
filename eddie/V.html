@@ -171,13 +171,16 @@ function readFile(file){
 	rdr.onload=function(e){updateD(rdr.result.replace(/\n/g,"").split(";"))}
 	rdr.readAsText(file,"UTF-8");
 }
-function readTextUrl(file){
+function readTextUrl(file, add){
 	fetch(file).then(function(response){
-		if(file.includes("_") && response.status==404)readTextUrl(file.replace("_","/"))
+		if(file.includes("_") && response.status==404)readTextUrl(file.replace("_","/"),add)
 		else if(response.status==404)loadedUrl=false
 		else return response.text();
 	}).then(function(data){
-		if(data)updateD(data.replace(/\n/g,"").split(";"))
+		if(data){
+			if(add){data=data.replace("\nF:","\n+F:").replace("\nG:","\n+G:")}
+			updateD(data.replace(/\n/g,"").split(";"))
+		}
 	})
 }
 function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
@@ -654,7 +657,8 @@ async function execute(){
 	}
 	if(loadUrl=="")loadedUrl=false;
 	else if(!loadedUrl){
-		readTextUrl(loadUrl);
+		if(loadUrl.startsWith("+")){readTextUrl(loadUrl.slice(1),true);}
+		else readTextUrl(loadUrl,false);
 		loadedUrl=true;
 	}
 	if(bleSend!="" && bleSend!=bleSent){
