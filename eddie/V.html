@@ -112,11 +112,8 @@ function loop(){
 		addedF=addF
 		F2DE();inF()
 	}
-		
 	if(time-sTime>1000 && !editing){
 		sTime=time
-		
-		
 		if(gdiv.innerText.includes("LAT")&&gdiv.innerText.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
 		Dout="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
 		if(WP){
@@ -288,9 +285,9 @@ function setVar(s){
 		var sPair=s.split(":")
 		var sVal=s.includes(",")?sPair[1].split(",").map(x=>parseFloat(x)?parseFloat(x):x):sPair[1]
 		var sArr=sPair[0].trim().split(".")
-		if(sArr[0]=="F"){F=sPair[1];inF();F2DE()}
+		if(sArr[0]=="F" && sPair[1]){F=sPair[1];inF();F2DE()}
 		else if(sArr[0]=="+F"){F+=","+sPair[1];inF();F2DE()}
-		else if(sArr[0]=="G"){G=sPair[1].split(",");inG();outG()}
+		else if(sArr[0]=="G" && sPair[1]){G=sPair[1].split(",");inG();outG()}
 		else if(sArr[0]=="+G"){G=G.concat(sPair[1].split(","));inG();outG()}
 		else if(sArr[0]=="T")updateT(sVal)
 		else if(this[sArr[0]]!==undefined&&LsV[sArr[0]]!=this[sArr[0]]){
@@ -597,11 +594,15 @@ function DE2B(){
 		try{eval(GV[i]);setVar(Gp[i])}
 		catch(e){
 			alertsExists=true
-			if(alertUserOnError)alert("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
-			alertUserOnError=false
+			alertDbg("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
 		}
 	}
 	
+}
+function alertDbg(s){
+	if(alertUserOnError)alert(s)
+	alertUserOnError=false
+	console.log(s)
 }
 function draw(a) {
 	if(cam)updateCam()
@@ -652,7 +653,7 @@ async function execute(){
 	}
 	if(!loadFile)loadedFile=false
 	else if(!loadedFile){
-		loadfiles.click();
+		loadFileButton.click();
 		loadedFiles=true;
 	}
 	if(loadUrl=="")loadedUrl=false;
@@ -838,7 +839,7 @@ function Ib(x,y){return getI(x,y,2)}
 function getVar(s){return s+":"+this[s]}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
-function kb(s){return s.length/1000+" kb"}
+function kB(s){return s.length/1000+" kB"}
 function DEG(p,q,s,i){let v=0,m,n,o,d=DE(p,q,s)?DE(p,q,s):0;if(GB[p]&&GB[p][q])try{m=i>1?GBd[p][q][i-2]:0,n=i>0?GBd[p][q][i-1]:d;l=GBd[p][q][i];v=eval(GB[p][q]);GBd[p][q][i]=d+v}catch(e){}; return d+v}
 function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(2*Math.random()-1)}
@@ -896,8 +897,8 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 	<canvas id="uiCanvas"></canvas>
 </div></br>
 <div id="dataDiv">
-	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();editFocus=false" oninput="">Block <b>bold</b> quote</div>
-	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();editFocus=false" oninput="">Block <b>bold</b> quote</div>
+	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
+	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveFileButton" value="save" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
