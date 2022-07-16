@@ -18,14 +18,14 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var F="Box*-4*w±.5=lin*-4*z*1.414u*.375v±.5*3a"
-var G=["Vw=-Mx","Vo=-My"],GB=[],GBd=[], GV=[], Gp=[]
+var G=["Vw=Vw-(lMx-Mx)/4","Vo=Vo+(lMy-My)/4"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var Ix=0,Iy=0,Iu=1,Id=[],Idn=0
 var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,Dout,T="New",alertUserOnError=false, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px sans-serif",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
-var Me=PointerEvent,MB=[],Mx=0,Mx_0=0,Mx_1=0,My=0,My_0=0,My_1=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
+var Me=PointerEvent,MB=[],lMx,lMy,Mx=0,uMx=0,dMx=0,My=0,uMy=0,dMy=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=0.25,LON=0,ALT=0,ACC=0
@@ -57,8 +57,8 @@ function start(){
 	I=doc.getElementById('imageCanvas')
 	U=doc.getElementById('uiCanvas')
 	inF();inG()
-	uiDiv.onpointerdown=ev=>{Me=ev;setM1(ev)}
-	uiDiv.onpointerup=ev=>{Me=ev;setM0(ev)}
+	uiDiv.onpointerdown=ev=>{Me=ev;setMd(ev)}
+	uiDiv.onpointerup=ev=>{Me=ev;setMu(ev)}
 	uiDiv.onpointermove=ev=>{Me=ev;if(ev.buttons>0)setM(ev)}
 	uiDiv.ontouchstart=ev=>{touch=ev.touches.length;setMB(ev)}
 	uiDiv.ontouchend=ev=>{touch=ev.touches.length;setMB(ev)}
@@ -597,6 +597,7 @@ function DE2B(){
 			alertDbg("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
 		}
 	}
+	lMx=Mx;lMy=My
 	
 }
 function alertDbg(s){
@@ -776,10 +777,10 @@ function onXRFrame(t, frame) {
 }
 function getMx(ev){return (2*decimal4(ev.clientX/SW)-1)*SW/SH}
 function getMy(ev){return 1-2*decimal4(ev.clientY/SH)}
-function setM1(ev){Mx_1=getMx(ev);Mx=Mx_1;My_1=getMy(ev);My=My_1;touch=1;click=0}
-function setM0(ev){Mx_0=getMx(ev);My_0=getMy(ev);touch=0;drag=0;go=1;click=getHyp(Mx_1-Mx,My_1-My)<0.05?1:0;execute()}
+function setMd(ev){lMx=Mx=dMx=getMx(ev);lMy=My=dMy=getMy(ev);touch=1;click=0}
+function setMu(ev){uMx=getMx(ev);uMy=getMy(ev);touch=0;drag=0;go=1;click=getHyp(dMx-Mx,dMy-My)<0.05?1:0;execute()}
 
-function setM(ev){Mx=getMx(ev);My=getMy(ev);drag=getHyp(Mx_1-Mx,My_1-My)>0.02?1:0;go=1}
+function setM(ev){Mx=getMx(ev);My=getMy(ev);drag=getHyp(dMx-Mx,dMy-My)>0.02?1:0;go=1}
 function setMB(ev){
 	for(let i=0; i<10;i++){
 		if(i<ev.touches.length){
@@ -793,7 +794,7 @@ function setMB(ev){
 	}
 }
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
-function vdScript(s){return replacer(s,/!/g,":",/~/g,"!",/∧/g,"&&",/∨/g,"||",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/\+/g,"-+",/--/g,"-",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
+function vdScript(s){return replacer(s,/!/g,":",/~/g,"!",/∧/g,"&&",/∨/g,"||",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/\+/g,"--+",/---/g,"--",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function getF(s){
 	let start=fdiv.innerText.indexOf(s)
@@ -829,7 +830,7 @@ function getW(i,j){return !Wd[i]?0:Wd[i][j]?Wd[i][j]:0}
 function getWS(i){return WS[i]?WS[i]:WebSocket}
 function getI(x,y,c){return I2d.getImageData(x,y,1,1).data[c]/255}
 function getM(s){return getHyp(X[L[s]]-Mx,Y[L[s]]-My)}
-function getN(s){return getHyp(X[L[s]]-Mx_1,Y[L[s]]-My_1)}
+function getN(s){return getHyp(X[L[s]]-dMx,Y[L[s]]-dMy)}
 function getO(s){return getHyp3(D[L[s]][4],D[L[s]][5],D[L[s]][6])}
 function getSpace(s,t){return getHyp3(dvX[L[s]]-dvX[L[t]],dvY[L[s]]-dvY[L[t]],dvZ[L[s]]-dvZ[L[t]])}
 function getPart(i,s){return s?s.split("_")[i]:""}
