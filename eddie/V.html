@@ -70,7 +70,7 @@ function start(){
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0";Ev[ev.code] = false}
-	window.onerror = function(msg, url, line) {if(alertUserOnError)alert('Error: '+msg+'\nLine: '+line);dT=0;return true}
+	window.onerror = function(msg, url, line) {alertDbg('Error: '+msg+'\nLine: '+line);return true}
 	window.ondeviceorientationabsolute=function(ev) {Rz=ev.alpha/360}
 	window.ondeviceorientation=function(ev){Rzr=ev.alpha/360;Ry=ev.beta/360;Rx=ev.gamma/360;Rw=-Rzr;Rv=Ry;Ro=Rx+0.25}
 	window.ondevicemotion=function(ev){let eva=ev.accelerationIncludingGravity, drr=ev.rotationRate;ax=eva.x;ay=eva.y;az=eva.z;rx=decimal3(drr.gamma/360);ry=decimal3(drr.beta/360);rz=decimal3(drr.alpha/360)}
@@ -198,7 +198,7 @@ function initCam(){
 	  .then(function(stream){
 	    video.srcObject = stream
 	    cam=1;if(dT==0)dT=0.04
-	  }).catch(function(error){if(alertUserOnError)alert(error)})}
+	  }).catch(function(error){alertDbg(error)})}
 }
 let audioTrack
 let offset = 0
@@ -233,7 +233,7 @@ function initMic(){
 		processor.connect(filter)
 		filter.connect(streamDestination)
 	 	audioTrack=streamDestination.stream.getAudioTracks()[0]
-	  }).catch(function(error){if(alertUserOnError)alert(error)})}
+	  }).catch(function(error){alertDbg(error)})}
 }
 let mediaRecorder
 let blobs
@@ -602,8 +602,9 @@ function DE2B(){
 }
 function alertDbg(s){
 	if(alertUserOnError)alert(s)
+	else console.log(s)
 	alertUserOnError=false
-	console.log(s)
+	
 }
 function draw(a) {
 	if(cam)updateCam()
@@ -809,7 +810,7 @@ function outG(){
 	else uiDiv.style="touch-action:auto"
 	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤",/ /g,",").split(",");
 	inG()
-	Geval();if(autosave)urlTFG();alertUserOnError=true;
+	Geval();if(autosave)urlTFG()
 }
 function getr(s){let t=dvr[L[s]];return t?t:0}
 function getg(s){let t=dvg[L[s]];return t?t:0}
