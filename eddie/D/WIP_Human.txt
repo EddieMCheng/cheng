@@ -1,0 +1,16 @@
+D_New.3KM7I0GL1.25.92;
+G:Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4,
+Head.align='center',
+dT=0,
+VP=2,
+VF=0,
+Vzu=2,
+Vu=1,
+Vz=0,
+SW=this.window.innerWidth,
+SH=this.window.innerHeight,
+this.loadFileButton.hidden=false,
+this.saveFileButton.hidden=false;
+F:Human*2p*0.71y*0.3w=Head*58*0.02x±0.09*0.1y±0.1*0z±0.08*0.9g*0.7b+Neck*0.02x+L_Arm*22*0x±0.05*-0.1y±0.05*-0.2z±0.05*0.15u±0.15*0.5v+R_Arm*22*0x±0.05*-0.1y±0.05*0.2z±0.05*0.15u±0.15*0.5v+L_F_Arm*13*0x±0.04*-0.4y±0.04*-0.2z±0.04*0.125u±0.125*0.5v+L_Hand*5*0x±0.04*-0.65y±0.04*-0.2z±0.04*0b*0.1u±0.1*0.5v+R_F_Arm*13*0x±0.04*-0.4y±0.04*0.2z±0.04*0.125u±0.125*0.5v+R_Hand*5*0x±0.04*-0.65y±0.04*0.2z±0.04*0b*0.1u±0.1*0.5v+L_Elbow*-0.1y*-0.2z*0.3u*0.5v+L_Wrist*-0.4y*-0.2z*0.25u*0.5v+R_Elbow*-0.1y*0.2z*0.3u*0.5v+R_Wrist*-0.4y*0.2z*0.25u*0.5v+L_Knee*-0.6y*-0.1z*0.45u*0.5v+L_Ankle*-1.05y*-0.1z*0.5u*0.5v+R_Knee*-0.6y*0.1z*0.45u*0.5v+R_Ankle*-1.05y*0.1z*0.5u*0.5v+L_Leg*79*0x±0.08*-0.6y±0.08*-0.1z±0.08*0.225u±0.225*0.5v+R_Leg*79*0x±0.08*-0.6y±0.08*0.1z±0.08*0.225u±0.225*0.5v+L_Calf*37*0x±0.06*-1.05y±0.06*-0.1z±0.06*0.25u±0.25*0.5v+L_Foot*12*0x±0.04*-1.55y±0.04*-0.1z±0.04*0b*0.06u±0.12*0.25v+R_Calf*37*0x±0.06*-1.05y±0.06*0.1z±0.06*0.25u±0.25*0.5v+R_Foot*12*0x±0.04*-1.55y±0.04*0.1z±0.04*0b*0.06u±0.12*0.25v+Torso*406*0x±0.1*-0.3y±0.27*0z±0.17;
+http://localhost/eddie/V.html
