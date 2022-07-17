@@ -1,0 +1,4 @@
+D_New.3KM7GLTP6.25.92;
+G:;
+F:Hexagon=ln*-6*u*v±0.5*3a;
+http://localhost/eddie/V.html

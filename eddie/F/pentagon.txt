@@ -1,0 +1,4 @@
+D_New.3KM7GLRKE.25.92;
+G:;
+F:Pentagon=lin*-5*u*v±0.5*3a;
+http://localhost/eddie/V.html
