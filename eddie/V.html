@@ -89,7 +89,7 @@ function start(){
 function loop(){
 	time= new Date().getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	let editing=document.activeElement==fdiv||document.activeElement==gdiv
+	let editing=document.activeElement==FDiv||document.activeElement==gdiv
 	if(removeF=="")removedF=""
 	else if(removeF!=removedF){
 		DE2F();
@@ -798,12 +798,12 @@ function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
 function vdScript(s){return replacer(s,/!/g,":",/~/g,"!",/∧/g,"&&",/∨/g,"||",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/\+/g,"--+",/---/g,"--",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function getF(s){
-	let start=fdiv.innerText.indexOf(s)
-	let end=fdiv.innerText.indexOf("\n",start)
-	return start>=0?fdiv.innerText.substring(start,(end>=0?end:fdiv.innerText.length)):""
+	let start=FDiv.innerText.indexOf(s)
+	let end=FDiv.innerText.indexOf("\n",start)
+	return start>=0?FDiv.innerText.substring(start,(end>=0?end:FDiv.innerText.length)):""
 }
-function inF(){fdiv.innerText=F;prettifyF()}
-function outF(){F=replacer(fdiv.innerText,/\n/g,"",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
+function inF(){FDiv.innerText=F;prettifyF()}
+function outF(){F=replacer(FDiv.innerText,/\n/g,"",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){gdiv.innerText=G.join(",");prettifyG()}
 function outG(){
 	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uiDiv.style="touch-action:none"
@@ -870,14 +870,14 @@ function prettifyF(){
 	// if(document.getSelection().rangeCount>0){
 	// 	let _range = document.getSelection().getRangeAt(0)
 	// 	let range = _range.cloneRange()
-	// 	range.selectNodeContents(fdiv)
+	// 	range.selectNodeContents(FDiv)
 	// 	range.setEnd(_range.endContainer, _range.endOffset)
 	// 	pos = range.toString().length;
 	// }
-	fdiv.innerHTML=replacer(fdiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
+	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
 	// if(document.getSelection().rangeCount>0){
-	// 	fdiv.focus()
-	// 	try{window.getSelection().collapse(fdiv, pos)}
+	// 	FDiv.focus()
+	// 	try{window.getSelection().collapse(FDiv, pos)}
 	// 	catch{}
 	// }
 }
@@ -898,8 +898,8 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 	<canvas id="glCanvas"></canvas>
 	<canvas id="uiCanvas"></canvas>
 </div></br>
-<div id="dataDiv">
-	<b>F:</b><div id="fdiv" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
+<div id="dataDiv" style="background-color: #000000C0;">
+	<b>F:</b><div id="FDiv" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
 	<b>G:</b><div id="gdiv" style="color:gray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveFileButton" value="save" type="button" onclick="download('D',Dout,'txt')" hidden></input>
