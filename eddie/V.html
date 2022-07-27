@@ -27,7 +27,7 @@ var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px sans-serif",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
 var Me=PointerEvent,MB=[],lMx,lMy,Mx=0,uMx=0,dMx=0,My=0,uMy=0,dMy=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
-var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0,timeZone=new Date().getTimezoneOffset()/60;
+var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0, date=new Date(), timeZone=date.getTimezoneOffset()/60;
 var GPS=".25"+((Math.round(100*(24+(timeZone)%24)/24)/100)+"").replace("0.","."),LAT=0.25,LON=0,ALT=0,ACC=0
 var WS=[],W="",Wd=[],Wl=0,WP="",Wp=81
 var bleDevices=[],bleData=[[],[]],bleSend="",bleSent="",bleDisconnect=-1, bleConnect=-1,bleConnecting=[], bleConnected=[] ,bd=[], bleServiceID="ae36a325-5667-4557-91a0-1174d836761a", bleRxID="ed6e8e07-5950-4bf0-8fa7-5b404e07ade8", bleTxID="ad5856b6-f3ef-4472-bbfa-f2e36a66bf18",bleRx=[],bleTx=[]
@@ -87,7 +87,8 @@ function start(){
 	init()
 }
 function loop(){
-	time= new Date().getTime()
+	date= new Date()
+	time= date.getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
 	let editing=document.activeElement==FDiv||document.activeElement==gdiv
 	if(removeF=="")removedF=""
@@ -795,7 +796,7 @@ function setMB(ev){
 	}
 }
 function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
-function vdScript(s){return replacer(s,/!/g,":",/~/g,"!",/∧/g,"&&",/∨/g,"||",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/\+/g,"--+",/---/g,"--",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
+function vdScript(s){return replacer(s,/!/g,":",/~/g,"!",/∧/g,"&&",/∨/g,"||",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/\+/g,"-0+",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function getF(s){
 	let start=FDiv.innerText.indexOf(s)
@@ -847,7 +848,7 @@ function DE(m,n,s){return D[m][n]+Err(m,n,s);}
 function Err(m,n,s){ if(E[m][n]==0)return 0;else if(s>=0)return E[m][n]*(2*s-1); else return E[m][n]*(2*Math.random()-1)}
 function big(v){return v>61?String.fromCharCode(v+945-62): v>35?String.fromCharCode(v+61):v>9?String.fromCharCode(v+55):v}
 function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))+big(v%60)}
-function HE(){let date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
+function HE(){date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
 function vib(ms){if(抖)navigator.vibrate(ms)}
 function round(v,d){return Math.round(v*Math.pow(10,d))/Math.pow(10,d)}
 function decimal3(v){return round(v,3)}
