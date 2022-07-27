@@ -1,0 +1,4 @@
+D_New.3KM7DDIo5.09.95;
+G:Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4;
+http://localhost/eddie/V.html

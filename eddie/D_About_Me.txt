@@ -1,0 +1,16 @@
+D_About_Me.3KM7Q3HHI.25.92;
+G:T='About_Me',
+today.x=(date.getMonth()+1),
+today.y=date.getFullYear(),
+today.z=date.getDate(),
+dT=0,
+Vu=0.03,
+VP=20,
+Vy=201,
+Vx=1,
+Vz=1,
+Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4,
+this.saveFileButton.hidden=false;
+F:D_About_Eddie_Cheng*0.1u=born_*2p*6x*1986y*7z+met_Sara*2p*7x*2003y*27z+married*2p*3x*2013y*2z+got_Ebba*2p*10x*2010y*21z+got_Neo*2p*4x*2013y*11z+got_Ame*2p*8x*2021y*12z+today*2p*7x*2022y*26z,F_Calendar*2p*0.5r*0.5g*0.5b*0.1u*2a=year_0*-2060x*15z*50u*0.25v*w±0.5+year_1000*-20*6x*1000y*15z*20u*0.25v*w±0.5+year_2000*-20*6x*2000y*15z*20u*0.25v*w±0.5+year_2010*-20*6x*2010y*15z*20u*0.25v*w±0.5+year_2020*-20*6x*2020y*15z*20u*0.25v*w±0.5+Jan*x*2022y*15z±15*0.3r*0.6g+Fb*2x*2022y*14z±14*0.2r*0.5g+Ma*3x*2022y*15z±15*0.1r*0.5g*0.9b+Ap*4x*2022y*15.5z±15.5*0r*0.7g*0.7b+My*5x*2022y*15z±15*0r*0.9g*0.5b+Jn*6x*2022y*15.5z±15.5*0r*0.3b+Jl*7x*2022y*15z±15*0r*0b+Ag*8x*2022y*15.5z±15.5*0.4r*0.8g*0.2b+Sp*9x*2022y*15z±15*0.8r*0.6g*0.4b+Ot*10x*2022y*15.5z±15.5*0.6r*0.4g*0.6b+Nv*11x*2022y*15z±15*0.5r*0.2g*0.8b+Dec*12x*2022y*15.5z±15.5*0.4r*0.4g,D_About=F_Dead*12x*808.8y*15z±15*0.4r*0g*0b+F_Born*0.3y*0.7g+F_Love*0.5y*0.9r*0.5g*0.5b+F_Learn*0.6y*0r*0g+F_Build*0.7y*0r*0b+F_Fire*0.8y*0g*0b+F_Heureka*0.9y*0.7b+F_Family*y*0.7r+F_Secret*1.1y*0.1r*0.1g*0.1b+F_Hidden*1.2y*0r*0g*0b;
+http://localhost/eddie/V.html

@@ -1,0 +1,9 @@
+D_Time_Square.3KM7PNhh8.25.92;
+G:T='Time_Square',
+time.name=time,
+dT=0.01,
+Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4,
+this.saveFileButton.hidden=false;
+F:Time_Square=time*-4*2p*z*u*v±0.5*3a;
+http://localhost/eddie/V.html
