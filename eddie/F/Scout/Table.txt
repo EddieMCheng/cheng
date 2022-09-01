@@ -1,0 +1,4 @@
+D_New.3KM890ag0.25.92;
+G:;
+F:Table*-1x*0.3r*0.7u*3a=leg_0*3x*r*0.9u±1*0.4v+leg_1*3x*r*0.9u±1*0.4v*0.33w+leg_2*3x*r*0.9u±1*0.4v*0.67w+leg_3*r*0.9u±1*0.4v*0.5w+leg_4*r*0.9u±1*0.4v*0.83w+leg_5*r*0.9u±1*0.4v*0.17w+seat_sup*0.4x*-1.2y*0z±1*r+seat_sup_0*2.6x*-1.2y*0z±1*r+table_sup*0.3x*-0.8y*0z±0.6*r+table_sup_0*2.7x*-0.8y*0z±0.6*r+seat*1.5x±1.2*-1.2y*0.8z*r+seat_0*1.5x±1.2*-1.2y*0.7z*r+seat_1*1.5x±1.2*-1.2y*-0.8z*r+seat_2*1.5x±1.2*-1.2y*-0.7z*r+table*1.5x±1.4*-0.8y*r+table_0*1.5x±1.4*-0.8y*0.2z*r+table_1*1.5x±1.4*-0.8y*0.4z*r+table_2*1.5x±1.4*-0.8y*-0.2z*r+table_3*1.5x±1.4*-0.8y*-0.4z*r+;
+http://localhost/eddie/V.html

@@ -1,0 +1,4 @@
+D_New.3KM891Ij7.25.92;
+G:;
+F:Scouts*50*-1p*x±2*z±0.1*0.1u±0.03=hat+scarf*0.1x*0.9y*r+shirt*0.5y±0.5*b*3a+pants*0y±0.5*0.5b*3a+pack*0.2x*0.5y±0.3*3a,Scout_Leader*-1x*z*0.13u=stick*2y±2*0.3r*3a+flag*0.3x±0.3*4y*b*3a+hat_0+scarf_0*0.1x*0.9y*r+shirt_0*0.5y±0.5*b*3a+pants_0*0y±0.5*0.5b*3a+pack_0*0.2x*0.5y±0.3*3a;
+http://localhost/eddie/V.html

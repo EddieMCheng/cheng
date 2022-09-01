@@ -1,0 +1,10 @@
+D_New.3KM891RVG.25.92;
+G:Bb=0,
+Va=0,
+CD[7]=0,
+CD[8]=0,
+CD[9]=0,
+Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4;
+F:Field=plane*-20*-0.05y*0.5r*g*0.4b*4u*0.25v*w±0.5*7a,Scouts*50*-1p*x±2*z±0.1*0.1u±0.03=hat+scarf*0.1x*0.9y*r+shirt*0.5y±0.5*b*3a+pants*0y±0.5*0.5b*3a+pack*0.2x*0.5y±0.3*3a,Scout_Leader*-1x*z*0.13u=stick*2y±2*0.3r*3a+flag*0.3x±0.3*4y*r*3a+hat_0+scarf_0*0.1x*0.9y*r+shirt_0*0.5y±0.5*b*3a+pants_0*0y±0.5*0.5b*3a+pack_0*0.2x*0.5y±0.3*3a;
+http://localhost/eddie/V.html

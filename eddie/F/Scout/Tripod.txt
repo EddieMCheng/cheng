@@ -1,0 +1,4 @@
+D_New.3KM890AEL.25.92;
+G:;
+F:Tripod=leg_0*0.3r*0.9u±1*0.4v*3a+leg_1*0.3r*0.9u±1*0.4v*0.33w*3a+leg_2*0.3r*0.9u±1*0.4v*0.67w*3a;
+http://localhost/eddie/V.html
