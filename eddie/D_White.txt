@@ -1,0 +1,11 @@
+D_New.3KM9ECNK2.09.95;
+G:Va=0,
+Vzu=4,
+VP=2,
+CD[7]=0,
+CD[8]=0,
+CD[9]=0,
+Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4;
+F:Box*-4*w±0.5=lin*-4*z*1.414u*0.375v±0.5*3a;
+https://cheng.se/git/cheng/eddie/V.html
