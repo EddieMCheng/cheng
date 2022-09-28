@@ -894,7 +894,7 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 
 </style>
 </head><body onload="start()">
-<div id="uiDiv">
+<div id="uiDiv">	
 	<canvas id="imageCanvas"></canvas>
 	<canvas id="glCanvas"></canvas>
 	<canvas id="uiCanvas"></canvas>
@@ -906,6 +906,7 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 	<input id="saveFileButton" value="save" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
 <input id="loadImageButton" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
+<input id="fullscreenButton" type="button"onclick="body.requestFullscreen()" value="fullscreen" hidden></input>
 <input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
  </div>
 </body></html>
