@@ -1,0 +1,16 @@
+D_Mobile_Tutorial.3KM9UDZE5.09.95;
+G:Bb=0,
+Vr=1,
+Vg=1,
+Vb=1,
+Vzu=3,
+VP=2,
+CD[3]=2,
+CD[7]=0,
+CD[8]=0,
+CD[9]=0,
+SW=410,
+SH=420,
+Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4,
+this.document.body.style.background='
