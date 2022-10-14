@@ -20,7 +20,7 @@
 var F="Box*-4*w±.5=Square*-4*z*1.414u*.375v±.5*3a"
 var G=["Vw=Vw-(lMx-Mx)/4","Vo=Vo+(lMy-My)/4"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var Ix=0,Iy=0,Iu=1,Id=[],Idn=0
+var Ix=0,Iy=0,Iu=1,Id=[],Idn=0, YT=''
 var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,Dout,T="New",alertUserOnError=false, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
@@ -66,7 +66,7 @@ function start(){
 		if(!editFocus)Ev[ev.code] = true
 		setKeyB(ev)
 		if(ev.code=="Escape"){DE2F();inF();inG();go=1}
-		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outF();go=1}
+		else if(ev.code=="Enter"&&ev.ctrlKey){outG();outF();prettifyF();prettifyG();go=1}
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0";Ev[ev.code] = false}
@@ -181,7 +181,7 @@ function readTextUrl(file, add){
 		}
 	})
 }
-function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(imgInput.files[0])}
+function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(loadImageButton.files[0])}
 function updateI(idx){
 	if(I){
 		Idn=1
@@ -306,6 +306,7 @@ function setVar(s){
 					dataDiv.style.top=uiDiv.style.height
 					gl.viewport(0,0,SW,SH)
 				break
+				case "YT":player.src="http://www.youtube.com/embed/"+YT+"?enablejsapi=1"; console.log(player.src);break
 				case "Vr": case "Vg":case "Vb":
 				case "Va":gl.clearColor(Vr,Vg,Vb,Va);break
 				case "LS":gl.lineWidth(LS);break
@@ -867,20 +868,14 @@ function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 function getSpanColor(s,c){return `<span style='color:${c}'>${s}</span>`}
 function prettifyF(){
-	//let pos = 0
-	// if(document.getSelection().rangeCount>0){
-	// 	let _range = document.getSelection().getRangeAt(0)
-	// 	let range = _range.cloneRange()
-	// 	range.selectNodeContents(FDiv)
-	// 	range.setEnd(_range.endContainer, _range.endOffset)
-	// 	pos = range.toString().length;
-	// }
+	// var el = document.getElementById("FDiv")
+    // var range = document.createRange()
+    // var sel = window.getSelection()
 	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
-	// if(document.getSelection().rangeCount>0){
-	// 	FDiv.focus()
-	// 	try{window.getSelection().collapse(FDiv, pos)}
-	// 	catch{}
-	// }
+	// range.setStart(el.childNodes[1], 0)
+    // range.collapse(true)
+    // sel.removeAllRanges()
+    // sel.addRange(range)
 }
 function prettifyG(){
 gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
@@ -889,15 +884,20 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 <style>
 	html,body{margin:0px;padding:0; font-family:'Courier New', monospace; color:white}
 	canvas{position:fixed}
+	#player{position:fixed;z-index:20}
 	#imageCanvas{z-index:-10}
 	#dataDiv{position:absolute;width:100%}
 </style>
 </head><body onload="start()">
-<div id="uiDiv">	
+
+<div id="uiDiv">
+	
 	<canvas id="imageCanvas"></canvas>
 	<canvas id="glCanvas"></canvas>
 	<canvas id="uiCanvas"></canvas>
-</div></br>
+	<iframe id="player" type="text/html" src=""
+	frameborder="0"></iframe>
+
 <div id="dataDiv" style="background-color: #000000C0;">
 	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
 	<b>;<br>G:</b><div id="gdiv" style="color:lightgray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
