@@ -109,6 +109,7 @@ function loop(){
 	}
 	if(addF=="")addedF=""
 	else if(addF!=addedF){
+		DE2F()
 		F+="+"+addF
 		addedF=addF
 		F2DE();inF()
@@ -321,6 +322,7 @@ function updateL(){
 	L=[]
 	for(var i=0; i<C.length; i++){L[C[i]]=i}
 	L["#N"]=D.length-1
+	L["#N-1"]=D.length-2
 	for(var j=0;j<D.length;j++){
 		var par=j-D[j][2]
 		var nm=D[j][0].split(".")[0].split("→")[0];
@@ -707,8 +709,38 @@ async function execute(){
 			bleRx[bleConnect].idx=bleConnect;
 			bleRx[bleConnect].oncharacteristicvaluechanged=function(ev){
 				let data=decoder.decode(ev.target.value)
-				console.log(this.idx+'>' + data);
-				bleData[this.idx]=data.split(" ");
+				let buff = new Uint8Array(ev.target.value.buffer)
+
+				
+
+				if (buff[4] == 109) {
+					
+					let time = (buff[0] << 24) | (buff[1] << 16) | (buff[2] << 8) | buff[3]
+					let ax = ((buff[5] << 24 >> 24 << 8) | buff[6]); //ugly fix to sign an unsigned integer
+					let ay = ((buff[7] << 24 >> 24 << 8) | buff[8]);
+					let az = ((buff[9] << 24 >> 24 << 8) | buff[10]);
+					let gx = ((buff[11] << 24 >> 24 << 8) | buff[12]) * 2;
+					let gy = ((buff[13] << 24 >> 24 << 8) | buff[14]) * 2;
+					let gz = ((buff[15] << 24 >> 24 << 8) | buff[16]) * 2;
+
+					bleData[this.idx]=[time,"m",ax,ay,az,gx,gy,gz];
+					}
+					//if fourth byte is 'p'
+					else if (buff[4] == 112) {
+
+
+						let timeT = (buff[0] << 24) | (buff[1] << 16) | (buff[2] << 8) | buff[3]
+						let Ax = ((buff[5] << 24 >> 24 << 8) | buff[6]);
+						let Ay = ((buff[7] << 24 >> 24 << 8) | buff[8]);
+						let Az = ((buff[9] << 24 >> 24 << 8) | buff[10]);
+						let lt = ((buff[11] << 24 >> 24 << 8) | buff[12]);
+						let rt = ((buff[13] << 24 >> 24 << 8) | buff[14]);
+						bleData[this.idx]=[time,"p",Ax,Ay,Az,lt,rt];
+					}
+					else {
+						bleData[this.idx]=data.split(" ")
+					}
+					console.log(this.idx,bleData[this.idx])
 			}
 			await bleRx[bleConnect].startNotifications();
 			
@@ -810,7 +842,7 @@ function inG(){gdiv.innerText=G.join(",");prettifyG()}
 function outG(){
 	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uiDiv.style="touch-action:none"
 	else uiDiv.style="touch-action:auto"
-	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤",/ /g,",").split(",");
+	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
 	inG()
 	Geval();if(autosave)urlTFG()
 }
