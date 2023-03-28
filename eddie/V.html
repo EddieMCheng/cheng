@@ -20,7 +20,7 @@
 var F="Box*-4*w±.5=Square*-4*z*1.414u*.375v±.5*3a"
 var G=["Vw=Vw-(lMx-Mx)/4","Vo=Vo+(lMy-My)/4"],GB=[],GBd=[], GV=[], Gp=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
-var Ix=0,Iy=0,Iu=1,Id=[],Idn=0, YT=''
+var Ix=0,Iy=0,Iu=1,Id=[],Idn=0, YT='',UP=[], blur=0
 var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,Dout,T="New",alertUserOnError=false, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
@@ -258,7 +258,12 @@ function record(){
 }
 
 function updateUP(i,font,alpha){
+	if(UP.length==0 ||(UP[UP.length] && UP[UP.length][0]!=i))UP.push([i,font,alpha])
+}
+function drawUP(){
+	for(let j=0; j<UP.length;j++)
 	if(U){
+		let i=UP[j][0], font=UP[j][1], alpha=UP[j][2]
 		var id=(D[i][0]).split(".")[0].split("→")[0]
 		var goName=(L[id+".name"]+"")
 		var goFont=L[id+".font"]
@@ -455,7 +460,7 @@ function DE2B(){
 	Bdv=[];Bdc=[];n=0
 	let tdv=[],tdc=[]
 	if(U)U2d.clearRect(0,0,U.width,U.height);
-
+	UP = []
 	var Pp=1,Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pd,Pend, Pi=0, arr=[]
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
@@ -590,7 +595,9 @@ function DE2B(){
 			Array.prototype.push.apply(Bdv,tdv[Ni]);Array.prototype.push.apply(Bdc,tdc[Ni])
 		}
 		n+=jlen+nn
-	} 
+	}
+	if(blur>0)glCanvas.style="filter:blur("+blur+"px)"
+	drawUP()
 	dvi[Np.length]=Bdv.length
 	算=Math.round(n)
 	let alertsExists=false
