@@ -372,8 +372,29 @@ function DE2F(){
 		else if(i<N && D[i+1][2]!=0) F+="+"
 	}
 }
+function loadFUrl(file, idx){
+	fetch(file+".txt").then(function(response){
+		if(file.includes("_") && response.status==404)loadFUrl(file.replace("_","/"),idx)
+		else return response.text();
+	}).then(function(data){
+		if(data){
+			arr=data.split(",")
+			FArr=F.split(",")
+			FArr.splice(idx,1,...arr)
+			F=FArr.join(",")
+			F2DE()
+		}
+	})
+}
 function F2DE(){
 	var commas=F.split(",")
+	for(let i=0;i<commas.length;i++){
+		if(commas[i].substr(0,2)=="F_"){
+			let file = commas[i].split("=")[0]
+			loadFUrl(file,i)
+			break;
+		}
+	}
 	N=-1
 	Np=[],D=[],E=[],Nl=[],Bau=0
 	for(var I=0; I<commas.length; I++){
