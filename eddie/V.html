@@ -386,8 +386,11 @@ function loadFileUrl(file, idx,type){
 		}
 		else if(data && type=="G"){
 			let arr=data.split(",")
+			console.log({arr},{G})
 			G.splice(idx,1,...arr)
+			console.log({G})
 			Geval()
+			inG()
 		}
 	})
 }
@@ -397,7 +400,7 @@ function F2DE(){
 		if(commas[i].substr(0,2)=="F_"){
 			let file = commas[i].split("=")[0]
 			loadFileUrl(file,i,"F")
-			break;
+			return;
 		}
 	}
 	N=-1
@@ -443,7 +446,7 @@ function F2DE(){
 		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 	}
-	updateL();Geval();go=1;
+	updateL();//Geval();go=1;
 }
 function Geval(){
 	if(G&&G!=""){
@@ -451,7 +454,7 @@ function Geval(){
 			if(G[i].replace("\n","").substr(0,2)=="G_"){
 				let file = G[i].split("=")[0]
 				loadFileUrl(file,i,"G")
-				break;
+				break
 			}
 		}
 		GV=[],Gp=[],GB=[],GBd=[]
