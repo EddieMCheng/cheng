@@ -372,17 +372,22 @@ function DE2F(){
 		else if(i<N && D[i+1][2]!=0) F+="+"
 	}
 }
-function loadFUrl(file, idx){
+function loadFileUrl(file, idx,type){
 	fetch(file+".txt").then(function(response){
-		if(file.includes("_") && response.status==404)loadFUrl(file.replace("_","/"),idx)
+		if(file.includes("_") && response.status==404)loadFileUrl(file.replace("_","/"),idx,type)
 		else return response.text();
 	}).then(function(data){
-		if(data){
-			arr=data.split(",")
+		if(data && type=="F"){
+			let arr=data.split(",")
 			FArr=F.split(",")
 			FArr.splice(idx,1,...arr)
 			F=FArr.join(",")
 			F2DE()
+		}
+		else if(data && type=="G"){
+			let arr=data.split(",")
+			G.splice(idx,1,...arr)
+			Geval()
 		}
 	})
 }
@@ -391,7 +396,7 @@ function F2DE(){
 	for(let i=0;i<commas.length;i++){
 		if(commas[i].substr(0,2)=="F_"){
 			let file = commas[i].split("=")[0]
-			loadFUrl(file,i)
+			loadFileUrl(file,i,"F")
 			break;
 		}
 	}
@@ -442,11 +447,18 @@ function F2DE(){
 }
 function Geval(){
 	if(G&&G!=""){
+		for(let i=0;i<G.length;i++){
+			if(G[i].replace("\n","").substr(0,2)=="G_"){
+				let file = G[i].split("=")[0]
+				loadFileUrl(file,i,"G")
+				break;
+			}
+		}
 		GV=[],Gp=[],GB=[],GBd=[]
 		for(var i=0;i<G.length;i++){
 			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i].replace(/\n/g,"")
 			if(Gi!=""){
-				let GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:null
+				let GiPair=Gi.split("="),Gi0=GiPair[0]?GiPair[0]:null,Gi1=GiPair[1]?GiPair[1]:""
 				let idArr=Gi0?Gi0.split("."):"",id0=idArr[0]?idArr[0]:null,id1=idArr[idArr.length-1]
 				let Bi=Gi1.indexOf("{"),Bj=Gi1.indexOf("}")
 				let Bval=Bi>-1?Gi1.slice(Bi+1,Bj):""
