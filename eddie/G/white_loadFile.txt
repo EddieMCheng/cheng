@@ -1,5 +1,4 @@
-D_New.3KM8RMii6.09.95;
-G:Bb=0,
+Bb=0,
 Va=0,
 Vu=0.2,
 VP=2,
@@ -8,6 +7,4 @@ CD[8]=0,
 CD[9]=0,
 Vw=Vw-(lMx-Mx)/4,
 Vo=Vo+(lMy-My)/4,
-this.loadFileButton.hidden=false;
-F:;
-http://localhost/eddie/V.html
+this.loadFileButton.hidden=false

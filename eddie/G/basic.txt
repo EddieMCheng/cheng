@@ -1,5 +1,4 @@
-D_New.3KM7JKlDI.25.92;
-G:Vw=Vw-(lMx-Mx)/4,
+Vw=Vw-(lMx-Mx)/4,
 Vo=Vo+(lMy-My)/4,
 dT=0,
 VP=2,
@@ -10,6 +9,4 @@ Vz=0,
 SW=this.window.innerWidth,
 SH=this.window.innerHeight,
 this.loadFileButton.hidden=false,
-this.saveFileButton.hidden=false;
-F:;
-http://localhost/eddie/V.html
+this.saveFileButton.hidden=false

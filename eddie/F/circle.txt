@@ -1,4 +1,1 @@
-D_New.3KM7GLUmM.25.92;
-G:;
-F:Circle=ln*-50*u*v±0.5*3a;
-http://localhost/eddie/V.html
+Circle=ln*-50*u*v±0.5*3a

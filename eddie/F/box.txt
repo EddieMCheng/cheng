@@ -1,4 +1,1 @@
-D_New.3KM7GLOcH.25.92;
-G:;
-F:Box*-4*w±0.5=lin*-4*z*1.414u*0.375v±0.5*3a;
-http://localhost/eddie/V.html
+Box*-4*w±0.5=lin*-4*z*1.414u*0.375v±0.5*3a

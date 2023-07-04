@@ -1,4 +1,1 @@
-D_New.3KM7GLQb0.25.92;
-G:;
-F:Square=lin*-4*u*0.125v±0.5*3a;
-http://localhost/eddie/V.html
+Square=lin*-4*u*0.125v±0.5*3a
