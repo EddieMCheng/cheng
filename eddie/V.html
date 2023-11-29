@@ -25,6 +25,7 @@ var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,Dout,T="New",alertUserOnError=false, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px sans-serif",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
+var targetD=[],targetE=[],targetSpeed=2
 var Me=PointerEvent,MB=[],lMx,lMy,Mx=0,uMx=0,dMx=0,My=0,uMy=0,dMy=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
 var Gfrag,Gvert,vibms,go=1,time=0,dT=0,dA=1,qTime=0,sTime=0,busTime=0, ping=0, date=new Date(), timeZone=date.getTimezoneOffset()/60;
@@ -312,7 +313,7 @@ function setVar(s){
 					dataDiv.style.top=uiDiv.style.height
 					gl.viewport(0,0,SW,SH)
 				break
-				case "YT":player.src="http://www.youtube.com/embed/"+YT+"?enablejsapi=1"; console.log(player.src);break
+				case "YT":player.src="https://www.youtube.com/embed/"+YT+"?enablejsapi=1"; console.log(player.src);break
 				case "Vr": case "Vg":case "Vb":
 				case "Va":gl.clearColor(Vr,Vg,Vb,Va);break
 				case "LS":gl.lineWidth(LS);break
@@ -404,7 +405,7 @@ function F2DE(){
 		}
 	}
 	N=-1
-	Np=[],D=[],E=[],Nl=[],Bau=0
+	Np=[],targetD=[],targetE=[],Nl=[],Bau=0
 	for(var I=0; I<commas.length; I++){
 		while(commas[I]=="")I++;
 		if(I>commas.length-1)break;
@@ -414,13 +415,13 @@ function F2DE(){
 		for(var i=0; i<adds.length; i++){
 			N++
 			if(i>0){Np_.push(N);Nl_.push(adds.length-1)}
-			D[N]=[], E[N]=[],	D[N][0]="", D[N][1]=i==0?CP[1]:CD[1];	D[N][2]=i
+			targetD[N]=[], targetE[N]=[],	targetD[N][0]="", targetD[N][1]=i==0?CP[1]:CD[1];	targetD[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
 				var props=multis[j].split("±")
 				var prop=props[0]
 				var number=Number(prop)
-				if(!isNaN(number)){D[N][1]*=number}
+				if(!isNaN(number)){targetD[N][1]*=number}
 				else{
 					var propValue=parseFloat(prop)
 					var valueStrLen
@@ -432,17 +433,17 @@ function F2DE(){
 					if(C.includes(propName)){propIndex=L[propName]}
 					else{propIndex=1}
 					if(propIndex==1&&propName!=C[3]){
-						if(D[N][0])D[N][0]+="."
-						D[N][0] += propName
-						E[N][0] = props[1]
+						if(targetD[N][0])targetD[N][0]+="."
+						targetD[N][0] += propName
+						targetE[N][0] = props[1]
 					}
-					if(isNaN(D[N][propIndex]))D[N][propIndex]=1
-					D[N][propIndex]*=propValue;		E[N][propIndex]=props[1] ? parseFloat(props[1]):D[N][2]==0?0:CE[propIndex]
+					if(isNaN(targetD[N][propIndex]))targetD[N][propIndex]=1
+					targetD[N][propIndex]*=propValue;		targetE[N][propIndex]=props[1] ? parseFloat(props[1]):targetD[N][2]==0?0:CE[propIndex]
 				}
 			}
-			for(var ii=1; ii<C.length; ii++){if(isNaN(D[N][ii])) D[N][ii]=D[N][2]==0?CP[ii]:CD[ii];	if(isNaN(E[N][ii])) E[N][ii]=D[N][2]==0?0:CE[ii]}
+			for(var ii=1; ii<C.length; ii++){if(isNaN(targetD[N][ii])) targetD[N][ii]=targetD[N][2]==0?CP[ii]:CD[ii];	if(isNaN(targetE[N][ii])) targetE[N][ii]=targetD[N][2]==0?0:CE[ii]}
 		}
-		var LEN=Math.abs(D[par][1])
+		var LEN=Math.abs(targetD[par][1])
 		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 	}
@@ -492,7 +493,26 @@ function Geval(){
 		}
 	}
 }
+const assignMean = (target, destination) => {
+        for (let i = 0; i < target.length; i++) {
+            if (typeof destination[i] === 'undefined') {
+                destination[i] = [];
+            }
+            for (let j = 0; j < target[i].length; j++) {
+                if (typeof destination[i][j] === 'undefined') {
+                    destination[i][j] = target[i][j];
+                } else if (typeof target[i][j] === 'number' && typeof destination[i][j] === 'number') {
+					if(target[i][j]>destination[i][j])destination[i][j] = ceil((destination[i][j]*(targetSpeed-1) + target[i][j]) / targetSpeed,3);
+                    else destination[i][j] = floor((destination[i][j]*(targetSpeed-1) + target[i][j]) / targetSpeed,3);
+                } else {
+                    destination[i][j] = target[i][j];
+                }
+            }
+        }
+    };
+
 function DE2B(){
+	assignMean(targetD,D);assignMean(targetE,E)
 	Bdv=[];Bdc=[];n=0
 	let tdv=[],tdc=[]
 	if(U)U2d.clearRect(0,0,U.width,U.height);
@@ -927,6 +947,8 @@ function big60(v){return ""+big(Math.floor(v/3600))+big(Math.floor((v%3600)/60))
 function HE(){date=new Date();return big60(11900+date.getYear())+big(date.getMonth()+1)+big(date.getDate())+big(date.getHours())+big(date.getMinutes())+big(date.getSeconds())+big(Math.floor(date.getMilliseconds()/40))}
 function vib(ms){if(抖)navigator.vibrate(ms)}
 function round(v,d){return Math.round(v*Math.pow(10,d))/Math.pow(10,d)}
+function ceil(v,d){return Math.ceil(v*Math.pow(10,d))/Math.pow(10,d)}
+function floor(v,d){return Math.floor(v*Math.pow(10,d))/Math.pow(10,d)}
 function decimal3(v){return round(v,3)}
 function decimal4(v){return round(v,4)}
 function lim(s,s0,s1,t0,t1){if(!t0||!t1)return s>s1?s1:s<s0?s0:s; else return ((s>s1?s1:s<s0?s0:s)-s0)*(t1-t0)/(s1-s0)+t0}
@@ -943,14 +965,7 @@ function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 function getSpanColor(s,c){return `<span style='color:${c}'>${s}</span>`}
 function prettifyF(){
-	// var el = document.getElementById("FDiv")
-    // var range = document.createRange()
-    // var sel = window.getSelection()
 	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
-	// range.setStart(el.childNodes[1], 0)
-    // range.collapse(true)
-    // sel.removeAllRanges()
-    // sel.addRange(range)
 }
 function prettifyG(){
 gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
