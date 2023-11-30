@@ -91,7 +91,7 @@ function loop(){
 	date= new Date()
 	time= date.getTime()
 	if(dT!=0&&time-qTime>dT*1000){qTime=time;go=1}
-	let editing=document.activeElement==FDiv||document.activeElement==gdiv
+	let editing=document.activeElement==FDiv||document.activeElement==GDiv
 	if(removeF=="")removedF=""
 	else if(removeF!=removedF){
 		DE2F();
@@ -117,7 +117,7 @@ function loop(){
 	}
 	if(time-sTime>1000 && !editing){
 		sTime=time
-		if(gdiv.innerText.includes("LAT")&&gdiv.innerText.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
+		if(GDiv.innerText.includes("LAT")&&GDiv.innerText.includes("LON")){navigator.geolocation.getCurrentPosition(showPosition)}
 		Dout="D_"+T+"."+HE()+GPS+";G:"+G+";F:"+F+";"+A;
 		if(WP){
 			var dArr=WP.split(" ");Wl=dArr.length
@@ -281,6 +281,7 @@ function drawUP(){
 	}
 }
 function download(type, text, ext,stamp) {
+	click=0
 	filename=stamp? type+"_"+T+"_"+HE()+GPS+"."+ext:type+"_"+T+"."+ext
 	var pom = document.createElement('a'); pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + text.replace(/;/g,";\n" )); pom.setAttribute('download', filename);
 	if (document.createEvent) {var event = document.createEvent('MouseEvents'); event.initEvent('click', true, true);pom.dispatchEvent(event);}
@@ -350,8 +351,8 @@ function updateL(){
 function DE2F(){
 	F=""
 	var C0
-	for(var i=0; i<N+1; i++){
-		if(D&&D[i][2]==0)C0=CP
+	for(var i=0; i<N+1; i++){	
+		if(D[i][2]==0)C0=CP
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
 		F+=D[i][0]
@@ -901,11 +902,11 @@ function getF(s){
 }
 function inF(){FDiv.innerText=F;prettifyF()}
 function outF(){F=replacer(FDiv.innerText,/\n/g,"",/\+-/g,"±",/ /g,"_",/-->/g,"→");F2DE();DE2F();if(autosave)urlTFG()}
-function inG(){gdiv.innerText=G.join(",");prettifyG()}
+function inG(){GDiv.innerText=G.join(",");prettifyG()}
 function outG(){
-	if(gdiv.innerText.includes("Mx")||gdiv.innerText.includes("My")||gdiv.innerText.includes("Me"))uiDiv.style="touch-action:none"
+	if(GDiv.innerText.includes("Mx")||GDiv.innerText.includes("My")||GDiv.innerText.includes("Me"))uiDiv.style="touch-action:none"
 	else uiDiv.style="touch-action:auto"
-	G=replacer(gdiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
+	G=replacer(GDiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
 	inG()
 	Geval();if(autosave)urlTFG()
 }
@@ -921,6 +922,7 @@ function getZ(s){let t=dvZ[L[s]];return t?t:0}
 function getB(s,i){let pr=getPairL(s),v=GBd[pr.l][pr.r][i]; return v?v:0}
 function getD(s){let pr=getPairL(s); return pr.l||pr.l==0?getValue(pr.r,D[pr.l][pr.r]):0}
 function getE(s){let pr=getPairL(s); return pr.l||pr.l==0?getValue(pr.r,E[pr.l][pr.r]):0}
+function Fname(i){return D[i][0]}
 function getPairL(s){let pair=s.split("."); pair.l=L[pair[0]]; pair.r=L[pair[1]]; return pair}
 function getValue(i,val){v=i==0?val:parseFloat(val);return v?v:0}
 function getL(s){return L[s]}
@@ -1011,7 +1013,7 @@ let prettifyF=()=>{
 	setCursorPosition(FDiv, cursorPos);
 }
 let prettifyG=()=>{
-gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
+GDiv.innerHTML=replacer(GDiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
 }
 </script>
 <style>
@@ -1034,7 +1036,7 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 </div>
 <div id="dataDiv" style="background-color: #000000C0;">
 	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true;prettifyF()" oninput="prettifyF()" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
-	<b>;<br>G:</b><div id="gdiv" style="color:lightgray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false">Block <b>bold</b> quote</div>
+	<b>;<br>G:</b><div id="GDiv" style="color:lightgray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false">Block <b>bold</b> quote</div>
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveFileButton" value="save" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
