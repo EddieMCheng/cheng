@@ -351,7 +351,7 @@ function DE2F(){
 	F=""
 	var C0
 	for(var i=0; i<N+1; i++){
-		if(D[i][2]==0)C0=CP
+		if(D&&D[i][2]==0)C0=CP
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
 		F+=D[i][0]
@@ -964,10 +964,53 @@ function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 function getSpanColor(s,c){return `<span style='color:${c}'>${s}</span>`}
-function prettifyF(){
-	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
+function getCursorPosition(editableDiv) {
+    const sel = window.getSelection();
+    if (sel.rangeCount === 0) return -1; // No selection
+
+    const range = sel.getRangeAt(0);
+    const preCaretRange = range.cloneRange();
+    preCaretRange.selectNodeContents(editableDiv);
+    preCaretRange.setEnd(range.endContainer, range.endOffset);
+    return preCaretRange.toString().length;
 }
-function prettifyG(){
+function setCursorPosition(editableDiv, pos) {
+	position = pos ==-1?0:pos;
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.setStart(editableDiv, 0);
+    range.collapse(true);
+
+    const nodeStack = [editableDiv];
+	let node, foundStart = false, stop = false;
+
+    while (!stop && (node = nodeStack.pop())) {
+        if (node.nodeType === 3) {
+            const nextCharIndex = position - node.length;
+            if (nextCharIndex <= 0) {
+                range.setStart(node, position);
+                range.collapse(true);
+                stop = true;
+            }
+            position = nextCharIndex;
+        } else {
+            let i = node.childNodes.length;
+            while (i--) {
+                nodeStack.push(node.childNodes[i]);
+            }
+        }
+    }
+
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
+let prettifyF=()=>{
+	const cursorPos = getCursorPosition(FDiv);
+	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+-/,"±",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
+	setCursorPosition(FDiv, cursorPos);
+}
+let prettifyG=()=>{
 gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
 }
 </script>
@@ -977,27 +1020,26 @@ gdiv.innerHTML=replacer(gdiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 	#player{position:fixed;z-index:20}
 	#imageCanvas{z-index:-10}
 	#dataDiv{position:absolute;width:100%}
-::-webkit-scrollbar {width: 9px;}
+::-webkit-scrollbar {width: 9px;height:9px}
 ::-webkit-scrollbar-thumb {background: #333;}
 </style>
 </head><body onload="start()">
 
 <div id="uiDiv">
-	
 	<canvas id="imageCanvas"></canvas>
 	<canvas id="glCanvas"></canvas>
 	<canvas id="uiCanvas"></canvas>
 	<iframe id="player" type="text/html" src=""
 	frameborder="0"></iframe>
-
+</div>
 <div id="dataDiv" style="background-color: #000000C0;">
-	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onfocusout="prettifyF();outF();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
-	<b>;<br>G:</b><div id="gdiv" style="color:lightgray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false" oninput="">Block <b>bold</b> quote</div>
+	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true;prettifyF()" oninput="prettifyF()" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
+	<b>;<br>G:</b><div id="gdiv" style="color:lightgray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false">Block <b>bold</b> quote</div>
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveFileButton" value="save" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
 <input id="loadImageButton" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
 <input id="fullscreenButton" type="button"onclick="body.requestFullscreen()" value="fullscreen" hidden></input>
 <input type="button" onclick="navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})" value="START AR" hidden></input>
- </div>
+</div>
 </body></html>
