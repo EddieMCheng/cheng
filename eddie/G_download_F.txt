@@ -1,0 +1,1 @@
+downloadF=click?download('F')(this.FDiv.innerText)('txt'),

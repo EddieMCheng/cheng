@@ -1,0 +1,1 @@
+downloadG=click?download('G_download_G')(this.GDiv.innerText)('txt'),
