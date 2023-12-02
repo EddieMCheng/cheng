@@ -1002,18 +1002,19 @@ function setCursorPosition(editableDiv, pos) {
             }
         }
     }
-
     sel.removeAllRanges();
     sel.addRange(range);
 }
 
-let prettifyF=()=>{
-	const cursorPos = getCursorPosition(FDiv);
-	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+-/,"±",/\+/g,"+</br>",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
-	setCursorPosition(FDiv, cursorPos);
+let prettifyF=(set)=>{
+	const cursorPos=set?getCursorPosition(FDiv):0;
+	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+-/,"±",/\+/g,"+</br>",/ \*/g,"*",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
+	if(set)setCursorPosition(FDiv, cursorPos);
 }
-let prettifyG=()=>{
-GDiv.innerHTML=replacer(GDiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
+let prettifyG=(set)=>{
+	const cursorPos=set?getCursorPosition(GDiv):0;
+	GDiv.innerHTML=replacer(GDiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
+	if(set)setCursorPosition(GDiv, cursorPos);
 }
 </script>
 <style>
@@ -1035,8 +1036,8 @@ GDiv.innerHTML=replacer(GDiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F
 	frameborder="0"></iframe>
 </div>
 <div id="dataDiv" style="background-color: #000000C0;">
-	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true;prettifyF()" oninput="prettifyF()" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
-	<b>;<br>G:</b><div id="GDiv" style="color:lightgray" contenteditable="true"  oninput="" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false">Block <b>bold</b> quote</div>
+	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true;prettifyF()" oninput="prettifyF(1)" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
+	<b>;<br>G:</b><div id="GDiv" style="color:lightgray" contenteditable="true"  oninput="prettifyG(1)" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false">Block <b>bold</b> quote</div>
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveFileButton" value="save" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 <br>
