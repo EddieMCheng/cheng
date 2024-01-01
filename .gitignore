@@ -1,0 +1,6 @@
+*.crt
+*.pem
+*.pem
+*.py
+*.bat
+.vscode
