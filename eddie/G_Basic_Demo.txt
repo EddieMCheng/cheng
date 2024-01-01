@@ -1,0 +1,5 @@
+dT=0.04,
+SW=1911,
+SH=1080,
+T=Fname(0),
+downloadF=click?download('F')(this.FDiv.innerText)('txt'),

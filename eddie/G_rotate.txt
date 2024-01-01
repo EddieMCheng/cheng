@@ -1,0 +1,2 @@
+Vw=Vw-(lMx-Mx)/4,
+Vo=Vo+(lMy-My)/4

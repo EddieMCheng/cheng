@@ -1,0 +1,2 @@
+Basic=
+random*0x±1

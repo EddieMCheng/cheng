@@ -1,0 +1,2 @@
+Basic=
+triangle*-3*u*0v±0.5*3a

@@ -1008,7 +1008,7 @@ function setCursorPosition(editableDiv, pos) {
 
 let prettifyF=(set)=>{
 	const cursorPos=set?getCursorPosition(FDiv):0;
-	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+-/,"±",/\+/g,"+</br>",/ \*/g,"*",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"));
+	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",</br></br>",/\=/g,"=</br>",/\+-/,"±",/\+/g,"+</br>",/ \*/g,"*",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"))
 	if(set)setCursorPosition(FDiv, cursorPos);
 }
 let prettifyG=(set)=>{
