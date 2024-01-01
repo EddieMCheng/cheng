@@ -1,64 +1,67 @@
 <!doctype html>
 
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'>
-    <meta name='mobile-web-app-capable' content='yes'>
-    <meta name='apple-mobile-web-app-capable' content='yes'>
 
-    <title>Immersive AR Session</title>
-  </head>
-  <body>
-    <header></header>
-    <script type="text/javascript">
-    
-      let xrSpace = null;
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'>
+  <meta name='mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-capable' content='yes'>
 
-      // WebGL scene globals.
-      let gl = null;
- 
-      function initXR() {
-      	let btn=document.createElement("input")
-      	btn.type="button"
-      	btn.value="START AR"
-      	btn.onclick=xrStart
-      	document.querySelector('header').appendChild(btn);
-      }
-	
-      function xrStart() {
-        navigator.xr.requestSession('immersive-ar').then((session)=>{xrStarted(session)})
-      }
+  <title>Immersive AR Session</title>
+</head>
 
-      function initGL() {
-        if (gl)
-          return;
+<body>
+  <header></header>
+  <script type="text/javascript">
 
-		let canvas=document.createElement("canvas")
-        gl=canvas.getContext("webgl",{xrCompatible:true})
-        document.body.appendChild(canvas);
-      }
+    let xrSpace = null;
 
-      function xrStarted(session) {
-        initGL();
-        session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
-        session.requestReferenceSpace('local').then((refSpace) => {
-            xrSpace = refSpace;
-          session.requestAnimationFrame(onXRFrame);
-        });
-      }
-  
-      function onXRFrame(t, frame) {
-        let pose = frame.getViewerPose(xrSpace);
-        frame.session.requestAnimationFrame(onXRFrame);
+    // WebGL scene globals.
+    let gl = null;
 
-        let pos = pose.views[0].transform.position
-        let rot = pose.views[0].transform.orientation
-        let x=Math.round(pos.x*100),y=Math.round(pos.y*100),z=Math.round(pos.z*100)
-		debugdiv.innerHTML=x+' '+y+' '+z
-      }
-      initXR();
-    </script>
-  </body>
-  <div id="debugdiv"></div>
+    function initXR() {
+      let btn = document.createElement("input")
+      btn.type = "button"
+      btn.value = "START AR"
+      btn.onclick = xrStart
+      document.querySelector('header').appendChild(btn);
+    }
+
+    function xrStart() {
+      navigator.xr.requestSession('immersive-ar').then((session) => { xrStarted(session) })
+    }
+
+    function initGL() {
+      if (gl)
+        return;
+
+      let canvas = document.createElement("canvas")
+      gl = canvas.getContext("webgl", { xrCompatible: true })
+      document.body.appendChild(canvas);
+    }
+
+    function xrStarted(session) {
+      initGL();
+      session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl) });
+      session.requestReferenceSpace('local').then((refSpace) => {
+        xrSpace = refSpace;
+        session.requestAnimationFrame(onXRFrame);
+      });
+    }
+
+    function onXRFrame(t, frame) {
+      let pose = frame.getViewerPose(xrSpace);
+      frame.session.requestAnimationFrame(onXRFrame);
+
+      let pos = pose.views[0].transform.position
+      let rot = pose.views[0].transform.orientation
+      let x = Math.round(pos.x * 100), y = Math.round(pos.y * 100), z = Math.round(pos.z * 100)
+      debugdiv.innerHTML = x + ' ' + y + ' ' + z
+    }
+    initXR();
+  </script>
+</body>
+<div id="debugdiv"></div>
+
 </html>
