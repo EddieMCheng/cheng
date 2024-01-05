@@ -67,7 +67,7 @@ function start(){
 		if(!editFocus)Ev[ev.code] = true
 		setKeyB(ev)
 		if(ev.code=="Escape"){DE2F();inF();inG();go=1}
-		else if(ev.code=="Enter"&&ev.ctrlKey){prettifyF();prettifyG();go=1}
+		else if(ev.code=="Enter"&&ev.ctrlKey){;outF();prettifyF();prettifyG();go=1}
 		else if(ev.code=="KeyS"&&ev.ctrlKey){ev.preventDefault();urlTFG()}
 	}
 	document.onkeyup=function(ev){key=ev.code+"_0";Ev[ev.code] = false}
@@ -377,6 +377,7 @@ function DE2F(){
 function loadFileUrl(file, idx,type){
 	fetch(file+".txt").then(function(response){
 		if(file.includes("_") && response.status==404)loadFileUrl(file.replace("_","/"),idx,type)
+		else if(response.status==404)return "NotFound="+file.replace(/\//g,"_")
 		else return response.text();
 	}).then(function(data){
 		if(data && type=="F"){
