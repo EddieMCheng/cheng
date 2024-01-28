@@ -352,7 +352,8 @@ function DE2F(){
 	F=""
 	var C0
 	for(var i=0; i<N+1; i++){
-		if(D[i][2]==0)C0=CP
+		if(!D || !D[i])return
+		if(D[i][2]==0){C0=CP}
 		else C0 = CD
 		if(D[i][2]==0&&i>0)F+=","
 		F+=D[i][0]
@@ -900,7 +901,7 @@ function getF(s){
 	return start>=0?FDiv.innerText.substring(start,(end>=0?end:FDiv.innerText.length)):""
 }
 function inF(){FDiv.innerText=F;prettifyF()}
-function outF(){F=FDiv.innerText;F2DE();DE2F();if(autosave)urlTFG()}
+function outF(){F=FDiv.innerText.replace(/\n/g,"");F2DE();DE2F();if(autosave)urlTFG()}
 function inG(){GDiv.innerText=G.join(",");prettifyG()}
 function outG(){
 	if(GDiv.innerText.includes("Mx")||GDiv.innerText.includes("My")||GDiv.innerText.includes("Me"))uiDiv.style="touch-action:none"
@@ -1030,7 +1031,7 @@ let prettifyG=(ev)=>{
 	canvas{position:fixed}
 	#player{position:fixed;z-index:20}
 	#imageCanvas{z-index:-10}
-	#dataDiv{position:absolute;left:2px;right:2px}
+	#dataDiv{position:absolute;left:2px;right:2px;background-color: #000000C0}
 ::-webkit-scrollbar {width: 9px;height:9px}
 ::-webkit-scrollbar-thumb {background: #333;}
 </style>
@@ -1043,7 +1044,7 @@ let prettifyG=(ev)=>{
 	<iframe id="player" type="text/html" src=""
 	frameborder="0"></iframe>
 </div>
-<div id="dataDiv" style="background-color: #000000C0;display: inline-block">
+<div id="dataDiv">
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveDButton" value="save D" type="button" onclick="download('D',Dout,'txt')" hidden></input>
 	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onkeyup="prettifyF(event)" onclick="lastFpos=getCursorPosition(FDiv)" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
