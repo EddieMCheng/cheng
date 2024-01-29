@@ -328,9 +328,9 @@ function setVar(s){
 function updateL(){
 	L=[]
 	for(var i=0; i<C.length; i++){L[C[i]]=i}
-	L["#N"]=D.length-1
-	L["#N-1"]=D.length-2
-	for(var j=0;j<D.length;j++){
+	L["#N"]=targetD.length-1
+	L["#N-1"]=targetD.length-2
+	for(var j=0;j<targetD.length;j++){
 		var par=j-D[j][2]
 		var nm=D[j][0].split(".")[0].split("→")[0];
 		var nNm = nm
@@ -342,10 +342,10 @@ function updateL(){
 			nNm=nmEndStr?nmArr+"_"+nmEndStr:nmArr+"_"+dp
 			dp++
 		}
-		L[E[j][0]]=j
+		L[targetE[j][0]]=j
 		L[nNm]=j
 		L["#"+j]=j
-		D[j][0]=D[j][0].replace(nm,nNm)
+		targetD[j][0]=targetD[j][0].replace(nm,nNm)
  	}
 }
 function DE2F(){
@@ -417,6 +417,7 @@ function F2DE(){
 			N++
 			if(i>0){Np_.push(N);Nl_.push(adds.length-1)}
 			targetD[N]=[], targetE[N]=[],	targetD[N][0]="", targetD[N][1]=i==0?CP[1]:CD[1];	targetD[N][2]=i
+			if(!D[N]){D[N]=[];E[N]=[]}
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
 				var props=multis[j].split("±")
@@ -437,6 +438,8 @@ function F2DE(){
 						if(targetD[N][0])targetD[N][0]+="."
 						targetD[N][0] += propName
 						targetE[N][0] = props[1]
+						D[N][0]=targetD[N][0]
+						E[N][0]=targetE[N][0]
 					}
 					if(isNaN(targetD[N][propIndex]))targetD[N][propIndex]=1
 					targetD[N][propIndex]*=propValue;		targetE[N][propIndex]=props[1] ? parseFloat(props[1]):targetD[N][2]==0?0:CE[propIndex]
