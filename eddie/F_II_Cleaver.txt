@@ -1,0 +1,4 @@
+II_Cleaver*3a=
+back_blade*-4*2u*0.375v±0.5+
+front_blade*-4*-2x*2u*0.875v±0.5+
+handle*-40*3.4x±2*y*0.35u*0.125v±45

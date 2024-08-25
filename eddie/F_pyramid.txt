@@ -1,2 +1,2 @@
-Basic=
-pyramid*-36*0y±-0.5*0.5u±0.5*0.25v*0w±4.5*4a
+Pyramid*-4*-0.5y*0.098o*w±0.5=
+triangle*-3*0.707z*u*0.5v±0.5*4a
