@@ -362,9 +362,6 @@ function updateL(){
  	}
 }
 function DE2F(){
-	console.log("pre DE2F D",D)
-	console.log("pre DE2F targetD",targetD)
-	console.log("pre DE2F F",F)
 	F=""
 	var C0
 	for(var i=0; i<N+1; i++){
@@ -390,9 +387,6 @@ function DE2F(){
 		if(D[i][2]==0)F+="="
 		else if(i<N && D[i+1][2]!=0) F+="+"
 	}
-	console.log("post DE2F D",D)
-	console.log("post DE2F targetD",targetD)
-	console.log("post DE2F F",F)
 }
 function loadFileUrl(file, idx,type){
 	fetch(file+".txt").then(function(response){
@@ -417,8 +411,6 @@ function loadFileUrl(file, idx,type){
 	})
 }
 async function F2DE(){
-	console.log("pre F2DE D",D)
-	console.log("pre F2DE F",F)
 	var commas=F.split(",")
 	for(let i=0;i<commas.length;i++){
 		if(commas[i].substr(0,2)=="F_"){
@@ -475,9 +467,6 @@ async function F2DE(){
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 	}
 	updateL();
-	console.log("post F2DE D",D)
-	console.log("post F2DE targetD",targetD)
-	console.log("post F2DE F",F)
 }
 function Geval(){
 	if(G&&G!=""){
