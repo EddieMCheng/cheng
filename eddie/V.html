@@ -182,15 +182,22 @@ function readFile(file){
 }
 function readTextUrl(file, add){
 	fetch(file).then(function(response){
-		if(file.includes("_") && response.status==404)readTextUrl(file.replace("_","/"),add)
-		else if(response.status==404)loadedUrl=false
-		else return response.text();
+		if(!response.ok) {
+			if(file.includes("_") && response.status==404) {
+				return readTextUrl(file.replace("_","/"), add);
+			}
+			loadedUrl = false;
+			return null;
+		}
+		return response.text();
 	}).then(function(data){
 		if(data){
 			if(add){data=data.replace("\nF:","\n+F:").replace("\nG:","\n+G:")}
 			updateD(data.replace(/\n/g,"").split(";"))
 		}
-	})
+	}).catch(function(error) {
+		loadedUrl = false;
+	});
 }
 function readImgFile(idx){images[idx]=new Image;images[idx].onload=function(){updateI(idx)};images[idx].src=URL.createObjectURL(loadImageButton.files[0])}
 function updateI(idx){
@@ -419,7 +426,6 @@ async function F2DE(){
 		}
 	}
 	let partCount = F.split(/[,=+]/).length;
-	console.log("Number of parts:", partCount);
 	N=-1
 	Np=[],targetD=[],targetE=[],Nl=[],Bau=0
 	for(var I=0; I<commas.length; I++){

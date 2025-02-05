@@ -1,0 +1,4 @@
+Coordinates=
+x_line*0x±1*0g*0b*3a+
+y_line*0y±1*0r*0b*3a+
+z_line*0z±1*0r*0g*3a

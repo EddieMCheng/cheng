@@ -1,0 +1,2 @@
+Dot_plane*-10*0z±1=
+x_line*-11*0x±1
