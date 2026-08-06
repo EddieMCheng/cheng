@@ -542,7 +542,8 @@ function DE2B(){
 	let tdv=[],tdc=[]
 	if(U)U2d.clearRect(0,0,U.width,U.height);
 	UP = []
-	var Pp=1,Px,Py,Pz,Pr,Pg,Pb,Pu,Pv,Pw,Pd,Pend, Pi=0, arr=[]
+	let pii=2*Math.PI,cVo=Math.cos(Vo*pii),sVo=Math.sin(Vo*pii),cVv=Math.cos(Vv*pii),sVv=Math.sin(Vv*pii),cVw=Math.cos(Vw*pii),sVw=Math.sin(Vw*pii),aspect=SH/SW
+	var Pp=1,Px,Py,Pz,Pr,Pg,Pb,Pu,Po,Pv,Pw,Pd,Pi=0,cPo=1,sPo=0,cPv=1,sPv=0,cPw=1,sPw=0
 	for(var Ni=Np.length-1; Ni>=0; Ni--){
 		var i=Np[Ni]
 		var l=Nl[Ni]
@@ -559,6 +560,7 @@ function DE2B(){
 			Pr=DEG(i-l,7,S,Pi);	Pg=DEG(i-l,8,S,Pi);	Pb=DEG(i-l,9,S,Pi)
 			Pu=DEG(i-l,10,S,Pi);Po=-DEG(i-l,11,S,Pi);Pv=DEG(i-l,12,S,Pi)
 			Pw=DEG(i-l,13,S,Pi);Pd=DEG(i-l,14,S,Pi)
+			cPo=Math.cos(Po*pii);sPo=Math.sin(Po*pii);cPv=Math.cos(Pv*pii);sPv=Math.sin(Pv*pii);cPw=Math.cos(Pw*pii);sPw=Math.sin(Pw*pii)
 		}
 		var len=DE(i,1)
 		var type=D[i][16]+D[i-D[i][2]][16], typeA=Math.abs(type-Math.ceil(type)+1)
@@ -570,13 +572,11 @@ function DE2B(){
 		var nn=0
 		var PArray=D[i][0].split(".")
 		var PRange=PArray[0].split("→")
-		let te=E[i][15], tl=te*au.sampleRate,lx=0,ly=0
 		tdv[Ni]=[];tdc[Ni]=[]
 		dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		if(p*Pp>0||!dvc[Ni])dvc[Ni]=[]
 		for(var j=0; j<(pdep==0?1:jlen*pdep); j++){
 			let x0,x1,x2,x3,x4,x5,y0,y1,y2,y3,y4,y5,z0,z1,z2,z3,z4,z5,r,g,b
-			let	pii = 2*Math.PI
 			if(p*Pp>0||dvc[Ni].length<jlen*pdep*6){
 				let s=fr||isFrac?j/jlen:-1
 				let x,y,z,u,v,w,t,o
@@ -598,7 +598,7 @@ function DE2B(){
 						i1=L[PArray[ii+1]]						
 						d2=id-ii
 					}
-					if(i0 && i1){
+					if(i0!=null && i1!=null){
 						x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s);	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s);	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
 						r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s);	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s);	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
 						u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s);	o=((1-d2)*DE(i0,11,s)+d2*DE(i1,11,s));	v=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s);w=(1-d2)*DE(i0,13,s)+d2*DE(i1,13,s)
@@ -616,7 +616,6 @@ function DE2B(){
 				z1=z0*cw+x0*sw+z
 				y1=y0*Math.cos(v*pii)+y
 				x1=x0*cw-z0*sw+x
-				let cPo=Math.cos(Po*pii),sPo=Math.sin(Po*pii),cPv=Math.cos(Pv*pii),sPv=Math.sin(Pv*pii),cPw=Math.cos(Pw*pii),sPw=Math.sin(Pw*pii)
 				z2=z1*cPo+y1*sPo
 				y2=y1*cPo-z1*sPo
 				x2=x1*cPv+y2*sPv
@@ -639,7 +638,6 @@ function DE2B(){
 				g=dvc[Ni][j*6+4]
 				b=dvc[Ni][j*6+5]
 			}
-			let cVo=Math.cos(Vo*pii),sVo=Math.sin(Vo*pii),cVv=Math.cos(Vv*pii),sVv=Math.sin(Vv*pii),cVw=Math.cos(Vw*pii),sVw=Math.sin(Vw*pii)
 			x4=((x3-Vx)*cVw+(z3-Vz)*sVw)*Vu
 			z4=((z3-Vz)*cVw-(x3-Vx)*sVw)*Vu
 			y4=(y3-Vy)*Vu*cVv+x4*sVv
@@ -647,17 +645,16 @@ function DE2B(){
 			z5=z4*cVo+y4*sVo-Vzu
 			y5=y4*cVo-z4*sVo
 
-			m=j*4
-			let angle=Math.acos(-z5/getHyp3(x5,y5,z5)), scale=angle/getHyp(x5,y5)*VP
+			let hyp2=getHyp(x5,y5),hyp3=getHyp(hyp2,z5),angle=hyp3?Math.acos(Math.max(-1,Math.min(1,-z5/hyp3))):0,scale=hyp2?angle/hyp2*VP:0
 			var xx=scale?x5*scale:0, yy=scale?y5*scale:0
 			var r1=r*Pr, g1=g*Pg, b1=b*Pb, a1=(z5+Vzu)*VF>-1?1:1/((-Vzu-z5)*VF)
 
 			if(nt>=3 && j>=nt){
-				prevp=j<2*nt?(j-nt)*4:(nt-1)*4+(j-2*nt+1)*8
+				let prevp=j<2*nt?(j-nt)*4:(nt-1)*4+(j-2*nt+1)*8
 				tdv[Ni].push(tdv[Ni][prevp],tdv[Ni][prevp+1],tdv[Ni][prevp+2],1)
 				tdc[Ni].push(tdc[Ni][prevp],tdc[Ni][prevp+1],tdc[Ni][prevp+2],tdc[Ni][prevp+3])
 			}
-			tdv[Ni].push(xx*SH/SW,yy,z5*1e-34,1); tdc[Ni].push(r1,g1,b1,a1*typeA)
+			tdv[Ni].push(xx*aspect,yy,z5*1e-34,1); tdc[Ni].push(r1,g1,b1,a1*typeA)
 			dvr[i]+=r1; dvg[i]+=g1; dvb[i]+=b1
 			dvx[i]+=x1; dvy[i]+=y1; dvz[i]+=z1
 			dvX[i]+=x3; dvY[i]+=y3; dvZ[i]+=z3
