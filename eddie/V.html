@@ -917,17 +917,19 @@ function setKeyB(ev){keyB.pop();keyB.unshift(ev.code)}
 function vdScript(s){return replacer(s,/!/g,":",/~/g,"!",/∧/g,"&&",/∨/g,"||",/≡/g,"==",/≠/g,"!=",/≥/g,">=",/≤/g,"<=",/∞/g,"%",/\+/g,"-0+",/≝/g,"Math.",/(Part)\((\w+)\)\((\w+)\)/g,"get$1\($2,'$3'\)",/([rgbxyzOMXYZNL])\((\w+)\)/g,"get$1\('$2'\)",/([BDE])\((\w+).(\w+)\)/g,"get$1\('$2.$3'\)",/(Space)\((\w+)\)\((\w+)\)/g,"get$1\('$2','$3'\)",/\)\(/g,",")}
 function id(s){return document.getElementById(s)}
 function getF(s){
-	let start=FDiv.innerText.indexOf(s)
-	let end=FDiv.innerText.indexOf("\n",start)
-	return start>=0?FDiv.innerText.substring(start,(end>=0?end:FDiv.innerText.length)):""
+	let text=editorText(FDiv)
+	let start=text.indexOf(s)
+	let end=text.indexOf("\n",start)
+	return start>=0?text.substring(start,(end>=0?end:text.length)):""
 }
-function inF(){FDiv.innerText=F;prettifyF()}
-function outF(){F=FDiv.innerText.replace(/\n/g,"");F2DE();DE2F();if(autosave)urlTFG()}
-function inG(){GDiv.innerText=G.join(",");prettifyG()}
+function inF(){FDiv.textContent=F;prettifyF()}
+function outF(){F=editorText(FDiv).replace(/\n/g,"");F2DE();DE2F();if(autosave)urlTFG()}
+function inG(){GDiv.textContent=G.join(",");prettifyG()}
 function outG(){
-	if(GDiv.innerText.includes("Mx")||GDiv.innerText.includes("My")||GDiv.innerText.includes("Me"))uiDiv.style="touch-action:none"
+	let text=editorText(GDiv)
+	if(text.includes("Mx")||text.includes("My")||text.includes("Me"))uiDiv.style="touch-action:none"
 	else uiDiv.style="touch-action:auto"
-	G=replacer(GDiv.innerText,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
+	G=replacer(text,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
 	inG()
 	Geval();if(autosave)urlTFG()
 }
@@ -987,6 +989,8 @@ function getRedHue(s){return s<1/6?1:s<2/6?2-s*6:s<4/6?0:s<5/6?s*6-4:1}
 function getGreenHue(s){return s<1/6?s*6:s<3/6?1:s<4/6?4-s*6:0}
 function getBlueHue(s){return s<2/6?0:s<3/6?s*6-2:s<5/6?1:6-s*6}
 function getSpanColor(s,c){return `<span style='color:${c}'>${s}</span>`}
+function editorText(el){return el.textContent.replace(/\u00a0/g," ")}
+function htmlEscape(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 function getCursorPosition(editableDiv) {
     const sel = window.getSelection();
     if (sel.rangeCount === 0) return -1; // No selection
@@ -998,7 +1002,7 @@ function getCursorPosition(editableDiv) {
     return preCaretRange.toString().length;
 }
 function setCursorPosition(editableDiv, pos) {
-	position = pos ==-1?0:pos;
+	let position = pos ==-1?0:pos;
     const range = document.createRange();
     const sel = window.getSelection();
     range.setStart(editableDiv, 0);
@@ -1023,28 +1027,55 @@ function setCursorPosition(editableDiv, pos) {
             }
         }
     }
+	if(!stop){
+		range.selectNodeContents(editableDiv);
+		range.collapse(false);
+	}
     sel.removeAllRanges();
     sel.addRange(range);
 }
-
-let prettifyF=(ev)=>{
-	const cursorPos=getCursorPosition(FDiv);
-	const preLen=FDiv.innerText.length;
-	if(!ev || (ev && ev.key==="Enter"))
-	FDiv.innerHTML=replacer(FDiv.innerText,/,/g,",<br><br>",/\=/g,"=<br>",/\+-/g,"±",/ /g,"_",/-->/g,"→",/\+/g,"+<br>",/ \*/g,"*",/\*/g,getSpanColor("*","#FC0"),/\±/g,getSpanColor("±","#2B0"))
-	
-	let fExtra=0
-	if(!ev || (ev && ev.key==="Enter")){
-		fExtra=FDiv.innerText.length-preLen ?? 0;
-		setCursorPosition(FDiv, cursorPos+fExtra)
-		const newCursorPosition=getCursorPosition(FDiv)
+function paintToken(s,c){return getSpanColor(htmlEscape(s),c)}
+function paintChars(text, colors){
+	let out=""
+	for(let i=0;i<text.length;i++){
+		let ch=text[i], color=colors[ch]
+		out+=color?paintToken(ch,color):htmlEscape(ch)
 	}
+	return out
+}
+function renderEditor(el,text,html,cursor){
+	el.innerHTML=html
+	if(document.activeElement==el)setCursorPosition(el,Math.min(cursor,text.length))
+}
+function formatFText(text,full){
+	text=replacer(text,/\r/g,"",/\+-/g,"±",/ /g,"_",/-->/g,"→")
+	if(full)text=text.replace(/\n/g,"").replace(/,/g,",\n\n").replace(/=/g,"=\n").replace(/\+/g,"+\n")
+	return text
+}
+function formatGText(text,full){
+	text=text.replace(/\r/g,"")
+	if(full)text=text.replace(/\n/g,"").replace(/,/g,",\n")
+	return text
+}
+function highlightF(text){
+	let colors={"*":"#FC0","±":"#2B0","=":"#8CF","+":"#C70",",":"#888"}
+	return paintChars(text,colors)
+}
+function highlightG(text){
+	let colors={"=":"#3F0","±":"#8E0","?":"#DE0","!":"#DE0","+":"#C70","-":"#C70","∨":"#C70","∧":"#C70","(":"#C70",")":"#C70","*":"#F40","~":"#922",",":"#888"}
+	return paintChars(text,colors)
+}
+let prettifyF=(ev)=>{
+	let oldText=editorText(FDiv), cursorPos=getCursorPosition(FDiv)
+	let full=!ev||ev.key==="Enter"||ev.inputType==="insertParagraph"
+	let text=formatFText(oldText,full)
+	renderEditor(FDiv,text,highlightF(text),cursorPos+text.length-oldText.length)
 }
 let prettifyG=(ev)=>{
-	const cursorPos=getCursorPosition(GDiv);
-	if(!ev || (ev && ev.key==="Enter"))
-	GDiv.innerHTML=replacer(GDiv.innerText,/,/g,",</br>",/\=/g,getSpanColor("=","#3F0"),/\±/g,getSpanColor("±","#8E0"),/([\?\!])/g,getSpanColor("$1","#DE0"),/([+\-∨∧()])/g,getSpanColor("$1","#C70"),/([*])/g,getSpanColor("$1","#F40"),/([~])/g,getSpanColor("$1","#922"));
-	if(ev)setCursorPosition(GDiv, cursorPos);
+	let oldText=editorText(GDiv), cursorPos=getCursorPosition(GDiv)
+	let full=!ev||ev.key==="Enter"||ev.inputType==="insertParagraph"
+	let text=formatGText(oldText,full)
+	renderEditor(GDiv,text,highlightG(text),cursorPos+text.length-oldText.length)
 }
 </script>
 <style>
@@ -1053,6 +1084,7 @@ let prettifyG=(ev)=>{
 	#youtube{position:fixed;display:none}
 	#imageCanvas{z-index:-10}
 	#dataDiv{position:absolute;left:2px;right:2px;background-color: #000000C0}
+	#FDiv,#GDiv{white-space:pre-wrap;outline:none;tab-size:2}
 ::-webkit-scrollbar {width: 9px;height:9px}
 ::-webkit-scrollbar-thumb {background: #333;}
 </style>
@@ -1067,10 +1099,10 @@ let prettifyG=(ev)=>{
 <div id="dataDiv">
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
 	<input id="saveDButton" value="save D" type="button" onclick="download('D',Dout,'txt')" hidden></input>
-	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" onfocus="DE2F();inF();editFocus=true" oninput="" onkeyup="prettifyF(event)" onclick="lastFpos=getCursorPosition(FDiv)" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
-	<input id="saveFButton" value="save F" type="button" onclick="download('F',FDiv.innerText,'txt')" hidden></input>
-	<b>;<br>G:</b><div id="GDiv" style="color:lightgray" contenteditable="true"  oninput="prettifyG(1)" onfocus="inG();editFocus=true" onfocusout="prettifyG();outG();go=1;editFocus=false">Block <b>bold</b> quote</div>
-	<input id="saveGButton" value="save G" type="button" onclick="download('G',GDiv.innerText,'txt')" hidden></input>
+	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" spellcheck="false" onfocus="DE2F();inF();editFocus=true" oninput="prettifyF(event)" onclick="lastFpos=getCursorPosition(FDiv)" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
+	<input id="saveFButton" value="save F" type="button" onclick="download('F',editorText(FDiv),'txt')" hidden></input>
+	<b>;<br>G:</b><div id="GDiv" style="color:lightgray" contenteditable="true" spellcheck="false" oninput="prettifyG(event)" onfocus="inG();editFocus=true" onfocusout="outG();go=1;editFocus=false">Block <b>bold</b> quote</div>
+	<input id="saveGButton" value="save G" type="button" onclick="download('G',editorText(GDiv),'txt')" hidden></input>
 	
 <br>
 <input id="loadImageButton" type="file" accept="image/*;capture=camera" onchange="readImgFile(0)" hidden></input>
