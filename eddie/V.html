@@ -595,8 +595,9 @@ function DE2B(){
 		var jlen=fr?-len:isFrac?1/(len-1e-9):Math.ceil(len)
 		var p=DE(i,3), pdep=Math.abs(p*Pp)>1?1:Math.abs(p*Pp)
 		var nn=0
-		var PArray=D[i][0].split(".")
-		var PRange=PArray[0].split("→")
+		var objName=D[i][0]
+		var PArray=objName.split(".")
+		var PRange=objName.split("→")
 		tdv[Ni]=[];tdc[Ni]=[]
 		dvr[i]=0;dvg[i]=0;dvb[i]=0;dvx[i]=0;dvy[i]=0;dvz[i]=0;dvX[i]=0;dvY[i]=0;dvZ[i]=0;X[i]=0;Y[i]=0;Z[i]=0
 		if(p*Pp>0||!dvc[Ni])dvc[Ni]=[]
@@ -606,28 +607,36 @@ function DE2B(){
 				let s=fr||isFrac?j/jlen:-1
 				let x,y,z,u,v,w,t,o
 				let d=DEG(i,14,s,j)+Pd
-				if(PArray.length>1 || PRange.length==2){
-					let id,ii,i0,i1,d2
+				let i0,i1,d2
+				if(PRange.length==2){
 					let PR0=L[PRange[0]], PR1=L[PRange[1]]
-					if(PR1>PR0){
-						id=PR0+(PR1-PR0)*d
-						ii=d<0?PR0:d>=1?PR1-1:Math.floor(id)
-						i0=ii
-						i1=ii+1
-						d2=id-ii
+					if(PR0>=0&&PR1>=0&&PR0!==PR1){
+						let id=PR0+(PR1-PR0)*d,ii
+						if(PR1>PR0){
+							ii=d<0?PR0:d>=1?PR1-1:Math.floor(id)
+							if(ii<PR0)ii=PR0
+							if(ii>=PR1)ii=PR1-1
+							i0=ii;i1=ii+1;d2=id-ii
+						}
+						else{
+							ii=d<0?PR0:d>=1?PR1+1:Math.ceil(id)
+							if(ii>PR0)ii=PR0
+							if(ii<=PR1)ii=PR1+1
+							i0=ii;i1=ii-1;d2=ii-id
+						}
 					}
-					else{
-						id=(PArray.length-1)*d
-						ii=d<0?0:d>=1?PArray.length-2:Math.floor(id)
-						i0=L[PArray[ii]]
-						i1=L[PArray[ii+1]]						
-						d2=id-ii
-					}
-					if(i0!=null && i1!=null){
-						x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s);	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s);	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
-						r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s);	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s);	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
-						u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s);	o=((1-d2)*DE(i0,11,s)+d2*DE(i1,11,s));	v=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s);w=(1-d2)*DE(i0,13,s)+d2*DE(i1,13,s)
-					}
+				}
+				else if(PArray.length>1){
+					let id=(PArray.length-1)*d
+					let ii=d<0?0:d>=1?PArray.length-2:Math.floor(id)
+					i0=L[PArray[ii]]
+					i1=L[PArray[ii+1]]
+					d2=id-ii
+				}
+				if(i0!=null&&i1!=null){
+					x=(1-d2)*DE(i0,4,s)+d2*DE(i1,4,s);	y=(1-d2)*DE(i0,5,s)+d2*DE(i1,5,s);	z=(1-d2)*DE(i0,6,s)+d2*DE(i1,6,s)
+					r=(1-d2)*DE(i0,7,s)+d2*DE(i1,7,s);	g=(1-d2)*DE(i0,8,s)+d2*DE(i1,8,s);	b=(1-d2)*DE(i0,9,s)+d2*DE(i1,9,s)
+					u=(1-d2)*DE(i0,10,s)+d2*DE(i1,10,s);	o=((1-d2)*DE(i0,11,s)+d2*DE(i1,11,s));	v=(1-d2)*DE(i0,12,s)+d2*DE(i1,12,s);w=(1-d2)*DE(i0,13,s)+d2*DE(i1,13,s)
 				}
 				else{
 					x=DEG(i,4,s,j);		y=DEG(i,5,s,j);		z=DEG(i,6,s,j)
