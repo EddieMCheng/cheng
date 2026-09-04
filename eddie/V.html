@@ -20,7 +20,7 @@
 	along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var F="Box*-4*w±.5=Square*-4*z*1.414u*.375v±.5*3a"
-var G=["Vw=Vw-(lMx-Mx)/4","Vo=Vo+(lMy-My)/4"],GB=[],GBd=[], GV=[], Gp=[]
+var G=["Vw=Vw-(lMx-Mx)/4","Vo=Vo+(lMy-My)/4"],GB=[],GBd=[], GV=[], Gp=[], GD=[], GE=[]
 var V,I,U,gl,I2d,U2d,img=new Image,images=[],BvAtt,Bdv=[],BcAtt,Bdc=[],dvc=[],dvr=[],dvg=[],dvb=[],dvx=[],dvy=[],dvz=[],dvX=[],dvY=[],dvZ=[],dva=[],dvi=[]
 var Ix=0,Iy=0,Iu=1,Id=[],Idn=0, YT='',UP=[], blur=0
 var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
@@ -386,7 +386,7 @@ function DE2F(){
 				if(targetD[i][j]!=1){
 					
 					if(targetD[i][j]!=0&&(Math.abs(targetD[i][j])>1e5||Math.abs(targetD[i][j])<1e-5))F+=targetD[i][j].toExponential().replace("+","")+""
-					else F+=(round(D[i][j],6)+"")
+					else F+=(round((updateF?D:targetD)[i][j],6)+"")
 				}
 				if(j>2){F+=C[j];if(E[i][j]!=CEj)F+="±"+(round(E[i][j],6)+"")}
 			}
@@ -439,6 +439,7 @@ async function F2DE(){
 			if(i>0){Np_.push(N);Nl_.push(adds.length-1)}
 			targetD[N]=[], targetE[N]=[],	targetD[N][0]="", targetD[N][1]=i==0?CP[1]:CD[1];	targetD[N][2]=i
 			if(!D[N]){D[N]=[];E[N]=[]}
+			D[N][2]=i
 			var multis=adds[i].split("*")
 			for(var j=0; j<multis.length; j++){
 				var props=multis[j].split("±")
@@ -466,13 +467,25 @@ async function F2DE(){
 					targetD[N][propIndex]*=propValue;		targetE[N][propIndex]=props[1] ? parseFloat(props[1]):targetD[N][2]==0?0:CE[propIndex]
 				}
 			}
-			for(var ii=1;ii<C.length;ii++){if(targetD[N][ii]===undefined)targetD[N][ii]=D[N][ii]=targetD[N][2]!==0?CD[ii]:CP[ii];if(isNaN(targetE[N][ii]))targetE[N][ii]=E[N][ii]=targetD[N][2]==0?0:CE[ii]}
+			for(var ii=1;ii<C.length;ii++){
+				if(targetD[N][ii]===undefined)targetD[N][ii]=targetD[N][2]!==0?CD[ii]:CP[ii]
+				if(isNaN(targetE[N][ii]))targetE[N][ii]=targetD[N][2]==0?0:CE[ii]
+			}
 		}
 		var LEN=Math.abs(targetD[par][1])
 		var NLEN=LEN>0&&LEN<1?1/LEN:LEN
 		for(var j=0; j<NLEN;j++){Np=Np.concat(Np_);Nl=Nl.concat(Nl_)}
 	}
-	updateL();
+	updateL();Geval();
+	for(var i=0;i<=N;i++){
+		if(!D[i])D[i]=[]
+		if(!E[i])E[i]=[]
+		for(var ii=1;ii<C.length;ii++){
+			if(!(GD[i]&&GD[i][ii]))D[i][ii]=targetD[i][ii]
+			if(!(GE[i]&&GE[i][ii]))E[i][ii]=targetE[i][ii]
+		}
+	}
+	go=1;
 }
 function Geval(){
 	if(G&&G!=""){
@@ -483,7 +496,7 @@ function Geval(){
 				break
 			}
 		}
-		GV=[],Gp=[],GB=[],GBd=[]
+		GV=[],Gp=[],GB=[],GBd=[],GD=[],GE=[]
 		for(var i=0;i<G.length;i++){
 			var Gi=G[i].includes("//")?G[i].substr(0,G[i].indexOf("//")):G[i].replace(/\n/g,"")
 			if(Gi!=""){
@@ -505,39 +518,51 @@ function Geval(){
 								else if(Gi0.includes(".")&&m>=0){
 									var n=L[id1]
 									if(Bval!=""){if(!GB[m]){GB[m]=[];GBd[m]=[]}if(!GBd[m][n])GBd[m][n]=[];GB[m][n]=vdScript(Bval)}
-									if(vl0&&m>=0){GV.push((n==0?"delete L[D["+m+"][0]];":"")+"D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+"")+(n==0?";L[D["+m+"][0]]="+m:""));Gp.push(0)}
-									if(vl1&&m>=0){GV.push((n==0?"delete L[E["+m+"][0]];":"")+"E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+"")+(n==0?";L[E["+m+"][0]]="+m:""));Gp.push(0)}
+									if(vl0&&m>=0){if(n!=0){if(!GD[m])GD[m]=[];GD[m][n]=1}GV.push((n==0?"delete L[D["+m+"][0]];":"")+"D["+m+"]["+n+"]="+vdScript(vl0r+(d!=""?"!D["+m+"]["+n+"]":"")+"")+(n==0?";L[D["+m+"][0]]="+m:""));Gp.push(0)}
+									if(vl1&&m>=0){if(n!=0){if(!GE[m])GE[m]=[];GE[m][n]=1}GV.push((n==0?"delete L[E["+m+"][0]];":"")+"E["+m+"]["+n+"]="+vdScript(vl1.replace(/←/g,s)+(question(vl1)?"!E["+m+"]["+n+"]":"")+"")+(n==0?";L[E["+m+"][0]]="+m:""));Gp.push(0)}
 									fail=0
 								}
 							}
 						}
 					}
 				}
-				else{if(!this[Gi0])this[Gi0]="";GV.push(Gi0+"="+vdScript(vl0+(d!=""?"!"+Gi0:"")+""));Gp.push(Gi0)}
+				else{if(this[Gi0]===undefined)this[Gi0]="";GV.push(Gi0+"="+vdScript(vl0+(d!=""?"!"+Gi0:"")+""));Gp.push(Gi0)}
 			}
 		}
 	}
 }
-const assignMean = (target, destination) => {
+const assignMean = (target, destination, owned) => {
         for (let i = 0; i < target.length; i++) {
-            if (typeof destination[i] === 'undefined' || dT == 0) {
+            if (typeof destination[i] === 'undefined' || dT===0) {
                 destination[i] = [];
             }
             for (let j = 0; j < target[i].length; j++) {
-                if (typeof destination[i][j] === 'undefined' || dT == 0) {
+                if(owned&&owned[i]&&owned[i][j])continue
+                if (typeof destination[i][j] === 'undefined' || dT===0) {
                     destination[i][j] = target[i][j];
                 } else if (typeof target[i][j] === 'number' && typeof destination[i][j] === 'number') {
-					if(target[i][j]>destination[i][j])destination[i][j] = ceil((destination[i][j]*(targetSpeed-1) + target[i][j]) / targetSpeed,3);
-                    else destination[i][j] = floor((destination[i][j]*(targetSpeed-1) + target[i][j]) / targetSpeed,3);
+					let from=destination[i][j],to=target[i][j],d=to-from
+					if(j==11||j==12||j==13)d-=Math.round(d)
+					if(d>0)destination[i][j] = ceil(from+d/targetSpeed,3);
+                    else destination[i][j] = floor(from+d/targetSpeed,3);
                 } else {
                     destination[i][j] = target[i][j];
                 }
             }
         }
     };
+function Gexec(){
+	for(var i=0;i<GV.length;i++){
+		try{eval(GV[i]);setVar(Gp[i])}
+		catch(e){
+			alertDbg("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
+		}
+	}
+}
 
 function DE2B(){
-	assignMean(targetD,D);assignMean(targetE,E)
+	assignMean(targetD,D,GD);assignMean(targetE,E,GE)
+	Gexec()
 	Bdv=[];Bdc=[];n=0
 	let tdv=[],tdc=[]
 	if(U)U2d.clearRect(0,0,U.width,U.height);
@@ -678,14 +703,6 @@ function DE2B(){
 	drawUP()
 	dvi[Np.length]=Bdv.length
 	算=Math.round(n)
-	let alertsExists=false
-	for(var i=0;i<GV.length;i++){
-		try{eval(GV[i]);setVar(Gp[i])}
-		catch(e){
-			alertsExists=true
-			alertDbg("line: "+i+"\nvdscript: "+G[i]+"\njavascript: "+GV[i]+"\n"+e)
-		}
-	}
 	lMx=Mx;lMy=My
 	
 }
@@ -931,7 +948,7 @@ function outG(){
 	else uiDiv.style="touch-action:auto"
 	G=replacer(text,/\+-/g,"±",/&&/g,"∧",/\|\|/g,"∨",/%/g,"∞",/Math\./g,"≝",/==/g,"≡",/!=/g,"≠",/>=/g,"≥",/<=/g,"≤",/-->/g,"→",/<--/g,"←",/1←/g,"⇤").split(",");
 	inG()
-	Geval();if(autosave)urlTFG()
+	Geval();go=1;if(autosave)urlTFG()
 }
 function getr(s){let t=dvr[L[s]];return t?t:0}
 function getg(s){let t=dvg[L[s]];return t?t:0}
@@ -1098,7 +1115,7 @@ let prettifyG=(ev)=>{
 </div>
 <div id="dataDiv">
 	<input id="loadFileButton" value="" type="file" onchange="loadFiles(this.files)" multiple="" hidden></input>
-	<input id="saveDButton" value="save D" type="button" onclick="download('D',Dout,'txt')" hidden></input>
+	<input id="saveDButton" value="save D" type="button" onclick="download('D',Dout,'txt')"></input>
 	<b>F:</b><div id="FDiv" style="color:lightgray" contenteditable="true" spellcheck="false" onfocus="DE2F();inF();editFocus=true" oninput="prettifyF(event)" onclick="lastFpos=getCursorPosition(FDiv)" onfocusout="outF();go=1;editFocus=false">Block <b>bold</b> quote</div>
 	<input id="saveFButton" value="save F" type="button" onclick="download('F',editorText(FDiv),'txt')" hidden></input>
 	<b>;<br>G:</b><div id="GDiv" style="color:lightgray" contenteditable="true" spellcheck="false" oninput="prettifyG(event)" onfocus="inG();editFocus=true" onfocusout="outG();go=1;editFocus=false">Block <b>bold</b> quote</div>

@@ -1,0 +1,9 @@
+D_clock.3KQ94HTk5.09.95;
+G:sec.v=time/1000/60∞1,
+min.v=time/1000/60/60∞1,
+hrs.v=(time/1000/60/60-timeZone)/12∞1,
+dT=0.04,
+T='Clock',
+this.saveDButton.hidden=false;
+F:clock=sec*0.5u±0.5*2a+min*0.05*0.4u±0.4+hrs*0.1*0.2u±0.2+face*0.084*u*v±0.5;
+http://localhost:30013/eddie/V.html
