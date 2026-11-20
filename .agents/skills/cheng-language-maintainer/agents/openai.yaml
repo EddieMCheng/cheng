@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cheng Language Maintainer"
+  short_description: "Maintain the Cheng visual language runtime and notation."
+  default_prompt: "Maintain the Cheng visual language while preserving its compressed F/G/D notation and progressive learnability."

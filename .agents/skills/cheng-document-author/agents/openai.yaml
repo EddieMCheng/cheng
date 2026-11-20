@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cheng Document Author"
+  short_description: "Create, explain, and evaluate Cheng F/G/D documents."
+  default_prompt: "Create or evaluate Cheng documents as compact spatial notation for form, behavior, memory, interface, and explanation."

@@ -1,0 +1,4 @@
+interface:
+  display_name: Cheng Compact Code
+  short_description: Write small, direct, readable code in the Cheng/VD style.
+  default_prompt: Review or implement this code using the Cheng compact-readable architecture and coding conventions.
