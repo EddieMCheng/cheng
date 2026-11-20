@@ -27,6 +27,7 @@ var xrSpace, xrOn=0,xrx=0,xry=0,xrz=0,xro=0,xrv=0,xrw=0
 var A,all,Dout,T="New",alertUserOnError=false, au=new AudioContext(), sound, Bau, video, cam=0,mic=0,freq=500,pan=0,distort=0
 var C="slipxyzrgbuovwdta";	CP=["P",1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0], CD=["p",1,0,1,0,0,0,1,1,1,0,0,0,0,.5,0,1], CE=["±",0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0]
 var B=[],D=[],E=[],L=[],S=[],P=[],X=[],Y=[],Z=[],N=0,Np=[],Nl=[],Font="12px sans-serif",LS=1.5,VS="2.0",VP=1,VF=1,Vv=0,Vw=0,Vo=0,Vu=1,Vx=0,Vy=0,Vzu=1,Vz=0,SW=831,SH=412,IS=1,Vr=0,Vg=0,Vb=0,Va=1, Bb=1
+var VB=0 // Point edge fade, in framebuffer pixels.
 var targetD=[],targetE=[],targetSpeed=2
 var Me=PointerEvent,MB=[],lMx,lMy,Mx=0,uMx=0,dMx=0,My=0,uMy=0,dMy=0,touch=0,drag=0, click=0,key="",MxB=new Array(10).fill(0),MyB=new Array(10).fill(0),keyB=new Array(10).fill(""),算,抖=1
 var Rx=0,Ry=0,Rz=0,Rzr=0,ax=0,ay=0,az=0,rx=0,ry=0,rz=0
@@ -55,8 +56,21 @@ function init(){
 		gl.viewport(0,0,SW,SH)
 		gl.clearColor(Vr,Vg,Vb,Va)
 		gl.lineWidth(LS)
-		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,"varying lowp vec4 vColor; void main(void) {gl_FragColor=vColor;}")
-		Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
+		Gfrag=loadShader(gl,gl.FRAGMENT_SHADER,`
+			varying lowp vec4 vColor;
+			varying mediump float vPointSize;
+			uniform mediump float uPointBlur;
+			void main(void) {
+				gl_FragColor = vColor;
+				if (uPointBlur > 0.0) {
+					mediump vec2 edge = min(gl_PointCoord, 1.0 - gl_PointCoord);
+					mediump float fadeWidth = min(uPointBlur, vPointSize * 0.5);
+					mediump float distance = min(edge.x, edge.y) * vPointSize;
+					gl_FragColor.a *= min(distance / fadeWidth, 1.0);
+				}
+			}
+		`)
+		Gvert=loadPointVertexShader()
 		window.requestAnimationFrame(loop)
 	}
 }
@@ -315,6 +329,11 @@ function setVar(s){
 		else if(sArr[0]=="G" && sPair[1]){G=sPair[1].split(",");inG();outG()}
 		else if(sArr[0]=="+G"){G=G.concat(sPair[1].split(","));inG();outG()}
 		else if(sArr[0]=="T")updateT(sVal)
+		else if(sArr[0]==="VB"){
+			const width=Number(sVal ?? VB)
+			VB=Number.isFinite(width)?Math.max(0,width):0
+			if(LsV.VB!==VB){LsV.VB=VB;go=1}
+		}
 		else if(this[sArr[0]]!==undefined&&LsV[sArr[0]]!=this[sArr[0]]){
 			if(sVal)this[sArr[0]]=sVal
 			LsV[sArr[0]]=this[sArr[0]];go=1
@@ -338,8 +357,7 @@ function setVar(s){
 				case "Vr": case "Vg":case "Vb":
 				case "Va":gl.clearColor(Vr,Vg,Vb,Va);break
 				case "LS":gl.lineWidth(LS);break
-				case "VS":Gvert=loadShader(gl,gl.VERTEX_SHADER,"attribute vec4 aVxyz; attribute vec4 aVrgb; varying lowp vec4 vColor; void main(void) {gl_Position =vec4(aVxyz); gl_PointSize="+VS+";vColor=aVrgb;}")
-				break
+				case "VS":Gvert=loadPointVertexShader();break
 			}
 		}
 		if(!this[sArr[0]])this[sArr[0]]=0;
@@ -752,6 +770,9 @@ function draw(a) {
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bv);	gl.vertexAttribPointer(BvAtt, 4, gl.FLOAT, 0, 0, 0)
 	gl.bindBuffer(gl.ARRAY_BUFFER, Bc);	gl.vertexAttribPointer(BcAtt, 4, gl.FLOAT, 0, 0, 0)
+	const pointBlur=Bb>=1?VB:0
+	const pointBlurLocation=pointBlur>0?gl.getUniformLocation(Gprog,"uPointBlur"):null
+	let fadingPoints=false
 	for(var Ni=0;Ni<Np.length; Ni++){
 		var i=Np[Np.length-Ni-1],type=D[i][16]+D[i-D[i][2]][16]
 		if(type>0)gl.blendEquation(gl.FUNC_ADD)
@@ -760,7 +781,16 @@ function draw(a) {
 			type=Math.abs(type)
 		}
 		
-		if(type>0)gl.drawArrays(type>=8?5:Math.ceil(type-1), (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
+		if(type<=0)continue
+		const mode=type>=8?gl.TRIANGLE_STRIP:Math.ceil(type-1)
+		if(pointBlurLocation!==null){
+			const fade=mode===gl.POINTS
+			if(fade!==fadingPoints){
+				gl.uniform1f(pointBlurLocation,fade?pointBlur:0)
+				fadingPoints=fade
+			}
+		}
+		gl.drawArrays(mode, (dvi[Ni])/4, ((dvi[Ni+1]-dvi[Ni])/4))
 	}
 }
 function showPosition(position){
@@ -1001,6 +1031,20 @@ function Ir(x,y){return getI(x,y,0)}
 function Ig(x,y){return getI(x,y,1)}
 function Ib(x,y){return getI(x,y,2)}
 function getVar(s){return s+":"+this[s]}
+function loadPointVertexShader(){
+	return loadShader(gl,gl.VERTEX_SHADER,`
+		attribute vec4 aVxyz;
+		attribute vec4 aVrgb;
+		varying lowp vec4 vColor;
+		varying mediump float vPointSize;
+		void main(void) {
+			gl_Position = aVxyz;
+			gl_PointSize = ${VS};
+			vPointSize = gl_PointSize;
+			vColor = aVrgb;
+		}
+	`)
+}
 function loadShader(gl, type, source) {const shader = gl.createShader(type);gl.shaderSource(shader, source);gl.compileShader(shader);return shader;}
 function c(v){return v.charCodeAt()}
 function kB(s){return s.length/1000+" kB"}
